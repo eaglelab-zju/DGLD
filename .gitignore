@@ -1,0 +1,11 @@
+*.pt
+*.zip
+t.py
+*.png
+*.pyc
+*.log
+**/log/*
+**/log_bp/*
+**/tmp/*
+**__pycache__
+
