@@ -1,6 +1,6 @@
 # Author: Peng Zhang <zzhangpeng@zju.edu.cn>
 # License: BSD 2 clause
-from ..src.dgld.common.dataset import GraphNodeAnomalyDectionDataset
+from DGLD.common.dataset import GraphNodeAnomalyDectionDataset
 from DGLD.common.evaluation import split_auc
 from DGLD.AAGNN import AAGNN
 from DGLD.AAGNN import AAGNN_batch
@@ -23,8 +23,6 @@ if __name__ == '__main__':
     model.fit(g, **args["fit"])
     result = model.predict(g, **args["predict"])
     split_auc(label, result)
-
-
 
 
 
