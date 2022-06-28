@@ -1,0 +1,7 @@
+models.DOMINANT.dominant\_utils module
+======================================
+
+.. automodule:: models.DOMINANT.dominant_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

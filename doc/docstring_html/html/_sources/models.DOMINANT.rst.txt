@@ -1,0 +1,19 @@
+models.DOMINANT package
+=======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   models.DOMINANT.dominant_utils
+   models.DOMINANT.models
+
+Module contents
+---------------
+
+.. automodule:: models.DOMINANT
+   :members:
+   :undoc-members:
+   :show-inheritance:

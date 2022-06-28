@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>models.CoLA.colautils &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> EagleCommunityDetection
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">EagleCommunityDetection</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>models.CoLA.colautils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for models.CoLA.colautils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+
+
+<span class="kn">from</span> <span class="nn">utils.common</span> <span class="kn">import</span> <span class="n">cprint</span><span class="p">,</span> <span class="n">lcprint</span>
+
+
+<div class="viewcode-block" id="loss_fun_BPR"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.loss_fun_BPR">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BPR</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pos_scores</span><span class="o">-</span><span class="n">neg_scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="loss_fun_BCE"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.loss_fun_BCE">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BCE</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pos_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">neg_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_label</span><span class="p">,</span> <span class="n">neg_label</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+
+<span class="n">loss_fun</span> <span class="o">=</span> <span class="n">loss_fun_BCE</span>
+
+
+<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;CoLA: Self-Supervised Contrastive Learning for Anomaly Detection&#39;</span><span class="p">)</span>
+    <span class="c1"># &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--embedding_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--drop_prob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--subgraph_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--auc_test_rounds&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_workers&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--negsamp_ratio&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--global_adg&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">5e-4</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">3e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BlogCatalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">,</span> <span class="s1">&#39;ACM&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">10</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">!=</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="o">=</span> <span class="mi">256</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="o">=</span> <span class="mi">20</span>
+    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
+        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
+        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
+        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
+        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12047</span><span class="p">,</span>
+        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
+        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;in_feats&quot;</span><span class="p">:</span><span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
+            <span class="s2">&quot;out_feats&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="s2">&quot;global_adg&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">global_adg</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
+            <span class="s2">&quot;lr&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
+            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
+            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+            <span class="s2">&quot;seed&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
+            <span class="s2">&quot;auc_test_rounds&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span><span class="p">,</span>
+            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">final_args_dict</span></div>
+
+
+<div class="viewcode-block" id="train_epoch"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.train_epoch">[docs]</a><span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;train_epoch [summary]</span>
+
+<span class="sd">    [extended_summary]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    epoch : [int]</span>
+<span class="sd">        [epoch number during training]</span>
+<span class="sd">    loader : [torch.nn.DataLoader]</span>
+<span class="sd">        [dataloader for training]</span>
+<span class="sd">    net : [torch.nn.Module]</span>
+<span class="sd">        [model]</span>
+<span class="sd">    device : [str]</span>
+<span class="sd">        [device for training]</span>
+<span class="sd">    criterion : [type]</span>
+<span class="sd">        [loss]</span>
+<span class="sd">    optimizer : [torch.optim.Adam]</span>
+<span class="sd">        [optimizer for training]</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    [type]</span>
+<span class="sd">        [description]</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+    <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)):</span>
+        <span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span> <span class="o">=</span> <span class="n">pos_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+            <span class="n">device</span><span class="p">),</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">posfeat</span> <span class="o">=</span> <span class="n">pos_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">negfeat</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span>
+            <span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">posfeat</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">negfeat</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fun</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="n">loss_accum</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">loss_accum</span> <span class="o">/=</span> <span class="p">(</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lcprint</span><span class="p">(</span><span class="s1">&#39;TRAIN==&gt;epoch&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="s1">&#39;Average training loss: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">loss_accum</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">loss_accum</span></div>
+
+
+<div class="viewcode-block" id="test_epoch"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.test_epoch">[docs]</a><span class="k">def</span> <span class="nf">test_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;[summary]</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    -----------</span>
+<span class="sd">        epoch ([int]]): [epoch number during testing]</span>
+<span class="sd">        loader ([torch.nn.DataLoader]): [dataloader for testing]</span>
+<span class="sd">        net ([torch.nn.Module]): [model]</span>
+<span class="sd">        device ([str]): [device for testing]</span>
+<span class="sd">        criterion ([torch.nn.Module]): [loss, the same as the loss during training]</span>
+<span class="sd">    Returns:</span>
+<span class="sd">    --------</span>
+<span class="sd">        [numpy.ndarray]: [anomaly score]</span>
+<span class="sd">    &quot;&quot;&quot;</span>     
+    <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">predict_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)):</span>
+        <span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span> <span class="o">=</span> <span class="n">pos_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span>
+            <span class="n">device</span><span class="p">),</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">posfeat</span> <span class="o">=</span> <span class="n">pos_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">negfeat</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span>
+            <span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">posfeat</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">negfeat</span><span class="p">)</span>
+        <span class="n">predict_scores</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">neg_scores</span><span class="p">)</span><span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fun</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">loss_accum</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">loss_accum</span> <span class="o">/=</span> <span class="p">(</span><span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">lcprint</span><span class="p">(</span><span class="s1">&#39;VALID==&gt;epoch&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="s1">&#39;Average valid loss: </span><span class="si">{:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">loss_accum</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">predict_scores</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

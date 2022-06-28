@@ -1,0 +1,7 @@
+models.CoLA.model module
+========================
+
+.. automodule:: models.CoLA.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

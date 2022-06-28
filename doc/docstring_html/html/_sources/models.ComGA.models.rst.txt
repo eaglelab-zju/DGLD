@@ -1,0 +1,7 @@
+models.ComGA.models module
+==========================
+
+.. automodule:: models.ComGA.models
+   :members:
+   :undoc-members:
+   :show-inheritance:

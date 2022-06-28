@@ -36,8 +36,8 @@ class Discriminator(nn.Module):
         for m in self.modules():
             self.weights_init(m)
         # print(self.bilinear.weight)
-        torch.nn.init.constant_(self.bilinear.weight, 0.5)
-        torch.nn.init.constant_(self.bilinear.bias, 0.0)
+        # torch.nn.init.constant_(self.bilinear.weight, 0.5)
+        # torch.nn.init.constant_(self.bilinear.bias, 0.0)
         # exit()
 
     def weights_init(self, m):

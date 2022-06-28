@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>models.CoLA.colautils module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EagleCommunityDetection
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EagleCommunityDetection</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>models.CoLA.colautils module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/models.CoLA.colautils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-models.CoLA.colautils">
+<span id="models-cola-colautils-module"></span><h1>models.CoLA.colautils module<a class="headerlink" href="#module-models.CoLA.colautils" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.get_parse">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">get_parse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/colautils.html#get_parse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.colautils.get_parse" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.loss_fun">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">loss_fun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#models.CoLA.colautils.loss_fun" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.loss_fun_BCE">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">loss_fun_BCE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/colautils.html#loss_fun_BCE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.colautils.loss_fun_BCE" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.loss_fun_BPR">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">loss_fun_BPR</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_scores</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/colautils.html#loss_fun_BPR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.colautils.loss_fun_BPR" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.test_epoch">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">test_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/colautils.html#test_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.colautils.test_epoch" title="Permalink to this definition"></a></dt>
+<dd><p>[summary]
+Parameters:
+———–</p>
+<blockquote>
+<div><p>epoch ([int]]): [epoch number during testing]
+loader ([torch.nn.DataLoader]): [dataloader for testing]
+net ([torch.nn.Module]): [model]
+device ([str]): [device for testing]
+criterion ([torch.nn.Module]): [loss, the same as the loss during training]</p>
+</div></blockquote>
+<blockquote>
+<div><p>[numpy.ndarray]: [anomaly score]</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="models.CoLA.colautils.train_epoch">
+<span class="sig-prename descclassname"><span class="pre">models.CoLA.colautils.</span></span><span class="sig-name descname"><span class="pre">train_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">epoch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">net</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/colautils.html#train_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.colautils.train_epoch" title="Permalink to this definition"></a></dt>
+<dd><p>train_epoch [summary]</p>
+<p>[extended_summary]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>epoch</strong> (<em>[</em><em>int</em><em>]</em>) – [epoch number during training]</p></li>
+<li><p><strong>loader</strong> (<em>[</em><em>torch.nn.DataLoader</em><em>]</em>) – [dataloader for training]</p></li>
+<li><p><strong>net</strong> (<em>[</em><em>torch.nn.Module</em><em>]</em>) – [model]</p></li>
+<li><p><strong>device</strong> (<em>[</em><em>str</em><em>]</em>) – [device for training]</p></li>
+<li><p><strong>criterion</strong> (<em>[</em><em>type</em><em>]</em>) – [loss]</p></li>
+<li><p><strong>optimizer</strong> (<em>[</em><em>torch.optim.Adam</em><em>]</em>) – [optimizer for training]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[description]</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>[type]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

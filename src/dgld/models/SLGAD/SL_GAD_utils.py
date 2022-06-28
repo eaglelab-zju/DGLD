@@ -10,7 +10,8 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
 
-from print import cprint, lcprint
+sys.path.append('../../')
+from utils.common import cprint, lcprint
 from datetime import datetime
 
 # torch.set_printoptions(precision=8)
