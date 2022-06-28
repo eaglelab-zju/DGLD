@@ -373,7 +373,7 @@ def generate_random_walk_multiThread_high_level(g, start_nodes_block, paces_bloc
                 if pace == []:
                     pace = [start]
                 pace = pace * (length)
-        pace = g.successors(start).tolist() * length
+        # pace = g.successors(start).tolist() * length
         pace.insert(0, start)
         pace = pace[:length]
         pace = move_start_node_fisrt(pace, start)
