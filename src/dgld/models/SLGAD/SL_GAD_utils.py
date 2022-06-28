@@ -11,7 +11,7 @@ current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 sys.path.append(current_dir)
 
 sys.path.append('../../')
-from utils.common import cprint, lcprint
+from common import cprint, lcprint
 from datetime import datetime
 
 # torch.set_printoptions(precision=8)

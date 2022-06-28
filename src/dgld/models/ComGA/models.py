@@ -254,13 +254,16 @@ class ComGAModel(nn.Module):
 
 def init_weights(module: nn.Module) -> None:
     """Init Module Weights
-    ```python
-        for module in self.modules():
-            init_weights(module)
-    ```
+
     Parameters
     ----------
     module : nn.Module
+        models to initialize linear weight
+
+    Examples
+    -------
+    >>> for module in self.modules():
+    >>>    init_weights(module)
 
     """
     if isinstance(module, nn.Linear):
@@ -275,9 +278,8 @@ def init_weights(module: nn.Module) -> None:
 
 class CommunityAE(nn.Module):
     """
-    Community Detection Module:
-        The modularity matrix B is reconstructed by autoencode to obtain a representation 
-        of each node with community information.
+    Community Detection Module, The modularity matrix B is reconstructed by autoencode to obtain a representation 
+    of each node with community information.
     
     Parameters
     ----------
@@ -352,10 +354,8 @@ class CommunityAE(nn.Module):
 
 class tGCNEncoder(nn.Module):
     """
-    tGCNEncoder:
-        To effectively fuse community structure information to GCN model for structure anomaly,
-    and learn more distinguishable anomalous node representations for local, global, and 
-    structure anomalies.
+    tGCNEncoder, To effectively fuse community structure information to GCN model for structure anomaly,
+    and learn more distinguishable anomalous node representations for local, global, and structure anomalies.
 
     Parameters
     ----------
@@ -421,8 +421,7 @@ class tGCNEncoder(nn.Module):
 
 class AttrDecoder(nn.Module):
     """
-    AttrDecoder:
-        utilize attribute decoder to take the learned latent representation
+    AttrDecoder, utilize attribute decoder to take the learned latent representation
     Z as input to decode them for reconstruction of original nodal attributes.
 
     Parameters
@@ -481,8 +480,7 @@ class AttrDecoder(nn.Module):
 
 class StruDecoder(nn.Module):
     """
-    StruDecoder:
-        utilize structure decoder to take the learned latent representation 
+    StruDecoder, utilize structure decoder to take the learned latent representation 
     Z as input to decode them for reconstruction of original graph structure.
 
     Parameters
