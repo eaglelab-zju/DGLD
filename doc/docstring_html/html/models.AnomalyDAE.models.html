@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>models.AnomalyDAE.models module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+  <title>models.AnomalyDAE.models &mdash; EagleCommunityDetection 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -41,8 +41,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -59,7 +59,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>models.AnomalyDAE.models module</li>
+      <li>models.AnomalyDAE.models</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/models.AnomalyDAE.models.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -70,7 +70,7 @@
            <div itemprop="articleBody">
              
   <section id="module-models.AnomalyDAE.models">
-<span id="models-anomalydae-models-module"></span><h1>models.AnomalyDAE.models module<a class="headerlink" href="#module-models.AnomalyDAE.models" title="Permalink to this headline"></a></h1>
+<span id="models-anomalydae-models"></span><h1>models.AnomalyDAE.models<a class="headerlink" href="#module-models.AnomalyDAE.models" title="Permalink to this headline"></a></h1>
 <p>AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.AnomalyDAE.models.AnomalyDAE">
@@ -329,17 +329,17 @@ See <a href="#id1"><span class="problematic" id="id2">:cite:`fan2020anomalydae`<
 <dl class="py function">
 <dt class="sig sig-object py" id="models.AnomalyDAE.models.init_weights">
 <span class="sig-prename descclassname"><span class="pre">models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">init_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.nn.modules.module.Module</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/models/AnomalyDAE/models.html#init_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.AnomalyDAE.models.init_weights" title="Permalink to this definition"></a></dt>
-<dd><p>Init Module Weights
-<a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a>python</p>
-<blockquote>
-<div><dl class="simple">
-<dt>for module in self.modules():</dt><dd><p>init_weights(module)</p>
+<dd><p>Init Module Weights</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>module</strong> (<em>nn.Module</em>) – models to initialize linear weight</p>
 </dd>
 </dl>
-</div></blockquote>
-<p><a href="#id7"><span class="problematic" id="id8">``</span></a>`
-:param module:
-:type module: nn.Module</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="n">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>

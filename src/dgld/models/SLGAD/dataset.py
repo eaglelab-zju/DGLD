@@ -37,7 +37,7 @@ def safe_add_self_loop(g):
 
     Returns
     -------
-    newg : dgl.heterograph.DGLHeteroGraph
+    newg : DGL.Graph
         the graph has been added self loop
     """
     newg = dgl.remove_self_loop(g)
@@ -87,13 +87,6 @@ class SL_GAD_DataSet(DGLDataset):
         """
         functions to store adjacency matrix
         
-        Paramaters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         # print(self.dataset)
         # print(self.dataset.edata['w'])
@@ -114,6 +107,10 @@ class SL_GAD_DataSet(DGLDataset):
         # exit()
 
     def write_graph(self):
+        """
+        write graph into graph.txt
+        
+        """
         print("write_graph")
         graph = self.dataset
         edges = graph.edges()
@@ -156,13 +153,6 @@ class SL_GAD_DataSet(DGLDataset):
         """
         functions to normalize the features of nodes in graph
         
-        Paramaters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         # print(self.dataset.ndata['feat'][:5, :5])
         # exit()
@@ -172,13 +162,6 @@ class SL_GAD_DataSet(DGLDataset):
         """
         functions to normalize the edge weight in graph
         
-        Paramaters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         self.sample_graph = self.dataset
         norm = EdgeWeightNorm(norm='both')
@@ -214,13 +197,7 @@ class SL_GAD_DataSet(DGLDataset):
     def random_walk_sampling(self):
         """
         functions to get random walk from target nodes
-        Paramaters
-        ----------
-        None
 
-        Returns
-        -------
-        None
         """
         time_0 = datetime.now()
         # print(self.sample_graph)
@@ -255,11 +232,11 @@ class SL_GAD_DataSet(DGLDataset):
         """
         functions to transfrom graph
 
-        Paramaters
+        Parameters
         ----------
         g : DGL.Graph
             the graph to transform
-
+        
         Returns
         -------
         newg : DGL.Graph
@@ -309,12 +286,14 @@ class SL_GAD_DataSet(DGLDataset):
 
         Returns
         -------
-        pos_subgraph_1 : dgl.heterograph.DGLHeteroGraph
+        pos_subgraph_1 : DGL.Graph
             the first positive subgraph of ith subgraph set
-        pos_subgraph_2 : dgl.heterograph.DGLHeteroGraph
+        pos_subgraph_2 : DGL.Graph
             the second positive subgraph of ith subgraph set
-        neg_subgraph : dgl.heterograph.DGLHeteroGraph
+        neg_subgraph : DGL.Graph
             the negative subgraph of ith subgraph set
+        i : int
+            index of i
         """
         # self.paces_1[i] = [0, 633, 1862, 2582]
         # print(self.dataset)
@@ -363,10 +342,6 @@ class SL_GAD_DataSet(DGLDataset):
         """
         get the number of nodes of graph
 
-        Parameters
-        ----------
-        None
-
         Returns
         -------
         num : int
@@ -378,13 +353,6 @@ class SL_GAD_DataSet(DGLDataset):
         """
         nonsense
 
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
         """
         pass
 

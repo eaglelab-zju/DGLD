@@ -112,10 +112,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def num_anomaly(self):
         """
         Functions that return the number of anomaly node
-
-        Parameters
-        ----------
-        None
         
         Returns
         -------
@@ -128,10 +124,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def num_nodes(self):
         """
         Functions that return the number of node
-        
-        Parameters
-        ----------
-        None
         
         Returns
         -------
@@ -148,10 +140,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
             1: structural anomaly
             2: contextual anomaly
 
-        Parameters
-        ----------
-        None
-        
         Returns
         -------
         out : torch.Tensor
@@ -163,11 +151,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def anomalies_idx(self):
         """
         Functions that return the index of anomaly node
-            
-        Parameters
-        ----------
-        None
-        
+
         Returns
         -------
         out : torch.Tensor
@@ -180,11 +164,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def structural_anomalies_idx(self):
         """
         Functions that return the index of structural anomaly node
-            
-        Parameters
-        ----------
-        None
-        
+
         Returns
         -------
         out : torch.Tensor
@@ -197,11 +177,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def contextual_anomalies_idx(self):
         """
         Functions that return the index of contextual anomaly node
-            
-        Parameters
-        ----------
-        None
-        
+
         Returns
         -------
         out : torch.Tensor
@@ -215,10 +191,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         Functions that return the index of normal node
             
-        Parameters
-        ----------
-        None
-        
         Returns
         -------
         out : torch.Tensor
@@ -231,11 +203,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def node_attr(self):
         """
         Functions that return the attribute of node
-            
-        Parameters
-        ----------
-        None
-        
+
         Returns
         -------
         out : torch.Tensor
@@ -296,13 +264,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         Functions that reset the anomaly label of node
             
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         self.init_anomaly_label()
 
@@ -310,13 +271,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         Undone, Useless
 
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         pass
 
@@ -324,13 +278,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         Functions that inject structural anomaly
             
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         np.random.seed(self.seed)
         src, dst = self.dataset.edges()
@@ -381,13 +328,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         Functions that inject contextual anomaly
             
-        Parameters
-        ----------
-        None
-        
-        Returns
-        -------
-        None
         """
         np.random.seed(self.seed)
         k = self.k
@@ -509,13 +449,6 @@ def test_custom_dataset():
     """
     Functions that test custom dataset loading well
         
-    Parameters
-    ----------
-    None
-    
-    Returns
-    -------
-    None
     """
     my_g = dgl.data.CoraGraphDataset()[0]
     label = torch.ones(my_g.num_nodes())

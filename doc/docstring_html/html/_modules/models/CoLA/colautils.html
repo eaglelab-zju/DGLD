@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -87,12 +87,50 @@
 
 
 <div class="viewcode-block" id="loss_fun_BPR"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.loss_fun_BPR">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BPR</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculate loss function in Bayesian Personalized Ranking</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos_scores : torch.Tensor</span>
+<span class="sd">        anomaly score of positive sample</span>
+<span class="sd">    neg_scores : torch.Tensor</span>
+<span class="sd">        anomaly score of negative sample</span>
+<span class="sd">    criterion : torch.nn.Module</span>
+<span class="sd">        loss function calculation funciton</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device for calculation</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    loss_accum : torch.Tensor</span>
+<span class="sd">        loss of single epoch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pos_scores</span><span class="o">-</span><span class="n">neg_scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="loss_fun_BCE"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.loss_fun_BCE">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BCE</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    calculate loss function in Binary CrossEntropy Loss</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos_scores : torch.Tensor</span>
+<span class="sd">        anomaly score of positive sample</span>
+<span class="sd">    neg_scores : torch.Tensor</span>
+<span class="sd">        anomaly score of negative sample</span>
+<span class="sd">    criterion : torch.nn.Module</span>
+<span class="sd">        loss function calculation funciton</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device for calculation</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    loss_accum : torch.Tensor</span>
+<span class="sd">        loss of single epoch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">pos_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
@@ -105,6 +143,14 @@
 
 
 <div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get hyperparameter by parser from command line</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    final_args_dict : dictionary</span>
+<span class="sd">        dict of args parser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
         <span class="n">description</span><span class="o">=</span><span class="s1">&#39;CoLA: Self-Supervised Contrastive Learning for Anomaly Detection&#39;</span><span class="p">)</span>
     <span class="c1"># &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;</span>
@@ -190,29 +236,28 @@
 
 
 <div class="viewcode-block" id="train_epoch"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.train_epoch">[docs]</a><span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;train_epoch [summary]</span>
-
-<span class="sd">    [extended_summary]</span>
+    <span class="sd">&quot;&quot;&quot;train_epoch, train model in one epoch</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    epoch : [int]</span>
-<span class="sd">        [epoch number during training]</span>
-<span class="sd">    loader : [torch.nn.DataLoader]</span>
-<span class="sd">        [dataloader for training]</span>
-<span class="sd">    net : [torch.nn.Module]</span>
-<span class="sd">        [model]</span>
-<span class="sd">    device : [str]</span>
-<span class="sd">        [device for training]</span>
-<span class="sd">    criterion : [type]</span>
-<span class="sd">        [loss]</span>
-<span class="sd">    optimizer : [torch.optim.Adam]</span>
-<span class="sd">        [optimizer for training]</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        epoch number during training</span>
+<span class="sd">    loader : torch.nn.DataLoader</span>
+<span class="sd">        dataloader for training</span>
+<span class="sd">    net : torch.nn.Module</span>
+<span class="sd">        model</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device for training</span>
+<span class="sd">    criterion : type</span>
+<span class="sd">        loss</span>
+<span class="sd">    optimizer : torch.optim.Adam</span>
+<span class="sd">        optimizer for training</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    [type]</span>
-<span class="sd">        [description]</span>
-<span class="sd">    &quot;&quot;&quot;</span>    
+<span class="sd">    loss_accum : torch.Tensor</span>
+<span class="sd">        loss of single epoch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">net</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)):</span>
@@ -234,18 +279,26 @@
 
 
 <div class="viewcode-block" id="test_epoch"><a class="viewcode-back" href="../../../models.CoLA.colautils.html#models.CoLA.colautils.test_epoch">[docs]</a><span class="k">def</span> <span class="nf">test_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[summary]</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">    -----------</span>
-<span class="sd">        epoch ([int]]): [epoch number during testing]</span>
-<span class="sd">        loader ([torch.nn.DataLoader]): [dataloader for testing]</span>
-<span class="sd">        net ([torch.nn.Module]): [model]</span>
-<span class="sd">        device ([str]): [device for testing]</span>
-<span class="sd">        criterion ([torch.nn.Module]): [loss, the same as the loss during training]</span>
-<span class="sd">    Returns:</span>
-<span class="sd">    --------</span>
-<span class="sd">        [numpy.ndarray]: [anomaly score]</span>
-<span class="sd">    &quot;&quot;&quot;</span>     
+    <span class="sd">&quot;&quot;&quot;test_epoch, test model in one epoch</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        epoch number during testin</span>
+<span class="sd">    loader : torch.nn.DataLoader</span>
+<span class="sd">        dataloader for testing</span>
+<span class="sd">    net : torch.nn.Module</span>
+<span class="sd">        model</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device for testing</span>
+<span class="sd">    criterion : torch.nn.Module</span>
+<span class="sd">        loss, the same as the loss during training</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    predict_scores : numpy.ndarray</span>
+<span class="sd">        anomaly score</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">net</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
     <span class="n">predict_scores</span> <span class="o">=</span> <span class="p">[]</span>

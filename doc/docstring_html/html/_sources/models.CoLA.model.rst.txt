@@ -1,5 +1,5 @@
-models.CoLA.model module
-========================
+models.CoLA.model 
+==================
 
 .. automodule:: models.CoLA.model
    :members:

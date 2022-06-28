@@ -17,6 +17,14 @@ from .colautils import train_epoch, test_epoch
 import numpy as np
 
 class Discriminator(nn.Module):
+    """
+    This is a discriminator component for contrastive learning of positive subgraph and negative subgraph
+
+    Parameters
+    ----------
+    out_feats : int
+        The number of class to distinguish
+    """
     def __init__(self, out_feats):
         super(Discriminator, self).__init__()
         self.bilinear = nn.Bilinear(out_feats, out_feats, 1)
@@ -24,19 +32,55 @@ class Discriminator(nn.Module):
             self.weights_init(m)
 
     def weights_init(self, m):
+        """
+        Functions that init weights of discriminator component
+
+        Parameters
+        ----------
+        m : nn.Parameter
+            the parameter to initial
+        
+        Returns
+        -------
+        None
+        """
         if isinstance(m, nn.Bilinear):
             torch.nn.init.xavier_uniform_(m.weight.data)
             if m.bias is not None:
                 m.bias.data.fill_(0.0)
 
     def forward(self, readout_emb, anchor_emb):
+        """
+        Functions that compute bilinear of subgraph embedding and node embedding
+
+        Parameters
+        ----------
+        readout_emb : Torch.tensor
+            the subgraph embedding
+        anchor_emb : Totch.tensor
+            the node embedding
+
+        Returns
+        -------
+        logits : Torch.tensor
+            the logit after bilinear
+        """
         logits = self.bilinear(readout_emb, anchor_emb)
         return logits
 
 
 class OneLayerGCNWithGlobalAdg(nn.Module):
-    r"""
+    """
     a onelayer subgraph GCN can use global adjacent metrix.
+
+    Parameters
+    ----------
+    in_feats : Torch.tensor
+        the feature dimensions of input data
+    out_feats : Torch.tensor, optional
+        the feature dimensions of output data, default 64
+    global_adg : bool, optional
+        whether use the global information of node, here means the degree matrix, default True
     """
 
     def __init__(self, in_feats, out_feats=64, global_adg=True):
@@ -53,14 +97,8 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         self.pool = AvgPooling()
 
     def reset_parameters(self):
-        r"""
-
-        Description
-        -----------
+        """
         Reinitialize learnable parameters.
-
-        Note
-        ----
         The model parameters are initialized as in the
         `original implementation <https://github.com/tkipf/gcn/blob/master/gcn/layers.py>`__
         where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization
@@ -73,6 +111,29 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
             init.zeros_(self.bias)
 
     def forward(self, bg, in_feat, subgraph_size=4):
+        """
+        The function to compute forward of GCN
+
+        Parameters
+        ----------
+        bg : list of dgl.heterograph.DGLHeteroGraph
+            the list of subgraph, to compute forward and loss
+        in_feat : Torch.tensor
+            the node feature of geive subgraph
+        anchor_embs : Torch.tensor
+            the anchor embeddings
+        attention : Functions, optional
+            attention machanism, default None
+
+        Returns
+        -------
+        h : Torch.tensor
+            the embedding of batch subgraph node after one layer GCN
+        subgraph_pool_emb : Torch.tensor
+            the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding
+        anchor_out : Torch.tensor
+            the embedding of batch anchor node
+        """
         anchor_embs = bg.ndata['feat'][::4, :].clone()
         # Anonymization
         bg.ndata['feat'][::4, :] = 0
@@ -96,12 +157,49 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
 
 
 class OneLayerGCN(nn.Module):
+    """
+    A onelayer subgraph GCN can use global adjacent metrix.
+
+    Parameters
+    ----------
+    in_feats : Torch.tensor
+        the feature dimensions of input data
+    out_feats : Torch.tensor, optional
+        the feature dimensions of output data, default 64
+    global_adg : bool, optional
+        whether use the global information of node, here means the degree matrix, default True
+    args : parser, optional
+        extra custom made of model, default None
+    """
     def __init__(self, in_feats=300, out_feats=64, bias=True):
         super(OneLayerGCN, self).__init__()
         self.conv = GraphConv(in_feats, out_feats, bias=bias)
         self.act = nn.PReLU()
 
     def forward(self, bg, in_feat):
+        """
+        The function to compute forward of GCN
+
+        Parameters
+        ----------
+        bg : list of dgl.heterograph.DGLHeteroGraph
+            the list of subgraph, to compute forward and loss
+        in_feat : Torch.tensor
+            the node feature of geive subgraph
+        anchor_embs : Torch.tensor
+            the anchor embeddings
+        attention : Functions, optional
+            attention machanism, default None
+
+        Returns
+        -------
+        h : Torch.tensor
+            the embedding of batch subgraph node after one layer GCN
+        subgraph_pool_emb : Torch.tensor
+            the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding
+        anchor_out : Torch.tensor
+            the embedding of batch anchor node
+        """
         h = self.conv(bg, in_feat)
         h = self.act(h)
         with bg.local_scope():
@@ -122,22 +220,43 @@ class OneLayerGCN(nn.Module):
 
 class CoLAModel(nn.Module):
     def __init__(self, in_feats=300, out_feats=64, global_adg=True):
-        """[summary]
+        """CoLAModel
 
         Parameters
         ----------
         in_feats : int, optional
-            [description], by default 300
+            the feature dimensions of input data, by default 300
         out_feats : int, optional
-            [description], by default 64
+            the feature dimensions of output data, by default 64
         global_adg : bool, optional
-            [description], by default True
+            whether use the global information of node, default True
         """        
         super(CoLAModel, self).__init__()
         self.gcn = OneLayerGCNWithGlobalAdg(in_feats, out_feats, global_adg)
         self.discriminator = Discriminator(out_feats)
 
     def forward(self, pos_batchg, pos_in_feat, neg_batchg, neg_in_feat):
+        """
+        The function to compute forward and loss of SL-GAD model
+
+        Parameters
+        ----------
+        pos_batchg : DGL.Graph
+            batch of positive subgraph
+        pos_in_feat : Torch.tensor
+            node features of positive subgraph batch
+        neg_batchg : DGL.Graph
+            batch of negative subgraph
+        neg_in_feat : Torch.tensor
+            node features of negative subgraph batch
+
+        Returns
+        -------
+        pos_scores : Torch.tensor
+            anomaly score of positive sample
+        neg_scores : Torch.tensor
+            anomaly score of negative sample
+        """
         pos_pool_emb, anchor_out = self.gcn(pos_batchg, pos_in_feat)
         neg_pool_emb, _ = self.gcn(neg_batchg, neg_in_feat)
         pos_scores = self.discriminator(pos_pool_emb, anchor_out)
@@ -147,20 +266,21 @@ class CoLAModel(nn.Module):
 
 class CoLA():    
     def __init__(self, in_feats=1433, out_feats=64, global_adg=True):
-        """[CoLA]
+        """
         CoLA Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning 
         liu2021anomaly
+        
         Parameters
         ----------
         in_feats : int, optional
-            [dimension of input feat], by default 1433
+            dimension of input feat, by default 1433
         out_feats : int, optional
-            [dimension of final embedding], by default 64
+            dimension of final embedding, by default 64
         global_adg : bool, optional
-            [Whether to use the global adjacency matrix], by default True
-        Examples:
-        ---------
-        ```python
+            Whether to use the global adjacency matrix, by default True
+        
+        Examples
+        -------
         >>> from DGLD.common.dataset import GraphNodeAnomalyDectionDataset
         >>> from DGLD.CoLA import CoLA
         >>> if __name__ == '__main__':
@@ -171,34 +291,35 @@ class CoLA():
         >>>     model.fit(g, num_epoch=1, device='cpu')
         >>>     result = model.predict(g, auc_test_rounds=4)
         >>>     gnd_dataset.evaluation_multiround(result) 
-        ```
         """        
         self.model = CoLAModel(in_feats, out_feats, global_adg)
         self.criterion = torch.nn.BCEWithLogitsLoss()
 
     def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, logdir='tmp', seed=42):
-        """[summary]
+        """train the model
+
         Parameters
         ----------
-        g : [dgl.Graph]
-            [input graph with feature named "feat" in g.ndata.]
+        g : dgl.Graph
+            input graph with feature named "feat" in g.ndata.
         device : str, optional
-            [device], by default 'cpu'
+            device, by default 'cpu'
         batch_size : int, optional
-            [batch size for training], by default 300
+            batch size for training, by default 300
         lr : float, optional
-            [learning rate for training], by default 0.003
-        weight_decay : [float], optional
-            [weight decay for training], by default 1e-5
+            learning rate for training, by default 0.003
+        weight_decay : float, optional
+            weight decay for training, by default 1e-5
         num_workers : int, optional
-            [num_workers using in `pytorch DataLoader`], by default 4
+            num_workers using in `pytorch DataLoader`, by default 4
         num_epoch : int, optional
-            [number of epoch for training], by default 100
+            number of epoch for training, by default 100
         logdir : str, optional
-            [tensorboard logdir], by default 'tmp'
+            tensorboard logdir, by default 'tmp'
+
         Returns
         -------
-        [self]
+        self : model
             return the model self.
         """        
         dataset = CoLADataSet(g)
@@ -230,26 +351,27 @@ class CoLA():
         return self
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, logdir='tmp'):
-        """[summary]
+        """test model
 
         Parameters
         ----------
-        g : [type]
-            [description]
+        g : type
+            description
         device : str, optional
-            [description], by default 'cpu'
+            description, by default 'cpu'
         batch_size : int, optional
-            [description], by default 300
+            description, by default 300
         num_workers : int, optional
-            [description], by default 4
+            description, by default 4
         auc_test_rounds : int, optional
-            [description], by default 256
+            description, by default 256
         logdir : str, optional
-            [description], by default 'tmp'
+            description, by default 'tmp'
+
         Returns
         -------
-        [type]
-            [description]
+        predict_score_arr : numpy.ndarray
+            description
         """
         dataset = CoLADataSet(g)
         test_loader = GraphDataLoader(

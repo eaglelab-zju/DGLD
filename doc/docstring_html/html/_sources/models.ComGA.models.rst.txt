@@ -1,5 +1,5 @@
-models.ComGA.models module
-==========================
+models.ComGA.models 
+====================
 
 .. automodule:: models.ComGA.models
    :members:

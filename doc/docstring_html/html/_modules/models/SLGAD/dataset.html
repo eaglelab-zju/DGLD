@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -92,8 +92,8 @@
 <span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">EdgeWeightNorm</span>
 
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">utils.dataset</span> <span class="kn">import</span> <span class="n">GraphNodeAnomalyDectionDataset</span>
-<span class="kn">from</span> <span class="nn">utils.sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span><span class="p">,</span> <span class="n">UniformNeighborSampling</span><span class="p">,</span> <span class="n">SLGAD_SubGraphSampling</span>
+<span class="kn">from</span> <span class="nn">dataset</span> <span class="kn">import</span> <span class="n">GraphNodeAnomalyDectionDataset</span>
+<span class="kn">from</span> <span class="nn">sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span><span class="p">,</span> <span class="n">UniformNeighborSampling</span><span class="p">,</span> <span class="n">SLGAD_SubGraphSampling</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
 
 <span class="c1"># torch.set_default_tensor_type(torch.DoubleTensor)</span>
@@ -108,7 +108,7 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    newg : dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">    newg : DGL.Graph</span>
 <span class="sd">        the graph has been added self loop</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">newg</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
@@ -158,13 +158,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        functions to store adjacency matrix</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># print(self.dataset)</span>
         <span class="c1"># print(self.dataset.edata[&#39;w&#39;])</span>
@@ -185,6 +178,10 @@
         <span class="c1"># exit()</span>
 
 <div class="viewcode-block" id="SL_GAD_DataSet.write_graph"><a class="viewcode-back" href="../../../models.SLGAD.dataset.html#models.SLGAD.dataset.SL_GAD_DataSet.write_graph">[docs]</a>    <span class="k">def</span> <span class="nf">write_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        write graph into graph.txt</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;write_graph&quot;</span><span class="p">)</span>
         <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
         <span class="n">edges</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
@@ -227,13 +224,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        functions to normalize the features of nodes in graph</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># print(self.dataset.ndata[&#39;feat&#39;][:5, :5])</span>
         <span class="c1"># exit()</span>
@@ -243,13 +233,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        functions to normalize the edge weight in graph</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">EdgeWeightNorm</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
@@ -285,13 +268,7 @@
 <div class="viewcode-block" id="SL_GAD_DataSet.random_walk_sampling"><a class="viewcode-back" href="../../../models.SLGAD.dataset.html#models.SLGAD.dataset.SL_GAD_DataSet.random_walk_sampling">[docs]</a>    <span class="k">def</span> <span class="nf">random_walk_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        functions to get random walk from target nodes</span>
-<span class="sd">        Paramaters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">time_0</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
         <span class="c1"># print(self.sample_graph)</span>
@@ -326,11 +303,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        functions to transfrom graph</span>
 
-<span class="sd">        Paramaters</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        g : DGL.Graph</span>
 <span class="sd">            the graph to transform</span>
-
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        newg : DGL.Graph</span>
@@ -380,12 +357,14 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pos_subgraph_1 : dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">        pos_subgraph_1 : DGL.Graph</span>
 <span class="sd">            the first positive subgraph of ith subgraph set</span>
-<span class="sd">        pos_subgraph_2 : dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">        pos_subgraph_2 : DGL.Graph</span>
 <span class="sd">            the second positive subgraph of ith subgraph set</span>
-<span class="sd">        neg_subgraph : dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">        neg_subgraph : DGL.Graph</span>
 <span class="sd">            the negative subgraph of ith subgraph set</span>
+<span class="sd">        i : int</span>
+<span class="sd">            index of i</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># self.paces_1[i] = [0, 633, 1862, 2582]</span>
         <span class="c1"># print(self.dataset)</span>
@@ -434,10 +413,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        get the number of nodes of graph</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        num : int</span>
@@ -449,13 +424,6 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        nonsense</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 

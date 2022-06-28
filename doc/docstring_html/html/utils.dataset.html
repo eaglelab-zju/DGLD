@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>utils.dataset module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+  <title>utils.dataset &mdash; EagleCommunityDetection 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -41,8 +41,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -59,7 +59,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>utils.dataset module</li>
+      <li>utils.dataset</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/utils.dataset.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -70,7 +70,7 @@
            <div itemprop="articleBody">
              
   <section id="module-utils.dataset">
-<span id="utils-dataset-module"></span><h1>utils.dataset module<a class="headerlink" href="#module-utils.dataset" title="Permalink to this headline"></a></h1>
+<span id="utils-dataset"></span><h1>utils.dataset<a class="headerlink" href="#module-utils.dataset" title="Permalink to this headline"></a></h1>
 <p>This is a program about loading data.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="utils.dataset.GraphNodeAnomalyDectionDataset">
@@ -106,14 +106,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anomalies_idx</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.anomalies_idx" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the index of anomaly node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of anomaly node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – index of anomaly node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -128,14 +125,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – anomaly label of node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – anomaly label of node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -145,14 +139,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contextual_anomalies_idx</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.contextual_anomalies_idx" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the index of contextual anomaly node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of contextual anomaly node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – index of contextual anomaly node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -216,34 +207,12 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <dt class="sig sig-object py" id="utils.dataset.GraphNodeAnomalyDectionDataset.inject_contextual_anomalies">
 <span class="sig-name descname"><span class="pre">inject_contextual_anomalies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#GraphNodeAnomalyDectionDataset.inject_contextual_anomalies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.inject_contextual_anomalies" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that inject contextual anomaly</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="utils.dataset.GraphNodeAnomalyDectionDataset.inject_structural_anomalies">
 <span class="sig-name descname"><span class="pre">inject_structural_anomalies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#GraphNodeAnomalyDectionDataset.inject_structural_anomalies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.inject_structural_anomalies" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that inject structural anomaly</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py property">
@@ -251,14 +220,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_attr</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.node_attr" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the attribute of node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – attribute of node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – attribute of node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -268,14 +234,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">normal_idx</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.normal_idx" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the index of normal node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of normal node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – index of normal node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -285,14 +248,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_anomaly</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.num_anomaly" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the number of anomaly node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – number of anomaly node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – number of anomaly node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -302,14 +262,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_nodes</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.num_nodes" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the number of node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – number of node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – number of node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -335,34 +292,12 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <dt class="sig sig-object py" id="utils.dataset.GraphNodeAnomalyDectionDataset.process">
 <span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#GraphNodeAnomalyDectionDataset.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.process" title="Permalink to this definition"></a></dt>
 <dd><p>Undone, Useless</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="utils.dataset.GraphNodeAnomalyDectionDataset.reset_anomaly_label">
 <span class="sig-name descname"><span class="pre">reset_anomaly_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#GraphNodeAnomalyDectionDataset.reset_anomaly_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.reset_anomaly_label" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that reset the anomaly label of node</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -404,14 +339,11 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">structural_anomalies_idx</span></span><a class="headerlink" href="#utils.dataset.GraphNodeAnomalyDectionDataset.structural_anomalies_idx" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that return the index of structural anomaly node</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of structural anomaly node</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>out</strong> – index of structural anomaly node</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>torch.Tensor</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -422,17 +354,6 @@ and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and og
 <dt class="sig sig-object py" id="utils.dataset.test_custom_dataset">
 <span class="sig-prename descclassname"><span class="pre">utils.dataset.</span></span><span class="sig-name descname"><span class="pre">test_custom_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/dataset.html#test_custom_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.dataset.test_custom_dataset" title="Permalink to this definition"></a></dt>
 <dd><p>Functions that test custom dataset loading well</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 </section>

@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -92,27 +92,29 @@
         <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="print_format_dict"><a class="viewcode-back" href="../../utils.common.html#utils.common.print_format_dict">[docs]</a><span class="k">def</span> <span class="nf">print_format_dict</span><span class="p">(</span><span class="n">dict_input</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[print dict with json for a decent show]</span>
+    <span class="sd">&quot;&quot;&quot;print dict with json for a decent show</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    dict_input : [Dict]</span>
-<span class="sd">        [dict to print]</span>
+<span class="sd">    dict_input : Dict</span>
+<span class="sd">        dict to print</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dict_input</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="loadargs_from_json"><a class="viewcode-back" href="../../utils.common.html#utils.common.loadargs_from_json">[docs]</a><span class="k">def</span> <span class="nf">loadargs_from_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[load args from a format json file]</span>
+    <span class="sd">&quot;&quot;&quot;load args from a format json file</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    filename : [file name]</span>
-<span class="sd">        [json filename]</span>
+<span class="sd">    filename : file name</span>
+<span class="sd">        json filename</span>
 <span class="sd">    indent : int, optional</span>
-<span class="sd">        [description], by default 4</span>
+<span class="sd">        description, by default 4</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    [Dict]</span>
-<span class="sd">        [args parameters ]</span>
+<span class="sd">    Dict : json</span>
+<span class="sd">        args parameters</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> 
     <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -120,15 +122,16 @@
     <span class="k">return</span> <span class="n">args</span></div>
 
 <div class="viewcode-block" id="saveargs2json"><a class="viewcode-back" href="../../utils.common.html#utils.common.saveargs2json">[docs]</a><span class="k">def</span> <span class="nf">saveargs2json</span><span class="p">(</span><span class="n">jsonobject</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;[save args parameters to json with a decent format]</span>
+    <span class="sd">&quot;&quot;&quot;save args parameters to json with a decent format</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    jsonobject : [Dict]</span>
-<span class="sd">        [dict object to save]</span>
-<span class="sd">    filename : [str]</span>
-<span class="sd">        [file name]</span>
+<span class="sd">    jsonobject : Dict</span>
+<span class="sd">        dict object to save</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        file name</span>
 <span class="sd">    indent : int, optional</span>
-<span class="sd">        [description], by default 4</span>
+<span class="sd">        description, by default 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_file</span><span class="p">:</span>
         <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">jsonobject</span><span class="p">,</span> <span class="n">write_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span></div>
@@ -144,35 +147,34 @@
         <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ExpRecord"><a class="viewcode-back" href="../../utils.common.html#utils.common.ExpRecord">[docs]</a><span class="k">class</span> <span class="nc">ExpRecord</span><span class="p">():</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;result.csv&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;[create a read a existed csv file to record the experiments]</span>
+    <span class="sd">&quot;&quot;&quot;create a read a existed csv file to record the experiments</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        filepath : str, filepath</span>
-<span class="sd">            [description], by default &#39;result.csv&#39;</span>
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        ```python</span>
-<span class="sd">        &gt;&gt;&gt; exprecord = ExpRecord() </span>
-<span class="sd">        &gt;&gt;&gt; argsdict = vars(args)</span>
-<span class="sd">        &gt;&gt;&gt; argsdict[&#39;auc&#39;] = 1.0</span>
-<span class="sd">        &gt;&gt;&gt; argsdict[&#39;info&#39;] = &quot;test&quot;</span>
-<span class="sd">        &gt;&gt;&gt; exprecord.add_record(argsdict)</span>
-<span class="sd">        ```</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str, filepath</span>
+<span class="sd">        description, by default &#39;result.csv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; exprecord = ExpRecord() </span>
+<span class="sd">    &gt;&gt;&gt; argsdict = vars(args)</span>
+<span class="sd">    &gt;&gt;&gt; argsdict[&#39;auc&#39;] = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; argsdict[&#39;info&#39;] = &quot;test&quot;</span>
+<span class="sd">    &gt;&gt;&gt; exprecord.add_record(argsdict)</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;result.csv&#39;</span><span class="p">):</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
         <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_record</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="kc">None</span>
 <div class="viewcode-block" id="ExpRecord.add_record"><a class="viewcode-back" href="../../utils.common.html#utils.common.ExpRecord.add_record">[docs]</a>    <span class="k">def</span> <span class="nf">add_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_record</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;[summary]</span>
+        <span class="sd">&quot;&quot;&quot;summary</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        dict_record : [Dict]</span>
-<span class="sd">            </span>
+<span class="sd">        dict_record : Dict</span>
+<span class="sd">            record to add </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">dict_record</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
@@ -200,20 +202,21 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span> </div></div>
 
 <div class="viewcode-block" id="Multidict2dict"><a class="viewcode-back" href="../../utils.common.html#utils.common.Multidict2dict">[docs]</a><span class="k">class</span> <span class="nc">Multidict2dict</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;[convert multilayer Dict to a single layer Dict]</span>
+    <span class="sd">&quot;&quot;&quot;convert multilayer Dict to a single layer Dict</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    inputs : Dict</span>
-<span class="sd">        [input Dict, Maybe multilayer like{</span>
-<span class="sd">            {&quot;a&quot;:{&quot;as&quot;:&quot;value&quot;}}</span>
-<span class="sd">        }]</span>
+<span class="sd">    input Dict, Maybe multilayer like{</span>
+<span class="sd">        {&quot;a&quot;:{&quot;as&quot;:&quot;value&quot;}}</span>
+<span class="sd">    }</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    Dict</span>
-<span class="sd">        [a single layer Dict]</span>
-<span class="sd">    Examples:</span>
-<span class="sd">    ```python</span>
+<span class="sd">    Dict: a single layer Dict</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; tool = Multidict2dict()</span>
 <span class="sd">    &gt;&gt;&gt; inputs = {</span>
 <span class="sd">    &gt;&gt;&gt;    &quot;1layer&quot;:{</span>
@@ -227,7 +230,6 @@
 <span class="sd">    &gt;&gt;&gt; result = tool.solve(inputs)</span>
 <span class="sd">    &gt;&gt;&gt; print(result)</span>
 <span class="sd">    &gt;&gt;&gt; {&#39;3layers1&#39;: 4, &#39;3layers2&#39;: 2, &#39;2layer_two&#39;: 2}</span>
-<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
@@ -246,19 +248,19 @@
 
 
 <div class="viewcode-block" id="ParameterShower"><a class="viewcode-back" href="../../utils.common.html#utils.common.ParameterShower">[docs]</a><span class="k">class</span> <span class="nc">ParameterShower</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;[show Parameter using texttable]</span>
-<span class="sd">    Examples:</span>
-<span class="sd">    ---------</span>
-<span class="sd">    ```python</span>
+    <span class="sd">&quot;&quot;&quot;show Parameter using texttable</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; inputs = {</span>
-<span class="sd">    ...         &quot;1layer&quot;:{</span>
-<span class="sd">    ...             &quot;2layer_one&quot;:{</span>
-<span class="sd">    ...                 &quot;3layers1&quot;:4,</span>
-<span class="sd">    ...                 &quot;3layers2&quot;:2,</span>
-<span class="sd">    ...             },</span>
-<span class="sd">    ...             &quot;2layer_two&quot;:2</span>
-<span class="sd">    ...         }</span>
-<span class="sd">    ...     }</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;1layer&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;             &quot;2layer_one&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;                 &quot;3layers1&quot;:4,</span>
+<span class="sd">    &gt;&gt;&gt;                 &quot;3layers2&quot;:2,</span>
+<span class="sd">    &gt;&gt;&gt;             },</span>
+<span class="sd">    &gt;&gt;&gt;             &quot;2layer_two&quot;:2</span>
+<span class="sd">    &gt;&gt;&gt;         }</span>
+<span class="sd">    &gt;&gt;&gt;     }</span>
 <span class="sd">    &gt;&gt;&gt; </span>
 <span class="sd">    &gt;&gt;&gt; tool = ParameterShower()</span>
 <span class="sd">    &gt;&gt;&gt; tool.show_multilayer(inputs)</span>
@@ -271,7 +273,6 @@
 <span class="sd">    +------------+-------+</span>
 <span class="sd">    | 2layer_two | 2     |</span>
 <span class="sd">    +------------+-------+</span>
-<span class="sd">    ```</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tool</span> <span class="o">=</span> <span class="n">Multidict2dict</span><span class="p">()</span>
@@ -291,10 +292,12 @@
 <div class="viewcode-block" id="ranknorm"><a class="viewcode-back" href="../../utils.common.html#utils.common.ranknorm">[docs]</a><span class="k">def</span> <span class="nf">ranknorm</span><span class="p">(</span><span class="n">input_arr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return the 1-norm of rankdata of input_arr</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input_arr: list</span>
 <span class="sd">        the data to be ranked</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    rank : numpy.ndarray</span>
@@ -307,6 +310,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function checks if a and b satisfy the condition:</span>
 <span class="sd">    |a - b| &lt;= atol + rtol * |b|</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    input : Tensor</span>
@@ -317,6 +321,7 @@
 <span class="sd">        absolute tolerance. Default: 1e-08</span>
 <span class="sd">    rtol : float, optional</span>
 <span class="sd">        relative tolerance. Default: 1e-05</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    res : bool</span>
@@ -329,12 +334,14 @@
 <div class="viewcode-block" id="move_start_node_fisrt"><a class="viewcode-back" href="../../utils.common.html#utils.common.move_start_node_fisrt">[docs]</a><span class="k">def</span> <span class="nf">move_start_node_fisrt</span><span class="p">(</span><span class="n">pace</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    return a new pace in which the start node is in the first place.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    pace : list</span>
 <span class="sd">        the subgraph of start node</span>
 <span class="sd">    start_node: int</span>
 <span class="sd">        target node</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    pace : list</span>
@@ -354,9 +361,11 @@
 <span class="sd">    Return whether the graph is a bidirected graph.</span>
 <span class="sd">    A graph is bidirected if for any edge :math:`(u, v)` in :math:`G` with weight :math:`w`,</span>
 <span class="sd">    there exists an edge :math:`(v, u)` in :math:`G` with the same weight.</span>
+<span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    g : DGL.graph</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    res : bool</span>
@@ -430,15 +439,17 @@
 <div class="viewcode-block" id="load_mat_data2dgl"><a class="viewcode-back" href="../../utils.common.html#utils.common.load_mat_data2dgl">[docs]</a><span class="k">def</span> <span class="nf">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    load data from .mat file</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    data_path : str</span>
 <span class="sd">        the file to read in</span>
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        print info, by default True</span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    graph : [DGL.graph]</span>
+<span class="sd">    graph : DGL.graph</span>
 <span class="sd">        the graph read from data_path</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mat_path</span> <span class="o">=</span> <span class="n">data_path</span>
@@ -478,13 +489,15 @@
 <div class="viewcode-block" id="load_ogbn_arxiv"><a class="viewcode-back" href="../../utils.common.html#utils.common.load_ogbn_arxiv">[docs]</a><span class="k">def</span> <span class="nf">load_ogbn_arxiv</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Read ogbn-arxiv from dgl.</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    raw_dir : str</span>
 <span class="sd">        Data path. Supports user customization.</span>
+
 <span class="sd">    returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    graph : [dgl.graph]</span>
+<span class="sd">    graph : dgl.graph</span>
 <span class="sd">        the graph of ogbn-arxiv</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">DglNodePropPredDataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">raw_dir</span><span class="p">)</span>
@@ -511,13 +524,15 @@
 <div class="viewcode-block" id="load_BlogCatalog"><a class="viewcode-back" href="../../utils.common.html#utils.common.load_BlogCatalog">[docs]</a><span class="k">def</span> <span class="nf">load_BlogCatalog</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    load BlogCatalog dgl graph</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    raw_dir : str</span>
 <span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    graph : [DGL.graph]</span>
+<span class="sd">    graph : DGL.graph</span>
 <span class="sd">    Examples</span>
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; graph=load_BlogCatalog()[0]</span>
@@ -534,13 +549,16 @@
 <div class="viewcode-block" id="load_Flickr"><a class="viewcode-back" href="../../utils.common.html#utils.common.load_Flickr">[docs]</a><span class="k">def</span> <span class="nf">load_Flickr</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    load Flickr dgl graph</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    raw_dir : str</span>
 <span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    graph : [DGL.graph]</span>
+<span class="sd">    graph : DGL.graph</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; graph=load_Flickr()[0]</span>
@@ -556,13 +574,16 @@
 
 <div class="viewcode-block" id="load_ACM"><a class="viewcode-back" href="../../utils.common.html#utils.common.load_ACM">[docs]</a><span class="k">def</span> <span class="nf">load_ACM</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;load ACM dgl graph</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    raw_dir : str</span>
 <span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    graph : [DGL.graph]</span>
+<span class="sd">    graph : DGL.graph</span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    -------</span>
 <span class="sd">    &gt;&gt;&gt; graph=load_ACM()[0]</span>

@@ -1,5 +1,5 @@
-models.DOMINANT.models module
-=============================
+models.DOMINANT.models 
+=======================
 
 .. automodule:: models.DOMINANT.models
    :members:

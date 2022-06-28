@@ -1,5 +1,5 @@
-utils.sample module
-===================
+utils.sample 
+=============
 
 .. automodule:: utils.sample
    :members:

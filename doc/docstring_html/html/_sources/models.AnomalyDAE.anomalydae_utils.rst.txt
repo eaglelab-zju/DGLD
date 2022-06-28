@@ -1,5 +1,5 @@
-models.AnomalyDAE.anomalydae\_utils module
-==========================================
+models.AnomalyDAE.anomalydae\_utils 
+====================================
 
 .. automodule:: models.AnomalyDAE.anomalydae_utils
    :members:

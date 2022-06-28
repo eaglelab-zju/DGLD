@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>models.SLGAD.model module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+  <title>models.SLGAD.model &mdash; EagleCommunityDetection 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -42,8 +42,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -60,7 +60,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>models.SLGAD.model module</li>
+      <li>models.SLGAD.model</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/models.SLGAD.model.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,7 +71,7 @@
            <div itemprop="articleBody">
              
   <section id="module-models.SLGAD.model">
-<span id="models-slgad-model-module"></span><h1>models.SLGAD.model module<a class="headerlink" href="#module-models.SLGAD.model" title="Permalink to this headline"></a></h1>
+<span id="models-slgad-model"></span><h1>models.SLGAD.model<a class="headerlink" href="#module-models.SLGAD.model" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.SLGAD.model.Discriminator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">Discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_feats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/SLGAD/model.html#Discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.SLGAD.model.Discriminator" title="Permalink to this definition"></a></dt>
@@ -220,17 +220,6 @@ where the weight :math:`W^{(l)}` is initialized using Glorot uniform initializat
 and the bias is initialized to be zero.
 </pre></div>
 </div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -298,25 +287,11 @@ and the bias is initialized to be zero.
 <dl class="py method">
 <dt class="sig sig-object py" id="models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.reset_parameters">
 <span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg_simple.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.reset_parameters" title="Permalink to this definition"></a></dt>
-<dd><p>Reinitialize learnable parameters.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The model parameters are initialized as in the
+<dd><p>Reinitialize learnable parameters.
+The model parameters are initialized as in the
 <a class="reference external" href="https://github.com/tkipf/gcn/blob/master/gcn/layers.py">original implementation</a>
 where the weight <span class="math notranslate nohighlight">\(W^{(l)}\)</span> is initialized using Glorot uniform initialization
 and the bias is initialized to be zero.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -333,7 +308,8 @@ and the bias is initialized to be zero.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.SLGAD.model.SL_GAD.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/SLGAD/model.html#SL_GAD.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.SLGAD.model.SL_GAD.fit" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>train the model</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>g</strong> (<em>DGL.Graph</em>) – input graph with feature named “feat” in g.ndata</p></li>
@@ -359,7 +335,8 @@ and the bias is initialized to be zero.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.SLGAD.model.SL_GAD.predict">
 <span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_test_rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/SLGAD/model.html#SL_GAD.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.SLGAD.model.SL_GAD.predict" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>test the model</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>g</strong> (<em>DGL.Graph</em>) – input graph with feature named “feat” in g.ndata.</p></li>
@@ -403,16 +380,19 @@ and the bias is initialized to be zero.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pos_batchg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – two batch of positive subgraph</p></li>
+<li><p><strong>pos_batchg</strong> (<em>list of DGL.Graph</em>) – two batch of positive subgraph</p></li>
 <li><p><strong>pos_in_feat</strong> (<em>list of Torch.tensor</em>) – node features of two batch of positive subgraph</p></li>
-<li><p><strong>neg_batchg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – one batch of negative subgraph</p></li>
+<li><p><strong>neg_batchg</strong> (<em>list of DGL.Graph</em>) – one batch of negative subgraph</p></li>
 <li><p><strong>neg_in_feat</strong> (<em>list of Torch.tensor</em>) – node features of one batch of negative subgraph</p></li>
 <li><p><strong>args</strong> (<em>parser</em>) – extra custom made of model</p></li>
-<li><p><strong>Returns</strong> – </p></li>
-<li><p><strong>----------</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
 <li><p><strong>L</strong> (<em>Torch.tensor</em>) – loss of model</p></li>
 <li><p><strong>single_predict_scores</strong> (<em>Torch.tensor</em>) – anomaly score of anchor nodes</p></li>
 </ul>
+</p>
 </dd>
 </dl>
 </dd></dl>

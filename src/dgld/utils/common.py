@@ -21,27 +21,29 @@ def print_shape(*a):
         print(t.shape)
 
 def print_format_dict(dict_input):
-    """[print dict with json for a decent show]
+    """print dict with json for a decent show
+
     Parameters
     ----------
-    dict_input : [Dict]
-        [dict to print]
+    dict_input : Dict
+        dict to print
     """
     print(json.dumps(dict_input, indent=4, separators=(',', ':')))
 
 def loadargs_from_json(filename, indent=4):
-    """[load args from a format json file]
+    """load args from a format json file
+
     Parameters
     ----------
-    filename : [file name]
-        [json filename]
+    filename : file name
+        json filename
     indent : int, optional
-        [description], by default 4
+        description, by default 4
 
     Returns
     -------
-    [Dict]
-        [args parameters ]
+    Dict : json
+        args parameters
     """
     f = open(filename, "r") 
     content = f.read()
@@ -49,15 +51,16 @@ def loadargs_from_json(filename, indent=4):
     return args
 
 def saveargs2json(jsonobject, filename, indent=4):
-    """[save args parameters to json with a decent format]
+    """save args parameters to json with a decent format
+
     Parameters
     ----------
-    jsonobject : [Dict]
-        [dict object to save]
-    filename : [str]
-        [file name]
+    jsonobject : Dict
+        dict object to save
+    filename : str
+        file name
     indent : int, optional
-        [description], by default 4
+        description, by default 4
     """
     with open(filename, "w") as write_file:
         json.dump(jsonobject, write_file, indent=indent, separators=(',', ':'))
@@ -73,35 +76,34 @@ def seed_everything(seed=42):
         torch.cuda.manual_seed(seed)
 
 class ExpRecord():
-    def __init__(self, filepath='result.csv'):
-        """[create a read a existed csv file to record the experiments]
+    """create a read a existed csv file to record the experiments
 
-        Parameters
-        ----------
-        filepath : str, filepath
-            [description], by default 'result.csv'
-        Examples
-        --------
-        ```python
-        >>> exprecord = ExpRecord() 
-        >>> argsdict = vars(args)
-        >>> argsdict['auc'] = 1.0
-        >>> argsdict['info'] = "test"
-        >>> exprecord.add_record(argsdict)
-        ```
-        """
+    Parameters
+    ----------
+    filepath : str, filepath
+        description, by default 'result.csv'
+    
+    Examples
+    -------
+    >>> exprecord = ExpRecord() 
+    >>> argsdict = vars(args)
+    >>> argsdict['auc'] = 1.0
+    >>> argsdict['info'] = "test"
+    >>> exprecord.add_record(argsdict)
+    """ 
+    def __init__(self, filepath='result.csv'): 
         self.filepath = filepath
         if osp.exists(self.filepath):
             self.record = self.load_record()
         else:
             self.record = None
     def add_record(self, dict_record):
-        """[summary]
+        """summary
 
         Parameters
         ----------
-        dict_record : [Dict]
-            
+        dict_record : Dict
+            record to add 
         """
         print(dict_record)
         if not self.record:
@@ -129,20 +131,21 @@ class ExpRecord():
         return self.record 
 
 class Multidict2dict():
-    """[convert multilayer Dict to a single layer Dict]
+    """convert multilayer Dict to a single layer Dict
+
     Parameters
     ----------
     inputs : Dict
-        [input Dict, Maybe multilayer like{
-            {"a":{"as":"value"}}
-        }]
+    input Dict, Maybe multilayer like{
+        {"a":{"as":"value"}}
+    }
 
     Returns
     -------
-    Dict
-        [a single layer Dict]
-    Examples:
-    ```python
+    Dict: a single layer Dict
+
+    Examples
+    -------
     >>> tool = Multidict2dict()
     >>> inputs = {
     >>>    "1layer":{
@@ -156,7 +159,6 @@ class Multidict2dict():
     >>> result = tool.solve(inputs)
     >>> print(result)
     >>> {'3layers1': 4, '3layers2': 2, '2layer_two': 2}
-    ```
     """
     def __init__(self):
         self.result = {}
@@ -175,19 +177,19 @@ class Multidict2dict():
 
 
 class ParameterShower():
-    """[show Parameter using texttable]
-    Examples:
-    ---------
-    ```python
+    """show Parameter using texttable
+
+    Examples
+    -------
     >>> inputs = {
-    ...         "1layer":{
-    ...             "2layer_one":{
-    ...                 "3layers1":4,
-    ...                 "3layers2":2,
-    ...             },
-    ...             "2layer_two":2
-    ...         }
-    ...     }
+    >>>         "1layer":{
+    >>>             "2layer_one":{
+    >>>                 "3layers1":4,
+    >>>                 "3layers2":2,
+    >>>             },
+    >>>             "2layer_two":2
+    >>>         }
+    >>>     }
     >>> 
     >>> tool = ParameterShower()
     >>> tool.show_multilayer(inputs)
@@ -200,7 +202,6 @@ class ParameterShower():
     +------------+-------+
     | 2layer_two | 2     |
     +------------+-------+
-    ```
     """
     def __init__(self):
         self.tool = Multidict2dict()
@@ -220,10 +221,12 @@ class ParameterShower():
 def ranknorm(input_arr):
     """
     return the 1-norm of rankdata of input_arr
+
     Parameters
     ----------
     input_arr: list
         the data to be ranked
+
     Returns
     -------
     rank : numpy.ndarray
@@ -236,6 +239,7 @@ def allclose(a, b, rtol=1e-4, atol=1e-4):
     """
     This function checks if a and b satisfy the condition:
     |a - b| <= atol + rtol * |b|
+
     Parameters
     ----------
     input : Tensor
@@ -246,6 +250,7 @@ def allclose(a, b, rtol=1e-4, atol=1e-4):
         absolute tolerance. Default: 1e-08
     rtol : float, optional
         relative tolerance. Default: 1e-05
+    
     Returns
     -------
     res : bool
@@ -258,12 +263,14 @@ def allclose(a, b, rtol=1e-4, atol=1e-4):
 def move_start_node_fisrt(pace, start_node):
     """
     return a new pace in which the start node is in the first place.
+
     Parameters
     ----------
     pace : list
         the subgraph of start node
     start_node: int
         target node
+
     Returns
     -------
     pace : list
@@ -283,9 +290,11 @@ def is_bidirected(g):
     Return whether the graph is a bidirected graph.
     A graph is bidirected if for any edge :math:`(u, v)` in :math:`G` with weight :math:`w`,
     there exists an edge :math:`(v, u)` in :math:`G` with the same weight.
+    
     Parameters
     ----------
     g : DGL.graph
+    
     Returns
     -------
     res : bool
@@ -359,15 +368,17 @@ def is_bidirected(g):
 def load_mat_data2dgl(data_path, verbose=True):
     """
     load data from .mat file
+
     Parameters
     ----------
     data_path : str
         the file to read in
     verbose : bool, optional
         print info, by default True
+
     Returns
     -------
-    graph : [DGL.graph]
+    graph : DGL.graph
         the graph read from data_path
     """
     mat_path = data_path
@@ -407,13 +418,15 @@ def load_mat_data2dgl(data_path, verbose=True):
 def load_ogbn_arxiv(raw_dir=data_path):
     """
     Read ogbn-arxiv from dgl.
+
     Parameters
     ----------
     raw_dir : str
         Data path. Supports user customization.
+
     returns
     -------
-    graph : [dgl.graph]
+    graph : dgl.graph
         the graph of ogbn-arxiv
     """
     data = DglNodePropPredDataset(name="ogbn-arxiv", root=raw_dir)
@@ -440,13 +453,15 @@ def bar_progress(current, total, width=80):
 def load_BlogCatalog(raw_dir=data_path):
     """
     load BlogCatalog dgl graph
+
     Parameters
     ----------
     raw_dir : str
         Data path. Supports user customization.
+    
     Returns
     -------
-    graph : [DGL.graph]
+    graph : DGL.graph
     Examples
     -------
     >>> graph=load_BlogCatalog()[0]
@@ -463,13 +478,16 @@ def load_BlogCatalog(raw_dir=data_path):
 def load_Flickr(raw_dir=data_path):
     """
     load Flickr dgl graph
+
     Parameters
     ----------
     raw_dir : str
         Data path. Supports user customization.
+    
     Returns
     -------
-    graph : [DGL.graph]
+    graph : DGL.graph
+
     Examples
     -------
     >>> graph=load_Flickr()[0]
@@ -485,13 +503,16 @@ def load_Flickr(raw_dir=data_path):
 
 def load_ACM(raw_dir=data_path):
     """load ACM dgl graph
+
     Parameters
     ----------
     raw_dir : str
         Data path. Supports user customization.
+    
     Returns
     -------
-    graph : [DGL.graph]
+    graph : DGL.graph
+
     Examples
     -------
     >>> graph=load_ACM()[0]

@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -175,25 +175,12 @@
 
 <div class="viewcode-block" id="OneLayerGCNWithGlobalAdg_simple.reset_parameters"><a class="viewcode-back" href="../../../models.SLGAD.model.html#models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="sd">        Description</span>
-<span class="sd">        -----------</span>
 <span class="sd">        Reinitialize learnable parameters.</span>
-
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
 <span class="sd">        The model parameters are initialized as in the</span>
 <span class="sd">        `original implementation &lt;https://github.com/tkipf/gcn/blob/master/gcn/layers.py&gt;`__</span>
 <span class="sd">        where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization</span>
 <span class="sd">        and the bias is initialized to be zero.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
@@ -326,13 +313,6 @@
 <span class="sd">        where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization</span>
 <span class="sd">        and the bias is initialized to be zero.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        None</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
@@ -544,19 +524,19 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        pos_batchg : list of dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">        pos_batchg : list of DGL.Graph</span>
 <span class="sd">            two batch of positive subgraph</span>
 <span class="sd">        pos_in_feat : list of Torch.tensor</span>
 <span class="sd">            node features of two batch of positive subgraph</span>
-<span class="sd">        neg_batchg : list of dgl.heterograph.DGLHeteroGraph</span>
+<span class="sd">        neg_batchg : list of DGL.Graph</span>
 <span class="sd">            one batch of negative subgraph</span>
 <span class="sd">        neg_in_feat : list of Torch.tensor</span>
 <span class="sd">            node features of one batch of negative subgraph</span>
 <span class="sd">        args : parser</span>
 <span class="sd">            extra custom made of model</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">        ----------</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
 <span class="sd">        L : Torch.tensor</span>
 <span class="sd">            loss of model</span>
 <span class="sd">        single_predict_scores : Torch.tensor</span>
@@ -1049,6 +1029,8 @@
 
 <div class="viewcode-block" id="SL_GAD.fit"><a class="viewcode-back" href="../../../models.SLGAD.model.html#models.SLGAD.model.SL_GAD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.003</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        train the model</span>
+
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        g : DGL.Graph</span>
@@ -1107,6 +1089,8 @@
 
 <div class="viewcode-block" id="SL_GAD.predict"><a class="viewcode-back" href="../../../models.SLGAD.model.html#models.SLGAD.model.SL_GAD.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auc_test_rounds</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        test the model</span>
+<span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        g : DGL.Graph</span>
