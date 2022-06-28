@@ -1,0 +1,19 @@
+models.AnomalyDAE package
+=========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   models.AnomalyDAE.anomalydae_utils
+   models.AnomalyDAE.models
+
+Module contents
+---------------
+
+.. automodule:: models.AnomalyDAE
+   :members:
+   :undoc-members:
+   :show-inheritance:

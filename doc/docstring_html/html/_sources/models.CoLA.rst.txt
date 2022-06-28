@@ -1,0 +1,20 @@
+models.CoLA package
+===================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   models.CoLA.colautils
+   models.CoLA.dataset
+   models.CoLA.model
+
+Module contents
+---------------
+
+.. automodule:: models.CoLA
+   :members:
+   :undoc-members:
+   :show-inheritance:

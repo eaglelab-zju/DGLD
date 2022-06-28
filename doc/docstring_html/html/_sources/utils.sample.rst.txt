@@ -1,0 +1,7 @@
+utils.sample module
+===================
+
+.. automodule:: utils.sample
+   :members:
+   :undoc-members:
+   :show-inheritance:

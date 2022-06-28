@@ -345,7 +345,7 @@ def generate_random_walk_multiThread_high_level(g, start_nodes_block, paces_bloc
                 # print(pace)
                 # exit()
             # print('process_1')
-            pace = generate_random_walk(g, [start], length=length, multi_length=5, restart_prob=0.9)
+            # pace = generate_random_walk(g, [start], length=length, multi_length=5, restart_prob=0.9)
             pace = pace.tolist()[0]
             pace = list(filter((-1).__ne__, pace))
             # print(pace)
@@ -407,17 +407,24 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
     def __init__(self, length=4):
         self.length = 4
 
-    def __call__(self, g, start_nodes):
+    def __call__(self, g, start_nodes, block = None):
         """
         add self_loop to handle isolated nodes as soon as
         the nodes which belong to a community with a size smaller than
         it is a little different from author's paper.
+        
         Parameters:
         -----------
         g: DGLGraph object
             input graph to generative subgraph
         start_nodes: a Tensor or array contain start node.
             input start nodes of random walk to generate subgraph
+        block : int, str, None
+            number of core to generate subgraph, default None
+            str, "full" means all core
+            int, to assign the number of core
+            None, 1/4 of the core
+
         Return:
         -------
         rwl: List[List]
@@ -443,7 +450,11 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
         # print(paces[:, 0: 5])
         # exit()
         rwl = []
-        block = multiprocessing.cpu_count()
+        if block == "full":
+            block = multiprocessing.cpu_count()
+        elif block == "None":
+            block = max(1, int(multiprocessing.cpu_count() / 4))
+
         # block = 1
         total_len = len(start_nodes)
         bar = int(total_len / block) + 1

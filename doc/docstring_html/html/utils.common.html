@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils.common module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="utils.evaluation module" href="utils.evaluation.html" />
+    <link rel="prev" title="Welcome to Eagle Community Detection’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> EagleCommunityDetection
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">utils.common module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EagleCommunityDetection</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>utils.common module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.common.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-utils.common">
+<span id="utils-common-module"></span><h1>utils.common module<a class="headerlink" href="#module-utils.common" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.common.ExpRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">ExpRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'result.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#ExpRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ExpRecord" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.ExpRecord.add_record">
+<span class="sig-name descname"><span class="pre">add_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#ExpRecord.add_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ExpRecord.add_record" title="Permalink to this definition"></a></dt>
+<dd><p>[summary]</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict_record</strong> (<em>[</em><em>Dict</em><em>]</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.ExpRecord.load_record">
+<span class="sig-name descname"><span class="pre">load_record</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#ExpRecord.load_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ExpRecord.load_record" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.ExpRecord.save_record">
+<span class="sig-name descname"><span class="pre">save_record</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#ExpRecord.save_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ExpRecord.save_record" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.common.Multidict2dict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">Multidict2dict</span></span><a class="reference internal" href="_modules/utils/common.html#Multidict2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.Multidict2dict" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>[convert multilayer Dict to a single layer Dict]
+:param inputs:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>[input Dict, Maybe multilayer like{</dt><dd><p>{“a”:{“as”:”value”}}</p>
+</dd>
+</dl>
+<p>}]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>Dict</em> – [a single layer Dict]</p></li>
+<li><p><em>Examples</em></p></li>
+<li><p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>python</p></li>
+<li><p><em>&gt;&gt;&gt; tool = Multidict2dict()</em></p></li>
+<li><p><em>&gt;&gt;&gt; inputs = {</em></p></li>
+<li><p><strong>&gt;&gt;&gt;    “1layer”</strong> (<em>{</em>)</p></li>
+<li><p><strong>&gt;&gt;&gt;        “2layer_one”</strong> (<em>{</em>)</p></li>
+<li><p><strong>&gt;&gt;&gt;            “3layers1”</strong> (<em>4,</em>)</p></li>
+<li><p><strong>&gt;&gt;&gt;            “3layers2”</strong> (<em>2,</em>)</p></li>
+<li><p><em>&gt;&gt;&gt;        },</em></p></li>
+<li><p><strong>&gt;&gt;&gt;        “2layer_two”</strong> (<em>2</em>)</p></li>
+<li><p><em>&gt;&gt;&gt;    }</em></p></li>
+<li><p><em>&gt;&gt;&gt; }</em></p></li>
+<li><p><em>&gt;&gt;&gt; result = tool.solve(inputs)</em></p></li>
+<li><p><em>&gt;&gt;&gt; print(result)</em></p></li>
+<li><p><strong>&gt;&gt;&gt; {‘3layers1’</strong> (<em>4, ‘3layers2’: 2, ‘2layer_two’: 2}</em>)</p></li>
+<li><p><a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.Multidict2dict.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#Multidict2dict.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.Multidict2dict.solve" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="utils.common.ParameterShower">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">ParameterShower</span></span><a class="reference internal" href="_modules/utils/common.html#ParameterShower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ParameterShower" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>[show Parameter using texttable]
+Examples:
+———
+<code class="docutils literal notranslate"><span class="pre">`python</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">inputs</span> <span class="pre">=</span> <span class="pre">{</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;1layer&quot;:{</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;2layer_one&quot;:{</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;3layers1&quot;:4,</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;3layers2&quot;:2,</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">},</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;2layer_two&quot;:2</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">}</span>
+<span class="pre">...</span>&#160;&#160;&#160;&#160; <span class="pre">}</span>
+<span class="pre">&gt;&gt;&gt;</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">tool</span> <span class="pre">=</span> <span class="pre">ParameterShower()</span>
+<span class="pre">&gt;&gt;&gt;</span> <span class="pre">tool.show_multilayer(inputs)</span>
+<span class="pre">+------------+-------+</span>
+<span class="pre">|</span>&#160;&#160;&#160; <span class="pre">Name</span>&#160;&#160;&#160; <span class="pre">|</span> <span class="pre">Value</span> <span class="pre">|</span>
+<span class="pre">+============+=======+</span>
+<span class="pre">|</span> <span class="pre">3layers1</span>&#160;&#160; <span class="pre">|</span> <span class="pre">4</span>&#160;&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">+------------+-------+</span>
+<span class="pre">|</span> <span class="pre">3layers2</span>&#160;&#160; <span class="pre">|</span> <span class="pre">2</span>&#160;&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">+------------+-------+</span>
+<span class="pre">|</span> <span class="pre">2layer_two</span> <span class="pre">|</span> <span class="pre">2</span>&#160;&#160;&#160;&#160; <span class="pre">|</span>
+<span class="pre">+------------+-------+</span>
+<span class="pre">`</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.ParameterShower.show_dict">
+<span class="sig-name descname"><span class="pre">show_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/utils/common.html#ParameterShower.show_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ParameterShower.show_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="utils.common.ParameterShower.show_multilayer">
+<span class="sig-name descname"><span class="pre">show_multilayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/utils/common.html#ParameterShower.show_multilayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ParameterShower.show_multilayer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.allclose">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#allclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.allclose" title="Permalink to this definition"></a></dt>
+<dd><p>This function checks if a and b satisfy the condition:
+<a href="#id9"><span class="problematic" id="id10">|a - b|</span></a> &lt;= atol + rtol * <a href="#id11"><span class="problematic" id="id12">|b|</span></a>
+:param input: first tensor to compare
+:type input: Tensor
+:param other: second tensor to compare
+:type other: Tensor
+:param atol: absolute tolerance. Default: 1e-08
+:type atol: float, optional
+:param rtol: relative tolerance. Default: 1e-05
+:type rtol: float, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>res</strong> – True for close, False for not</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.bar_progress">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">bar_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#bar_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.bar_progress" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.cprint">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">cprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#cprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.cprint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.is_bidirected">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">is_bidirected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#is_bidirected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.is_bidirected" title="Permalink to this definition"></a></dt>
+<dd><p>Return whether the graph is a bidirected graph.
+A graph is bidirected if for any edge <span class="math notranslate nohighlight">\((u, v)\)</span> in <span class="math notranslate nohighlight">\(G\)</span> with weight <span class="math notranslate nohighlight">\(w\)</span>,
+there exists an edge <span class="math notranslate nohighlight">\((v, u)\)</span> in <span class="math notranslate nohighlight">\(G\)</span> with the same weight.
+:param g:
+:type g: DGL.graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>res</strong> – True for bidirected, False for not</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.lcprint">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">lcprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#lcprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.lcprint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.load_ACM">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">load_ACM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D:\\subject\\graduate\\graph</span> <span class="pre">computation\\GraphAnomalyDectionBenchmarking_v1.0\\src\\dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#load_ACM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.load_ACM" title="Permalink to this definition"></a></dt>
+<dd><p>load ACM dgl graph
+:param raw_dir: Data path. Supports user customization.
+:type raw_dir: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[DGL.graph]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_ACM</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.load_BlogCatalog">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">load_BlogCatalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D:\\subject\\graduate\\graph</span> <span class="pre">computation\\GraphAnomalyDectionBenchmarking_v1.0\\src\\dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#load_BlogCatalog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.load_BlogCatalog" title="Permalink to this definition"></a></dt>
+<dd><p>load BlogCatalog dgl graph
+:param raw_dir: Data path. Supports user customization.
+:type raw_dir: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[DGL.graph]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_BlogCatalog</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.load_Flickr">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">load_Flickr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D:\\subject\\graduate\\graph</span> <span class="pre">computation\\GraphAnomalyDectionBenchmarking_v1.0\\src\\dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#load_Flickr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.load_Flickr" title="Permalink to this definition"></a></dt>
+<dd><p>load Flickr dgl graph
+:param raw_dir: Data path. Supports user customization.
+:type raw_dir: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[DGL.graph]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_Flickr</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.load_mat_data2dgl">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">load_mat_data2dgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#load_mat_data2dgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.load_mat_data2dgl" title="Permalink to this definition"></a></dt>
+<dd><p>load data from .mat file
+:param data_path: the file to read in
+:type data_path: str
+:param verbose: print info, by default True
+:type verbose: bool, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>graph</strong> – the graph read from data_path</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[DGL.graph]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.load_ogbn_arxiv">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">load_ogbn_arxiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'D:\\subject\\graduate\\graph</span> <span class="pre">computation\\GraphAnomalyDectionBenchmarking_v1.0\\src\\dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#load_ogbn_arxiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.load_ogbn_arxiv" title="Permalink to this definition"></a></dt>
+<dd><p>Read ogbn-arxiv from dgl.
+:param raw_dir: Data path. Supports user customization.
+:type raw_dir: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>graph</strong> – the graph of ogbn-arxiv</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[dgl.graph]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.loadargs_from_json">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">loadargs_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#loadargs_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.loadargs_from_json" title="Permalink to this definition"></a></dt>
+<dd><p>[load args from a format json file]
+:param filename: [json filename]
+:type filename: [file name]
+:param indent: [description], by default 4
+:type indent: int, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>[args parameters ]</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>[Dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.move_start_node_fisrt">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">move_start_node_fisrt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#move_start_node_fisrt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.move_start_node_fisrt" title="Permalink to this definition"></a></dt>
+<dd><p>return a new pace in which the start node is in the first place.
+:param pace: the subgraph of start node
+:type pace: list
+:param start_node: target node
+:type start_node: int</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pace</strong> – subgraph whose first value is start_node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.print_format_dict">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">print_format_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#print_format_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.print_format_dict" title="Permalink to this definition"></a></dt>
+<dd><p>[print dict with json for a decent show]
+:param dict_input: [dict to print]
+:type dict_input: [Dict]</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.print_shape">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">print_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#print_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.print_shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.ranknorm">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">ranknorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#ranknorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.ranknorm" title="Permalink to this definition"></a></dt>
+<dd><p>return the 1-norm of rankdata of input_arr
+:param input_arr: the data to be ranked
+:type input_arr: list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>rank</strong> – the 1-norm of rankdata</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.saveargs2json">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">saveargs2json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonobject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#saveargs2json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.saveargs2json" title="Permalink to this definition"></a></dt>
+<dd><p>[save args parameters to json with a decent format]
+:param jsonobject: [dict object to save]
+:type jsonobject: [Dict]
+:param filename: [file name]
+:type filename: [str]
+:param indent: [description], by default 4
+:type indent: int, optional</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="utils.common.seed_everything">
+<span class="sig-prename descclassname"><span class="pre">utils.common.</span></span><span class="sig-name descname"><span class="pre">seed_everything</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/utils/common.html#seed_everything"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#utils.common.seed_everything" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to Eagle Community Detection’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.evaluation.html" class="btn btn-neutral float-right" title="utils.evaluation module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

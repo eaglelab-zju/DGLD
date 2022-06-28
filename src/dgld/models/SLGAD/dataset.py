@@ -7,8 +7,6 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
 
-
-import os
 from os import path as osp
 import torch.nn.functional as F
 import joblib
@@ -22,8 +20,9 @@ import dgl
 from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
-from dataset import GraphNodeAnomalyDectionDataset
-from sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
+sys.path.append('../../')
+from utils.dataset import GraphNodeAnomalyDectionDataset
+from utils.sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
 from datetime import datetime
 
 # torch.set_default_tensor_type(torch.DoubleTensor)

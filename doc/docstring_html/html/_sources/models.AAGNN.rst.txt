@@ -1,0 +1,19 @@
+models.AAGNN package
+====================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   models.AAGNN.AAGNN_batch
+   models.AAGNN.AAGNN_utils
+
+Module contents
+---------------
+
+.. automodule:: models.AAGNN
+   :members:
+   :undoc-members:
+   :show-inheritance:

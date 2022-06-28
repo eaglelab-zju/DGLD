@@ -1,0 +1,23 @@
+models package
+==============
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   models.AAGNN
+   models.AnomalyDAE
+   models.CoLA
+   models.ComGA
+   models.DOMINANT
+   models.SLGAD
+
+Module contents
+---------------
+
+.. automodule:: models
+   :members:
+   :undoc-members:
+   :show-inheritance:
