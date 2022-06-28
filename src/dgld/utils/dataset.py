@@ -1,12 +1,10 @@
 """
 This is a program about loading data.
 """
-
 import dgl
 import torch
 import numpy as np
 import pandas as pd
-
 from dgl.data import DGLDataset
 from sklearn import preprocessing
 from sklearn.metrics import roc_auc_score
@@ -14,24 +12,22 @@ from scipy.spatial.distance import euclidean
 import scipy.sparse as sp
 import os
 from dgl.data.utils import download
-
 import scipy.io as sio
 from dgl import backend as F
 import sys
 import os
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+current_dir=os.path.dirname(os.path.abspath(current_file_name))
 sys.path.append(current_dir)
-
 from common import is_bidirected, load_ogbn_arxiv, load_BlogCatalog, load_Flickr,load_ACM
 from evaluation import split_auc
-#'BlogCatalog'  'Flickr' 'cora'  'citeseer' 'pubmed' 'ACM' 'ogbn-arxiv'
+data_path = os.path.dirname(current_dir) + '/data/'
 
 
 class GraphNodeAnomalyDectionDataset(DGLDataset):
     """
     This is a class to get graph and inject anomaly
-    follow [CoLA](https://arxiv.org/abs/2103.00113)，inject Anomaly to the oral graph
+    follow [CoLA](https://arxiv.org/abs/2103.00113),inject Anomaly to the oral graph
     We fix p = 15
     and set q to 10, 15, 20, 5, 5, 20, 200 for
     BlogCatalog, Flickr, ACM, Cora, Citeseer, Pubmed and ogbn-arxiv, respectively.
@@ -41,6 +37,8 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     name : str
         when name == 'custom', using custom data and please Specify custom data by g_data.
         and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and ogbn-arxiv] is supported default follow CoLA.
+    raw_dir : str
+        Save data path. Supports user customization.  
     p : int
         anomaly injection hyperparameter follow CoLA, for structural anomaly
     k : int
@@ -59,9 +57,8 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     >>> print(dataset[0])
     """
 
-    def __init__(self, name="Cora", p=15, k=50, cola_preprocess_features=True, g_data=None, y_data=None):
+    def __init__(self, name="Cora",raw_dir=data_path , p=15, k=50, cola_preprocess_features=True, g_data=None, y_data=None):
         super().__init__(name=name)
-
         self.dataset_name = name
         self.cola_preprocess_features = cola_preprocess_features
         if name in ['Flickr', 'BlogCatalog', 'Pubmed']:
@@ -77,13 +74,13 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
             "ogbn-arxiv": 200,
         }
         self.dataset_map = {
-            "Cora": "dgl.data.CoraGraphDataset()",
-            "Citeseer": "dgl.data.CiteseerGraphDataset()",
-            "Pubmed": "dgl.data.PubmedGraphDataset()",
-            "ogbn-arxiv":"load_ogbn_arxiv()",
-            "ACM":"load_ACM()",
-            "BlogCatalog":"load_BlogCatalog()",
-            "Flickr":"load_Flickr()"
+            "Cora": f"dgl.data.CoraGraphDataset(raw_dir=raw_dir)",
+            "Citeseer": f"dgl.data.CiteseerGraphDataset(raw_dir=raw_dir)",
+            "Pubmed": f"dgl.data.PubmedGraphDataset(raw_dir=raw_dir)",
+            "ogbn-arxiv":"load_ogbn_arxiv(raw_dir=raw_dir)",
+            "ACM":"load_ACM(raw_dir=raw_dir)",
+            "BlogCatalog":"load_BlogCatalog(raw_dir=raw_dir)",
+            "Flickr":"load_Flickr(raw_dir=raw_dir)"
         }
         if self.dataset_name != 'custom' and self.dataset_name != 'ACM':
             assert self.dataset_name in self.q_map and self.dataset_name in self.dataset_map, self.dataset_name
@@ -528,7 +525,6 @@ def test_custom_dataset():
 
 if __name__ == "__main__":
     test_custom_dataset()
-    data_path = '../data/'
     well_test_dataset = ["Cora", "Pubmed", "Citeseer","BlogCatalog","Flickr","ACM", "ogbn-arxiv"]
     num_nodes_list = []
     num_edges_list = []
@@ -538,10 +534,6 @@ if __name__ == "__main__":
     
     for data_name in well_test_dataset:
         print("\ndataset:", data_name)
-        # if data_name=='ACM':
-        #     g=load_ACM()[0]
-        #     dataset = GraphNodeAnomalyDectionDataset(name='custom',g_data=g,y_data=g.ndata['label'])
-        # else:
         dataset = GraphNodeAnomalyDectionDataset(name=data_name)
 
         print("num_anomaly:", dataset.num_anomaly)

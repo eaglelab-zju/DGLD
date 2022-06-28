@@ -8,4 +8,5 @@ t.py
 **/log_bp/*
 **/tmp/*
 **__pycache__
-
+src/dgld/data/*
+!src/dgld/data/README.md
