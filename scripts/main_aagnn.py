@@ -1,5 +1,3 @@
-# Author: Peng Zhang <zzhangpeng@zju.edu.cn>
-# License: BSD 2 clause
 import os
 import sys
 current_file_name = __file__
