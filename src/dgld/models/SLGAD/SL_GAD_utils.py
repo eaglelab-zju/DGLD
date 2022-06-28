@@ -73,14 +73,8 @@ def get_parse():
     """
     The function to get dictionary of parser
 
-    Parameters
-    ----------
-    None
-
     Returns
     -------
-    None
-
     final_args_dict : dictionary
         the dictionary of arg parser
     """

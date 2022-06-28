@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -325,13 +325,16 @@
 
 <div class="viewcode-block" id="init_weights"><a class="viewcode-back" href="../../../models.ComGA.models.html#models.ComGA.models.init_weights">[docs]</a><span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Init Module Weights</span>
-<span class="sd">    ```python</span>
-<span class="sd">        for module in self.modules():</span>
-<span class="sd">            init_weights(module)</span>
-<span class="sd">    ```</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    module : nn.Module</span>
+<span class="sd">        models to initialize linear weight</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; for module in self.modules():</span>
+<span class="sd">    &gt;&gt;&gt;    init_weights(module)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
@@ -346,9 +349,8 @@
 
 <div class="viewcode-block" id="CommunityAE"><a class="viewcode-back" href="../../../models.ComGA.models.html#models.ComGA.models.CommunityAE">[docs]</a><span class="k">class</span> <span class="nc">CommunityAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Community Detection Module:</span>
-<span class="sd">        The modularity matrix B is reconstructed by autoencode to obtain a representation </span>
-<span class="sd">        of each node with community information.</span>
+<span class="sd">    Community Detection Module, The modularity matrix B is reconstructed by autoencode to obtain a representation </span>
+<span class="sd">    of each node with community information.</span>
 <span class="sd">    </span>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -423,10 +425,8 @@
 
 <div class="viewcode-block" id="tGCNEncoder"><a class="viewcode-back" href="../../../models.ComGA.models.html#models.ComGA.models.tGCNEncoder">[docs]</a><span class="k">class</span> <span class="nc">tGCNEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    tGCNEncoder:</span>
-<span class="sd">        To effectively fuse community structure information to GCN model for structure anomaly,</span>
-<span class="sd">    and learn more distinguishable anomalous node representations for local, global, and </span>
-<span class="sd">    structure anomalies.</span>
+<span class="sd">    tGCNEncoder, To effectively fuse community structure information to GCN model for structure anomaly,</span>
+<span class="sd">    and learn more distinguishable anomalous node representations for local, global, and structure anomalies.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -492,8 +492,7 @@
 
 <div class="viewcode-block" id="AttrDecoder"><a class="viewcode-back" href="../../../models.ComGA.models.html#models.ComGA.models.AttrDecoder">[docs]</a><span class="k">class</span> <span class="nc">AttrDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    AttrDecoder:</span>
-<span class="sd">        utilize attribute decoder to take the learned latent representation</span>
+<span class="sd">    AttrDecoder, utilize attribute decoder to take the learned latent representation</span>
 <span class="sd">    Z as input to decode them for reconstruction of original nodal attributes.</span>
 
 <span class="sd">    Parameters</span>
@@ -552,8 +551,7 @@
 
 <div class="viewcode-block" id="StruDecoder"><a class="viewcode-back" href="../../../models.ComGA.models.html#models.ComGA.models.StruDecoder">[docs]</a><span class="k">class</span> <span class="nc">StruDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    StruDecoder:</span>
-<span class="sd">        utilize structure decoder to take the learned latent representation </span>
+<span class="sd">    StruDecoder, utilize structure decoder to take the learned latent representation </span>
 <span class="sd">    Z as input to decode them for reconstruction of original graph structure.</span>
 
 <span class="sd">    Parameters</span>

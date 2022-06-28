@@ -1,5 +1,5 @@
-models.SLGAD.dataset module
-===========================
+models.SLGAD.dataset 
+=====================
 
 .. automodule:: models.SLGAD.dataset
    :members:

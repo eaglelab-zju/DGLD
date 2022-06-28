@@ -1,5 +1,5 @@
-models.ComGA package
-====================
+models.ComGA 
+=============
 
 Submodules
 ----------

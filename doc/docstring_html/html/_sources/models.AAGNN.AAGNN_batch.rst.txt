@@ -1,5 +1,5 @@
-models.AAGNN.AAGNN\_batch module
-================================
+models.AAGNN.AAGNN\_batch 
+==========================
 
 .. automodule:: models.AAGNN.AAGNN_batch
    :members:

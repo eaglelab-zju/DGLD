@@ -40,8 +40,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -91,6 +91,18 @@
 <span class="kn">from</span> <span class="nn">utils.sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span><span class="p">,</span> <span class="n">UniformNeighborSampling</span>
 
 <div class="viewcode-block" id="safe_add_self_loop"><a class="viewcode-back" href="../../../models.CoLA.dataset.html#models.CoLA.dataset.safe_add_self_loop">[docs]</a><span class="k">def</span> <span class="nf">safe_add_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add the self loop in g</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    g : DGL.graph</span>
+<span class="sd">        the graph to add self loop</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newg : DGL.Graph</span>
+<span class="sd">        the graph has been added self loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">newg</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
     <span class="n">newg</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">(</span><span class="n">newg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">newg</span></div>
@@ -99,10 +111,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CoLA Dataset to generate subgraph for train and inference.</span>
 <span class="sd">    </span>
-<span class="sd">    Parameter:</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    g :  dgl.graph</span>
-<span class="sd">    subgraphsize: int, optional</span>
+<span class="sd">        graph to generate subgraph</span>
+<span class="sd">    subgraphsize: int</span>
+<span class="sd">        size of subgraph, default 4</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">subgraphsize</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">CoLADataSet</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
@@ -113,19 +127,57 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">normalize_feat</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">random_walk_sampling</span><span class="p">()</span>
 <div class="viewcode-block" id="CoLADataSet.normalize_feat"><a class="viewcode-back" href="../../../models.CoLA.dataset.html#models.CoLA.dataset.CoLADataSet.normalize_feat">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_feat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to normalize the features of nodes in graph</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">EdgeWeightNorm</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">safe_add_self_loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
         <span class="n">norm_edge_weight</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">edge_weight</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_edges</span><span class="p">()))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">edata</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_edge_weight</span></div>
 <div class="viewcode-block" id="CoLADataSet.random_walk_sampling"><a class="viewcode-back" href="../../../models.CoLA.dataset.html#models.CoLA.dataset.CoLADataSet.random_walk_sampling">[docs]</a>    <span class="k">def</span> <span class="nf">random_walk_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to get random walk from target nodes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colasubgraphsampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())))</span></div>
 
 <div class="viewcode-block" id="CoLADataSet.graph_transform"><a class="viewcode-back" href="../../../models.CoLA.dataset.html#models.CoLA.dataset.CoLADataSet.graph_transform">[docs]</a>    <span class="k">def</span> <span class="nf">graph_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to transfrom graph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : DGL.Graph</span>
+<span class="sd">            the graph to transform</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        newg : DGL.Graph</span>
+<span class="sd">            the graph after transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">newg</span> <span class="o">=</span> <span class="n">g</span>
         <span class="k">return</span> <span class="n">newg</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Functions that get the ith subgraph set, including two positive subgraphs and one negative subgraph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            The index of subgraph.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pos_subgraph_1 : DGL.Graph</span>
+<span class="sd">            the first positive subgraph of ith subgraph set</span>
+<span class="sd">        pos_subgraph_2 : DGL.Graph</span>
+<span class="sd">            the second positive subgraph of ith subgraph set</span>
+<span class="sd">        neg_subgraph : DGL.Graph</span>
+<span class="sd">            the negative subgraph of ith subgraph set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pos_subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_transform</span><span class="p">(</span><span class="n">dgl</span><span class="o">.</span><span class="n">node_subgraph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">paces</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="n">neg_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span> 
         <span class="k">while</span> <span class="n">neg_idx</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
@@ -134,9 +186,21 @@
         <span class="k">return</span> <span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">neg_subgraph</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the number of nodes of graph</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num : int</span>
+<span class="sd">            number of nodes of graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">()</span>
 
 <div class="viewcode-block" id="CoLADataSet.process"><a class="viewcode-back" href="../../../models.CoLA.dataset.html#models.CoLA.dataset.CoLADataSet.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        nonsense</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div></div>
 </pre></div>
 

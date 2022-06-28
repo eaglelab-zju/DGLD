@@ -104,25 +104,12 @@ class OneLayerGCNWithGlobalAdg_simple(nn.Module):
 
     def reset_parameters(self):
         """
-
-        Description
-        -----------
         Reinitialize learnable parameters.
-
-        Note
-        ----
         The model parameters are initialized as in the
         `original implementation <https://github.com/tkipf/gcn/blob/master/gcn/layers.py>`__
         where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization
         and the bias is initialized to be zero.
 
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
         """
         if self.weight is not None:
             init.xavier_uniform_(self.weight)
@@ -255,13 +242,6 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization
         and the bias is initialized to be zero.
 
-        Parameters
-        ----------
-        None
-
-        Returns
-        -------
-        None
         """
         if self.weight is not None:
             init.xavier_uniform_(self.weight)
@@ -473,19 +453,19 @@ class SL_GAD_Model(nn.Module):
 
         Parameters
         ----------
-        pos_batchg : list of dgl.heterograph.DGLHeteroGraph
+        pos_batchg : list of DGL.Graph
             two batch of positive subgraph
         pos_in_feat : list of Torch.tensor
             node features of two batch of positive subgraph
-        neg_batchg : list of dgl.heterograph.DGLHeteroGraph
+        neg_batchg : list of DGL.Graph
             one batch of negative subgraph
         neg_in_feat : list of Torch.tensor
             node features of one batch of negative subgraph
         args : parser
             extra custom made of model
 
-        Returns:
-        ----------
+        Returns
+        -------
         L : Torch.tensor
             loss of model
         single_predict_scores : Torch.tensor
@@ -978,6 +958,8 @@ class SL_GAD():
 
     def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, logdir='tmp', seed=42):
         """
+        train the model
+
         Parameters
         ----------
         g : DGL.Graph
@@ -1036,6 +1018,8 @@ class SL_GAD():
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, logdir='tmp'):
         """
+        test the model
+        
         Parameters
         ----------
         g : DGL.Graph

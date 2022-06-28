@@ -22,15 +22,12 @@ class BaseSubGraphSampling:
     """
     An abstract class for writing transforms on subgraph sampling.
 
-    Parameters
-    ----------
-    None
-
     """
 
     def __call__(self, g, start_node):
         """
         functions to call class, undone, useless
+
         Parameters
         ----------
         g : DGL.Graph
@@ -47,6 +44,7 @@ class BaseSubGraphSampling:
     def __repr__(self):
         """
         functions to get class name
+
         Parameters
         ----------
         None
@@ -62,6 +60,7 @@ class BaseSubGraphSampling:
 class UniformNeighborSampling(BaseSubGraphSampling):
     """
     Uniform sampling Neighbors to generate subgraph.
+
     Parameters
     ----------
     length : int
@@ -75,6 +74,7 @@ class UniformNeighborSampling(BaseSubGraphSampling):
     def __call__(self, g, start_nodes):
         """
         functions to call class to generate subgraph
+
         Parameters
         ----------
         g : DGL.Graph
@@ -109,8 +109,9 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
     the predetermined subgraph size, we sample the available nodes repeatedly until an
     overlapping subgraph with the set size is obtained."
     described in [CoLA Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning](https://arxiv.org/abs/2103.00113)
-    Parameters:
-    -----------
+    
+    Parameters
+    ----------
     length : int
         size of subgraph
 
@@ -133,13 +134,15 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
         add self_loop to handle isolated nodes as soon as
         the nodes which belong to a community with a size smaller than
         it is a little different from author's paper.
-        Parameters:
-        -----------
+        
+        Parameters
+        ----------
         g: DGLGraph object
             input graph to generative subgraph
         start_nodes: a Tensor or array contain start node.
             input start nodes of random walk to generate subgraph
-        Return:
+        
+        Returns
         -------
         rwl: List[List]
             the list of subgraph generated
@@ -163,6 +166,7 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
 def generate_random_walk(g, start_nodes, length, multi_length, restart_prob, Q=None):
     """
     get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
+    
     Parameters
     ----------
     g: dgl.graph
@@ -209,6 +213,7 @@ def generate_random_walk(g, start_nodes, length, multi_length, restart_prob, Q=N
 def generate_random_walk_singleThread(g, start_nodes, length, multi_length, restart_prob, Q=None):
     """
     get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
+    
     Parameters
     ----------
     g: dgl.graph
@@ -246,6 +251,7 @@ def generate_random_walk_singleThread(g, start_nodes, length, multi_length, rest
 def generate_random_walk_multiThread(g, start_nodes, length, multi_length, restart_prob):
     """
     get random walk from block of target node, by mutliThread accelerating
+    
     Parameters
     ----------
     g: dgl.graph
@@ -285,6 +291,7 @@ def generate_random_walk_multiThread_high_level(g, start_nodes_block, paces_bloc
     """
     get random walk from block of target node by mutliThread accelerating, generate new random walk
     if the length of pace from target node is not enough, and store in Queue if necessary
+    
     Parameters
     ----------
     g: dgl.graph
@@ -398,8 +405,9 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
     the predetermined subgraph size, we sample the available nodes repeatedly until an
     overlapping subgraph with the set size is obtained."
     described in [CoLA Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning](https://arxiv.org/abs/2103.00113)
-    Parameters:
-    -----------
+    
+    Parameters
+    ----------
     length : int
         size of subgraph
     """
@@ -412,13 +420,15 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
         add self_loop to handle isolated nodes as soon as
         the nodes which belong to a community with a size smaller than
         it is a little different from author's paper.
-        Parameters:
-        -----------
+        
+        Parameters
+        ----------
         g: DGLGraph object
             input graph to generative subgraph
         start_nodes: a Tensor or array contain start node.
             input start nodes of random walk to generate subgraph
-        Return:
+        
+        Returns
         -------
         rwl: List[List]
             the list of subgraph generated

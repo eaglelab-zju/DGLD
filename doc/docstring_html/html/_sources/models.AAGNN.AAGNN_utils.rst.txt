@@ -1,5 +1,5 @@
-models.AAGNN.AAGNN\_utils module
-================================
+models.AAGNN.AAGNN\_utils 
+==========================
 
 .. automodule:: models.AAGNN.AAGNN_utils
    :members:

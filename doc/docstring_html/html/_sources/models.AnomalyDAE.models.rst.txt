@@ -1,5 +1,5 @@
-models.AnomalyDAE.models module
-===============================
+models.AnomalyDAE.models 
+=========================
 
 .. automodule:: models.AnomalyDAE.models
    :members:

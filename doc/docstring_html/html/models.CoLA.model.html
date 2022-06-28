@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>models.CoLA.model module &mdash; EagleCommunityDetection 0.0.1 documentation</title>
+  <title>models.CoLA.model &mdash; EagleCommunityDetection 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -42,8 +42,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Utils</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.common.html">utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.evaluation.html">utils.evaluation</a></li>
 </ul>
 
         </div>
@@ -60,7 +60,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>models.CoLA.model module</li>
+      <li>models.CoLA.model</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/models.CoLA.model.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -71,7 +71,7 @@
            <div itemprop="articleBody">
              
   <section id="module-models.CoLA.model">
-<span id="models-cola-model-module"></span><h1>models.CoLA.model module<a class="headerlink" href="#module-models.CoLA.model" title="Permalink to this headline"></a></h1>
+<span id="models-cola-model"></span><h1>models.CoLA.model<a class="headerlink" href="#module-models.CoLA.model" title="Permalink to this headline"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="models.CoLA.model.CoLA">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.CoLA.model.</span></span><span class="sig-name descname"><span class="pre">CoLA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1433</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#CoLA"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.CoLA" title="Permalink to this definition"></a></dt>
@@ -79,29 +79,25 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.CoLA.fit">
 <span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#CoLA.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.CoLA.fit" title="Permalink to this definition"></a></dt>
-<dd><p>[summary]
-:param g: [input graph with feature named “feat” in g.ndata.]
-:type g: [dgl.Graph]
-:param device: [device], by default ‘cpu’
-:type device: str, optional
-:param batch_size: [batch size for training], by default 300
-:type batch_size: int, optional
-:param lr: [learning rate for training], by default 0.003
-:type lr: float, optional
-:param weight_decay: [weight decay for training], by default 1e-5
-:type weight_decay: [float], optional
-:param num_workers: [num_workers using in <cite>pytorch DataLoader</cite>], by default 4
-:type num_workers: int, optional
-:param num_epoch: [number of epoch for training], by default 100
-:type num_epoch: int, optional
-:param logdir: [tensorboard logdir], by default ‘tmp’
-:type logdir: str, optional</p>
+<dd><p>train the model</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>return the model self.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.Graph</em>) – input graph with feature named “feat” in g.ndata.</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device, by default ‘cpu’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – batch size for training, by default 300</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – learning rate for training, by default 0.003</p></li>
+<li><p><strong>weight_decay</strong> (<em>float</em><em>, </em><em>optional</em>) – weight decay for training, by default 1e-5</p></li>
+<li><p><strong>num_workers</strong> (<em>int</em><em>, </em><em>optional</em>) – num_workers using in <cite>pytorch DataLoader</cite>, by default 4</p></li>
+<li><p><strong>num_epoch</strong> (<em>int</em><em>, </em><em>optional</em>) – number of epoch for training, by default 100</p></li>
+<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – tensorboard logdir, by default ‘tmp’</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>[self]</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – return the model self.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>model</p>
 </dd>
 </dl>
 </dd></dl>
@@ -109,23 +105,23 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.CoLA.predict">
 <span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_test_rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#CoLA.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.CoLA.predict" title="Permalink to this definition"></a></dt>
-<dd><p>[summary]</p>
+<dd><p>test model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>g</strong> (<em>[</em><em>type</em><em>]</em>) – [description]</p></li>
-<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – [description], by default ‘cpu’</p></li>
-<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – [description], by default 300</p></li>
-<li><p><strong>num_workers</strong> (<em>int</em><em>, </em><em>optional</em>) – [description], by default 4</p></li>
-<li><p><strong>auc_test_rounds</strong> (<em>int</em><em>, </em><em>optional</em>) – [description], by default 256</p></li>
-<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – [description], by default ‘tmp’</p></li>
+<li><p><strong>g</strong> (<em>type</em>) – description</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – description, by default ‘cpu’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – description, by default 300</p></li>
+<li><p><strong>num_workers</strong> (<em>int</em><em>, </em><em>optional</em>) – description, by default 4</p></li>
+<li><p><strong>auc_test_rounds</strong> (<em>int</em><em>, </em><em>optional</em>) – description, by default 256</p></li>
+<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – description, by default ‘tmp’</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>[description]</p>
+<dd class="field-even"><p><strong>predict_score_arr</strong> – description</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>[type]</p>
+<dd class="field-odd"><p>numpy.ndarray</p>
 </dd>
 </dl>
 </dd></dl>
@@ -139,15 +135,24 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.CoLAModel.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_batchg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_batchg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_in_feat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#CoLAModel.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.CoLAModel.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>The function to compute forward and loss of SL-GAD model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos_batchg</strong> (<em>DGL.Graph</em>) – batch of positive subgraph</p></li>
+<li><p><strong>pos_in_feat</strong> (<em>Torch.tensor</em>) – node features of positive subgraph batch</p></li>
+<li><p><strong>neg_batchg</strong> (<em>DGL.Graph</em>) – batch of negative subgraph</p></li>
+<li><p><strong>neg_in_feat</strong> (<em>Torch.tensor</em>) – node features of negative subgraph batch</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>pos_scores</strong> (<em>Torch.tensor</em>) – anomaly score of positive sample</p></li>
+<li><p><strong>neg_scores</strong> (<em>Torch.tensor</em>) – anomaly score of negative sample</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -161,18 +166,30 @@ registered hooks while the latter silently ignores them.</p>
 <dt class="sig sig-object py" id="models.CoLA.model.Discriminator">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.CoLA.model.</span></span><span class="sig-name descname"><span class="pre">Discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_feats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#Discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.Discriminator" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>This is a discriminator component for contrastive learning of positive subgraph and negative subgraph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>out_feats</strong> (<em>int</em>) – The number of class to distinguish</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.Discriminator.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readout_emb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_emb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.Discriminator.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>Functions that compute bilinear of subgraph embedding and node embedding</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>readout_emb</strong> (<em>Torch.tensor</em>) – the subgraph embedding</p></li>
+<li><p><strong>anchor_emb</strong> (<em>Totch.tensor</em>) – the node embedding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>logits</strong> – the logit after bilinear</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Torch.tensor</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -183,7 +200,19 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.Discriminator.weights_init">
 <span class="sig-name descname"><span class="pre">weights_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#Discriminator.weights_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.Discriminator.weights_init" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Functions that init weights of discriminator component</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<em>nn.Parameter</em>) – the parameter to initial</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -191,18 +220,39 @@ registered hooks while the latter silently ignores them.</p>
 <dt class="sig sig-object py" id="models.CoLA.model.OneLayerGCN">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.CoLA.model.</span></span><span class="sig-name descname"><span class="pre">OneLayerGCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#OneLayerGCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.OneLayerGCN" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>A onelayer subgraph GCN can use global adjacent metrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em>) – the feature dimensions of input data</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>global_adg</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether use the global information of node, here means the degree matrix, default True</p></li>
+<li><p><strong>args</strong> (<em>parser</em><em>, </em><em>optional</em>) – extra custom made of model, default None</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.OneLayerGCN.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_feat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#OneLayerGCN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.OneLayerGCN.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>The function to compute forward of GCN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – the list of subgraph, to compute forward and loss</p></li>
+<li><p><strong>in_feat</strong> (<em>Torch.tensor</em>) – the node feature of geive subgraph</p></li>
+<li><p><strong>anchor_embs</strong> (<em>Torch.tensor</em>) – the anchor embeddings</p></li>
+<li><p><strong>attention</strong> (<em>Functions</em><em>, </em><em>optional</em>) – attention machanism, default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph node after one layer GCN</p></li>
+<li><p><strong>subgraph_pool_emb</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding</p></li>
+<li><p><strong>anchor_out</strong> (<em>Torch.tensor</em>) – the embedding of batch anchor node</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py attribute">
@@ -217,31 +267,47 @@ registered hooks while the latter silently ignores them.</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.CoLA.model.</span></span><span class="sig-name descname"><span class="pre">OneLayerGCNWithGlobalAdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#OneLayerGCNWithGlobalAdg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.OneLayerGCNWithGlobalAdg" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
 <p>a onelayer subgraph GCN can use global adjacent metrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em>) – the feature dimensions of input data</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>global_adg</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether use the global information of node, here means the degree matrix, default True</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.OneLayerGCNWithGlobalAdg.forward">
 <span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subgraph_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#OneLayerGCNWithGlobalAdg.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.OneLayerGCNWithGlobalAdg.forward" title="Permalink to this definition"></a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
+<dd><p>The function to compute forward of GCN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – the list of subgraph, to compute forward and loss</p></li>
+<li><p><strong>in_feat</strong> (<em>Torch.tensor</em>) – the node feature of geive subgraph</p></li>
+<li><p><strong>anchor_embs</strong> (<em>Torch.tensor</em>) – the anchor embeddings</p></li>
+<li><p><strong>attention</strong> (<em>Functions</em><em>, </em><em>optional</em>) – attention machanism, default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph node after one layer GCN</p></li>
+<li><p><strong>subgraph_pool_emb</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding</p></li>
+<li><p><strong>anchor_out</strong> (<em>Torch.tensor</em>) – the embedding of batch anchor node</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="models.CoLA.model.OneLayerGCNWithGlobalAdg.reset_parameters">
 <span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/models/CoLA/model.html#OneLayerGCNWithGlobalAdg.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#models.CoLA.model.OneLayerGCNWithGlobalAdg.reset_parameters" title="Permalink to this definition"></a></dt>
-<dd><p>Reinitialize learnable parameters.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The model parameters are initialized as in the
+<dd><p>Reinitialize learnable parameters.
+The model parameters are initialized as in the
 <a class="reference external" href="https://github.com/tkipf/gcn/blob/master/gcn/layers.py">original implementation</a>
 where the weight <span class="math notranslate nohighlight">\(W^{(l)}\)</span> is initialized using Glorot uniform initialization
 and the bias is initialized to be zero.</p>
-</div>
 </dd></dl>
 
 <dl class="py attribute">

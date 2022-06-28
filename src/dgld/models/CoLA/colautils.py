@@ -16,12 +16,50 @@ from utils.common import cprint, lcprint
 
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
+    """
+    calculate loss function in Bayesian Personalized Ranking
+
+    Parameters
+    ----------
+    pos_scores : torch.Tensor
+        anomaly score of positive sample
+    neg_scores : torch.Tensor
+        anomaly score of negative sample
+    criterion : torch.nn.Module
+        loss function calculation funciton
+    device : str
+        device for calculation
+    
+    Returns
+    -------
+    loss_accum : torch.Tensor
+        loss of single epoch
+    """
     batch_size = pos_scores.shape[0]
     labels = torch.ones(batch_size).to(device)
     return criterion(pos_scores-neg_scores, labels)
 
 
 def loss_fun_BCE(pos_scores, neg_scores, criterion, device):
+    """
+    calculate loss function in Binary CrossEntropy Loss
+
+    Parameters
+    ----------
+    pos_scores : torch.Tensor
+        anomaly score of positive sample
+    neg_scores : torch.Tensor
+        anomaly score of negative sample
+    criterion : torch.nn.Module
+        loss function calculation funciton
+    device : str
+        device for calculation
+    
+    Returns
+    -------
+    loss_accum : torch.Tensor
+        loss of single epoch
+    """
     scores = torch.cat([pos_scores, neg_scores], dim=0)
     batch_size = pos_scores.shape[0]
     pos_label = torch.ones(batch_size).to(device)
@@ -34,6 +72,14 @@ loss_fun = loss_fun_BCE
 
 
 def get_parse():
+    """
+    get hyperparameter by parser from command line
+
+    Returns
+    -------
+    final_args_dict : dictionary
+        dict of args parser
+    """
     parser = argparse.ArgumentParser(
         description='CoLA: Self-Supervised Contrastive Learning for Anomaly Detection')
     # "Cora", "Pubmed", "Citeseer"
@@ -119,29 +165,28 @@ def get_parse():
 
 
 def train_epoch(epoch, loader, net, device, criterion, optimizer):
-    """train_epoch [summary]
-
-    [extended_summary]
+    """train_epoch, train model in one epoch
 
     Parameters
     ----------
-    epoch : [int]
-        [epoch number during training]
-    loader : [torch.nn.DataLoader]
-        [dataloader for training]
-    net : [torch.nn.Module]
-        [model]
-    device : [str]
-        [device for training]
-    criterion : [type]
-        [loss]
-    optimizer : [torch.optim.Adam]
-        [optimizer for training]
+    epoch : int
+        epoch number during training
+    loader : torch.nn.DataLoader
+        dataloader for training
+    net : torch.nn.Module
+        model
+    device : str
+        device for training
+    criterion : type
+        loss
+    optimizer : torch.optim.Adam
+        optimizer for training
+    
     Returns
     -------
-    [type]
-        [description]
-    """    
+    loss_accum : torch.Tensor
+        loss of single epoch
+    """
     loss_accum = 0
     net.train()
     for step, (pos_subgraph, neg_subgraph) in enumerate(tqdm(loader, desc="Iteration")):
@@ -163,18 +208,26 @@ def train_epoch(epoch, loader, net, device, criterion, optimizer):
 
 
 def test_epoch(epoch, loader, net, device, criterion):
-    """[summary]
-    Parameters:
-    -----------
-        epoch ([int]]): [epoch number during testing]
-        loader ([torch.nn.DataLoader]): [dataloader for testing]
-        net ([torch.nn.Module]): [model]
-        device ([str]): [device for testing]
-        criterion ([torch.nn.Module]): [loss, the same as the loss during training]
-    Returns:
-    --------
-        [numpy.ndarray]: [anomaly score]
-    """     
+    """test_epoch, test model in one epoch
+
+    Parameters
+    ----------
+    epoch : int
+        epoch number during testin
+    loader : torch.nn.DataLoader
+        dataloader for testing
+    net : torch.nn.Module
+        model
+    device : str
+        device for testing
+    criterion : torch.nn.Module
+        loss, the same as the loss during training
+    
+    Returns
+    -------
+    predict_scores : numpy.ndarray
+        anomaly score
+    """
     loss_accum = 0
     net.eval()
     predict_scores = []

@@ -1,5 +1,5 @@
-models.ComGA.comga\_utils module
-================================
+models.ComGA.comga\_utils 
+==========================
 
 .. automodule:: models.ComGA.comga_utils
    :members:
