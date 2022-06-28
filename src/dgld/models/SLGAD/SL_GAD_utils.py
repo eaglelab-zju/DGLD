@@ -99,7 +99,7 @@ def get_parse():
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--device', type=int, default=None)
+    parser.add_argument('--device', type=int, default=0)
     parser.add_argument('--logdir', type=str, default='tmp')  
     parser.add_argument('--global_adg', type=bool, default=True)  
     parser.add_argument('--alpha', type = float, default = 1.0)
@@ -114,7 +114,7 @@ def get_parse():
     parser.add_argument('--expid', type=int)
 
     args = parser.parse_args()
-    assert args.expid is not None, "experiment id needs to be assigned."
+    # assert args.expid is not None, "experiment id needs to be assigned."
 
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)

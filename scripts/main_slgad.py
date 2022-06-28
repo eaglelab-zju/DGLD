@@ -21,26 +21,26 @@ if __name__ == '__main__':
     """
     using GraphNodeAnomalyDectionDataset 
     """
-    args = get_parse()
-    gnd_dataset = GraphNodeAnomalyDectionDataset("Cora")
-    g = gnd_dataset[0]
-    label = gnd_dataset.anomaly_label
-    model = SL_GAD(in_feats=1433)
-    model.fit(g, num_epoch=1, device='cpu')
-    result = model.predict(g, auc_test_rounds=2)
-    print(split_auc(label, result))
+    # args = get_parse()
+    # gnd_dataset = GraphNodeAnomalyDectionDataset("Cora")
+    # g = gnd_dataset[0]
+    # label = gnd_dataset.anomaly_label
+    # model = SL_GAD(in_feats=1433)
+    # model.fit(g, num_epoch=1, device='cpu')
+    # result = model.predict(g, auc_test_rounds=2)
+    # print(split_auc(label, result))
 
     """
     custom dataset
     """
-    args = get_parse()
-    g = dgl.graph((torch.tensor([0, 1, 2, 4, 6, 7]), torch.tensor([3, 4, 5, 2, 5, 2])))
-    g.ndata['feat'] = torch.rand((8, 4))
-    label = np.array([1, 2, 0, 0, 0, 0, 0, 0])
-    model = SL_GAD(in_feats=4)
-    model.fit(g, num_epoch=1, device='cpu')
-    result = model.predict(g, auc_test_rounds=2)
-    print(split_auc(label, result))
+    # args = get_parse()
+    # g = dgl.graph((torch.tensor([0, 1, 2, 4, 6, 7]), torch.tensor([3, 4, 5, 2, 5, 2])))
+    # g.ndata['feat'] = torch.rand((8, 4))
+    # label = np.array([1, 2, 0, 0, 0, 0, 0, 0])
+    # model = SL_GAD(in_feats=4)
+    # model.fit(g, num_epoch=1, device='cpu')
+    # result = model.predict(g, auc_test_rounds=2)
+    # print(split_auc(label, result))
     
     """[command line mode]
     test command line mode
