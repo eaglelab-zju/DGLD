@@ -449,8 +449,6 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
             block = max(1, int(multiprocessing.cpu_count() / 4))
         else:
             block = 1
-            print('block = 1')
-            exit()
         # block = 1
         total_len = len(start_nodes)
         bar = int(total_len / block) + 1
