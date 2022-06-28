@@ -16,7 +16,7 @@ def get_parse():
     parser = argparse.ArgumentParser(
         description='ComGA: Community-Aware Attributed Graph Anomaly Detection')
     # "Cora", "Pubmed", "Citeseer","BlogCatalog","Flickr","ACM", "ogbn-arxiv"
-    parser.add_argument('--dataset', type=str, default='BlogCatalog')
+    parser.add_argument('--dataset', type=str, default='Cora')
     parser.add_argument('--seed', type=int, default=7)
     # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')

@@ -455,7 +455,7 @@ class SL_GAD_Model(nn.Module):
             self.alpha = args.alpha
             self.beta = args.beta
         if args == None:
-            self.device = 'cuda:' + '1'
+            self.device = 'cpu'
         else:
             self.device = 'cuda:' + str(args.device)
         self.b_xent = nn.BCEWithLogitsLoss(reduction='none', pos_weight=torch.tensor([1]).to(self.device))

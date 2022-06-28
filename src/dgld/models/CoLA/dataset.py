@@ -1,4 +1,9 @@
 import os
+import sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+sys.path.append(current_dir)
+
 from os import path as osp
 import torch.nn.functional as F
 import joblib
@@ -11,8 +16,7 @@ import dgl
 from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
-from DGLD.common.dataset import GraphNodeAnomalyDectionDataset
-from DGLD.common.sample import CoLASubGraphSampling, UniformNeighborSampling
+from sample import CoLASubGraphSampling, UniformNeighborSampling
 
 def safe_add_self_loop(g):
     newg = dgl.remove_self_loop(g)

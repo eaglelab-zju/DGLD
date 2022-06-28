@@ -1,6 +1,12 @@
 """
 This is dataset loading and processing program for SL-GAD
 """
+import os
+import sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+sys.path.append(current_dir)
+
 
 import os
 from os import path as osp
@@ -16,11 +22,8 @@ import dgl
 from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
-import sys 
-sys.path.append('.\\.\\')
-
-from common.dataset import GraphNodeAnomalyDectionDataset
-from common.sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
+from dataset import GraphNodeAnomalyDectionDataset
+from sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
 from datetime import datetime
 
 # torch.set_default_tensor_type(torch.DoubleTensor)

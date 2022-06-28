@@ -6,8 +6,13 @@ import torch
 import shutil
 import sys
 import os
+import os
+import sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+sys.path.append(current_dir)
 
-from DGLD.utils.print import cprint, lcprint
+from print import cprint, lcprint
 
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):

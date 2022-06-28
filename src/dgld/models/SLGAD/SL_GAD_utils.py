@@ -4,10 +4,13 @@ import numpy as np
 import torch
 
 import shutil
-import sys
 import os
-sys.path.append('../../')
-from utils.print import cprint, lcprint
+import sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+sys.path.append(current_dir)
+
+from print import cprint, lcprint
 from datetime import datetime
 
 # torch.set_printoptions(precision=8)
@@ -95,7 +98,7 @@ def get_parse():
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--device', type=int, default=0)
+    parser.add_argument('--device', type=int, default=None)
     parser.add_argument('--logdir', type=str, default='tmp')  
     parser.add_argument('--global_adg', type=bool, default=True)  
     parser.add_argument('--alpha', type = float, default = 1.0)

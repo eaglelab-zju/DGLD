@@ -1,11 +1,19 @@
 # Author: Peng Zhang <zzhangpeng@zju.edu.cn>
 # License: BSD 2 clause
-from DGLD.common.dataset import GraphNodeAnomalyDectionDataset
-from DGLD.common.evaluation import split_auc
-from DGLD.AAGNN import AAGNN
-from DGLD.AAGNN import AAGNN_batch
+import os
+import sys
+current_file_name = __file__
+current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/src'
+sys.path.append(current_dir)
+print(current_dir)
 
-from DGLD.AAGNN import get_parse
+import dgld
+
+from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
+from dgld.utils.evaluation import split_auc
+from dgld.models.AAGNN import AAGNN_batch
+
+from dgld.models.AAGNN import get_parse
 import dgl
 import torch
 import numpy as np

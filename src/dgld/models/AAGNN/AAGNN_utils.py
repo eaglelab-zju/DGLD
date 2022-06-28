@@ -48,7 +48,7 @@ def get_parse():
                         help='Attribute penalty balance parameter')
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
-    parser.add_argument('--device', type=str, default='0')
+    parser.add_argument('--device', type=str, default='cpu')
     
 
 

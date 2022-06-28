@@ -20,10 +20,11 @@ from dgl import backend as F
 import sys
 import os
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
-from common.utils import is_bidirected, load_ogbn_arxiv, load_BlogCatalog, load_Flickr,load_ACM
-from common.evaluation import split_auc
+
+from common import is_bidirected, load_ogbn_arxiv, load_BlogCatalog, load_Flickr,load_ACM
+from evaluation import split_auc
 #'BlogCatalog'  'Flickr' 'cora'  'citeseer' 'pubmed' 'ACM' 'ogbn-arxiv'
 
 
@@ -457,7 +458,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         a_score : numpy.float
         s_score : numpy.float
         """
-        return split_auc(self.anomaly_label, prediction,self.dataset_name)
+        return split_auc(self.anomaly_label, prediction)
 
     def evaluation_multiround(self, predict_score_arr):
         '''
