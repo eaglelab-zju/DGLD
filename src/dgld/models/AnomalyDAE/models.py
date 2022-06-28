@@ -144,14 +144,16 @@ class AnomalyDAE(nn.Module):
 
 def init_weights(module: nn.Module) -> None:
     """Init Module Weights
-    ```python
-        for module in self.modules():
-            init_weights(module)
-    ```
+
     Parameters
     ----------
     module : nn.Module
+        models to initialize linear weight
 
+    Examples
+    -------
+    >>> for module in self.modules():
+    >>>    init_weights(module)
     """
     if isinstance(module, nn.Linear):
         # TODO: different initialization
