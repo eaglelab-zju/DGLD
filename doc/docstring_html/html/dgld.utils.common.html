@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.utils.common &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dgld.utils.common</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>dgld.utils.common</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dgld.utils.common.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dgld-utils-common">
+<h1>dgld.utils.common<a class="headerlink" href="#dgld-utils-common" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-dgld.utils.common"></span><dl class="py class">
+<dt class="sig sig-object py" id="dgld.utils.common.ExpRecord">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">ExpRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'result.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#ExpRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ExpRecord" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>create a read a existed csv file to record the experiments</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> (<em>str</em><em>, </em><em>filepath</em>) – description, by default ‘result.csv’</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">exprecord</span> <span class="o">=</span> <span class="n">ExpRecord</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argsdict</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argsdict</span><span class="p">[</span><span class="s1">&#39;auc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">argsdict</span><span class="p">[</span><span class="s1">&#39;info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;test&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">exprecord</span><span class="o">.</span><span class="n">add_record</span><span class="p">(</span><span class="n">argsdict</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.ExpRecord.add_record">
+<span class="sig-name descname"><span class="pre">add_record</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_record</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#ExpRecord.add_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ExpRecord.add_record" title="Permalink to this definition"></a></dt>
+<dd><p>summary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict_record</strong> (<em>Dict</em>) – record to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.ExpRecord.load_record">
+<span class="sig-name descname"><span class="pre">load_record</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#ExpRecord.load_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ExpRecord.load_record" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.ExpRecord.save_record">
+<span class="sig-name descname"><span class="pre">save_record</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#ExpRecord.save_record"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ExpRecord.save_record" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.utils.common.Multidict2dict">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">Multidict2dict</span></span><a class="reference internal" href="_modules/dgld/utils/common.html#Multidict2dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.Multidict2dict" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>convert multilayer Dict to a single layer Dict</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>Dict</em>) – </p></li>
+<li><p><strong>Dict</strong> (<em>input</em>) – {“a”:{“as”:”value”}}</p></li>
+<li><p><strong>like{</strong> (<em>Maybe multilayer</em>) – {“a”:{“as”:”value”}}</p></li>
+<li><p><strong>}</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Dict</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>a single layer Dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tool</span> <span class="o">=</span> <span class="n">Multidict2dict</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="s2">&quot;1layer&quot;</span><span class="p">:{</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;2layer_one&quot;</span><span class="p">:{</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="s2">&quot;3layers1&quot;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>           <span class="s2">&quot;3layers2&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>       <span class="s2">&quot;2layer_two&quot;</span><span class="p">:</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span>   <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">tool</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">{</span><span class="s1">&#39;3layers1&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;3layers2&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;2layer_two&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.Multidict2dict.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#Multidict2dict.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.Multidict2dict.solve" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.utils.common.ParameterShower">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">ParameterShower</span></span><a class="reference internal" href="_modules/dgld/utils/common.html#ParameterShower"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ParameterShower" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>show Parameter using texttable</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="s2">&quot;1layer&quot;</span><span class="p">:{</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;2layer_one&quot;</span><span class="p">:{</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s2">&quot;3layers1&quot;</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                <span class="s2">&quot;3layers2&quot;</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="p">},</span>
+<span class="gp">&gt;&gt;&gt; </span>            <span class="s2">&quot;2layer_two&quot;</span><span class="p">:</span><span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span>        <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>    <span class="p">}</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tool</span> <span class="o">=</span> <span class="n">ParameterShower</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tool</span><span class="o">.</span><span class="n">show_multilayer</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+<span class="go">+------------+-------+</span>
+<span class="go">|    Name    | Value |</span>
+<span class="go">+============+=======+</span>
+<span class="go">| 3layers1   | 4     |</span>
+<span class="go">+------------+-------+</span>
+<span class="go">| 3layers2   | 2     |</span>
+<span class="go">+------------+-------+</span>
+<span class="go">| 2layer_two | 2     |</span>
+<span class="go">+------------+-------+</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.ParameterShower.show_dict">
+<span class="sig-name descname"><span class="pre">show_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dgld/utils/common.html#ParameterShower.show_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ParameterShower.show_dict" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.common.ParameterShower.show_multilayer">
+<span class="sig-name descname"><span class="pre">show_multilayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dgld/utils/common.html#ParameterShower.show_multilayer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ParameterShower.show_multilayer" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.allclose">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">allclose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rtol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">atol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#allclose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.allclose" title="Permalink to this definition"></a></dt>
+<dd><p>This function checks if a and b satisfy the condition:
+<a href="#id1"><span class="problematic" id="id2">|a - b|</span></a> &lt;= atol + rtol * <a href="#id3"><span class="problematic" id="id4">|b|</span></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input</strong> (<em>Tensor</em>) – first tensor to compare</p></li>
+<li><p><strong>other</strong> (<em>Tensor</em>) – second tensor to compare</p></li>
+<li><p><strong>atol</strong> (<em>float</em><em>, </em><em>optional</em>) – absolute tolerance. Default: 1e-08</p></li>
+<li><p><strong>rtol</strong> (<em>float</em><em>, </em><em>optional</em>) – relative tolerance. Default: 1e-05</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>res</strong> – True for close, False for not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.bar_progress">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">bar_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">80</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#bar_progress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.bar_progress" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.cprint">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">cprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#cprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.cprint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.is_bidirected">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">is_bidirected</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#is_bidirected"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.is_bidirected" title="Permalink to this definition"></a></dt>
+<dd><p>Return whether the graph is a bidirected graph.
+A graph is bidirected if for any edge <span class="math notranslate nohighlight">\((u, v)\)</span> in <span class="math notranslate nohighlight">\(G\)</span> with weight <span class="math notranslate nohighlight">\(w\)</span>,
+there exists an edge <span class="math notranslate nohighlight">\((v, u)\)</span> in <span class="math notranslate nohighlight">\(G\)</span> with the same weight.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>g</strong> (<em>DGL.graph</em>) – </p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>res</strong> – True for bidirected, False for not</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.lcprint">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">lcprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'green'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#lcprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.lcprint" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.load_ACM">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">load_ACM</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/fangmengcheng/Downloads/DGLD-main</span> <span class="pre">7/src/dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#load_ACM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.load_ACM" title="Permalink to this definition"></a></dt>
+<dd><p>load ACM dgl graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raw_dir</strong> (<em>str</em>) – Data path. Supports user customization.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DGL.graph</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_ACM</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.load_BlogCatalog">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">load_BlogCatalog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/fangmengcheng/Downloads/DGLD-main</span> <span class="pre">7/src/dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#load_BlogCatalog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.load_BlogCatalog" title="Permalink to this definition"></a></dt>
+<dd><p>load BlogCatalog dgl graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raw_dir</strong> (<em>str</em>) – Data path. Supports user customization.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DGL.graph</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_BlogCatalog</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.load_Flickr">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">load_Flickr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/fangmengcheng/Downloads/DGLD-main</span> <span class="pre">7/src/dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#load_Flickr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.load_Flickr" title="Permalink to this definition"></a></dt>
+<dd><p>load Flickr dgl graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raw_dir</strong> (<em>str</em>) – Data path. Supports user customization.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>graph</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DGL.graph</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graph</span><span class="o">=</span><span class="n">load_Flickr</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.load_mat_data2dgl">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">load_mat_data2dgl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#load_mat_data2dgl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.load_mat_data2dgl" title="Permalink to this definition"></a></dt>
+<dd><p>load data from .mat file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_path</strong> (<em>str</em>) – the file to read in</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – print info, by default True</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>graph</strong> – the graph read from data_path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DGL.graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.load_ogbn_arxiv">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">load_ogbn_arxiv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/fangmengcheng/Downloads/DGLD-main</span> <span class="pre">7/src/dgld/data/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#load_ogbn_arxiv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.load_ogbn_arxiv" title="Permalink to this definition"></a></dt>
+<dd><p>Read ogbn-arxiv from dgl.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>raw_dir</strong> (<em>str</em>) – Data path. Supports user customization.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>graph</strong> – the graph of ogbn-arxiv</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dgl.graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.loadargs_from_json">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">loadargs_from_json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#loadargs_from_json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.loadargs_from_json" title="Permalink to this definition"></a></dt>
+<dd><p>load args from a format json file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<em>file name</em>) – json filename</p></li>
+<li><p><strong>indent</strong> (<em>int</em><em>, </em><em>optional</em>) – description, by default 4</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>Dict</strong> – args parameters</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>json</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.move_start_node_fisrt">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">move_start_node_fisrt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#move_start_node_fisrt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.move_start_node_fisrt" title="Permalink to this definition"></a></dt>
+<dd><p>return a new pace in which the start node is in the first place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pace</strong> (<em>list</em>) – the subgraph of start node</p></li>
+<li><p><strong>start_node</strong> (<em>int</em>) – target node</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>pace</strong> – subgraph whose first value is start_node</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.print_format_dict">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">print_format_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_input</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#print_format_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.print_format_dict" title="Permalink to this definition"></a></dt>
+<dd><p>print dict with json for a decent show</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dict_input</strong> (<em>Dict</em>) – dict to print</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.print_shape">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">print_shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#print_shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.print_shape" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.ranknorm">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">ranknorm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#ranknorm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.ranknorm" title="Permalink to this definition"></a></dt>
+<dd><p>return the 1-norm of rankdata of input_arr</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_arr</strong> (<em>list</em>) – the data to be ranked</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rank</strong> – the 1-norm of rankdata</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.saveargs2json">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">saveargs2json</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">jsonobject</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#saveargs2json"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.saveargs2json" title="Permalink to this definition"></a></dt>
+<dd><p>save args parameters to json with a decent format</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>jsonobject</strong> (<em>Dict</em>) – dict object to save</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – file name</p></li>
+<li><p><strong>indent</strong> (<em>int</em><em>, </em><em>optional</em>) – description, by default 4</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.common.seed_everything">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.common.</span></span><span class="sig-name descname"><span class="pre">seed_everything</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/common.html#seed_everything"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.common.seed_everything" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

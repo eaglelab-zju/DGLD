@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.SLGAD.model &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dgld.models.SLGAD.model</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>dgld.models.SLGAD.model</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dgld.models.SLGAD.model.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dgld-models-slgad-model">
+<h1>dgld.models.SLGAD.model<a class="headerlink" href="#dgld-models-slgad-model" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-dgld.models.SLGAD.model"></span><dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.Discriminator">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">Discriminator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">out_feats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#Discriminator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.Discriminator" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>This is a discriminator component for contrastive learning of positive subgraph and negative subgraph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>out_feats</strong> (<em>int</em>) – The number of class to distinguish</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.Discriminator.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readout_emb</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_emb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#Discriminator.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.Discriminator.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that compute bilinear of subgraph embedding and node embedding</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>readout_emb</strong> (<em>Torch.tensor</em>) – the subgraph embedding</p></li>
+<li><p><strong>anchor_emb</strong> (<em>Totch.tensor</em>) – the node embedding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>logits</strong> – the logit after bilinear</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Torch.tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.Discriminator.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.SLGAD.model.Discriminator.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.Discriminator.weights_init">
+<span class="sig-name descname"><span class="pre">weights_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#Discriminator.weights_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.Discriminator.weights_init" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that init weights of discriminator component</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<em>nn.Parameter</em>) – the parameter to initial</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCN">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">OneLayerGCN</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCN"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCN" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>A onelayer subgraph GCN can use global adjacent metrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of input data, default 300</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>bias</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether the bias of model exists or not, default True</p></li>
+<li><p><strong>args</strong> (<em>parser</em><em>, </em><em>optional</em>) – extra custom made of model, default None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCN.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_feat</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCN.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCN.forward" title="Permalink to this definition"></a></dt>
+<dd><p>The function to compute forward and loss of model with given subgraph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – the list of subgraph, to compute forward and loss</p></li>
+<li><p><strong>in_feat</strong> (<em>Torch.tensor</em>) – the node feature of geive subgraph</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph node after one layer GCN</p></li>
+<li><p><strong>subgraph_pool_emb</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding</p></li>
+<li><p><strong>anchor_out</strong> (<em>Torch.tensor</em>) – the embedding of batch anchor node</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCN.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCN.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">OneLayerGCNWithGlobalAdg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>A onelayer subgraph GCN can use global adjacent metrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em>) – the feature dimensions of input data</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>global_adg</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether use the global information of node, here means the degree matrix, default True</p></li>
+<li><p><strong>args</strong> (<em>parser</em><em>, </em><em>optional</em>) – extra custom made of model, default None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchor_embs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.forward" title="Permalink to this definition"></a></dt>
+<dd><p>The function to compute forward of GCN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – the list of subgraph, to compute forward and loss</p></li>
+<li><p><strong>in_feat</strong> (<em>Torch.tensor</em>) – the node feature of geive subgraph</p></li>
+<li><p><strong>anchor_embs</strong> (<em>Torch.tensor</em>) – the anchor embeddings</p></li>
+<li><p><strong>attention</strong> (<em>Functions</em><em>, </em><em>optional</em>) – attention machanism, default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph node after one layer GCN</p></li>
+<li><p><strong>subgraph_pool_emb</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding</p></li>
+<li><p><strong>anchor_out</strong> (<em>Torch.tensor</em>) – the embedding of batch anchor node</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Reinitialize learnable parameters.
+.. note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>The model parameters are initialized as in the
+`original implementation &lt;https://github.com/tkipf/gcn/blob/master/gcn/layers.py&gt;`__
+where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization
+and the bias is initialized to be zero.
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.weights_init">
+<span class="sig-name descname"><span class="pre">weights_init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">m</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg.weights_init"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg.weights_init" title="Permalink to this definition"></a></dt>
+<dd><p>Init the weight of Linear</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>m</strong> (<em>nn.model</em>) – the model to transform weight of linear</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">OneLayerGCNWithGlobalAdg_simple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg_simple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>A onelayer subgraph GCN can use global adjacent metrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em>) – the feature dimensions of input data</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>global_adg</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether use the global information of node, here means the degree matrix, default True</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subgraph_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg_simple.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.forward" title="Permalink to this definition"></a></dt>
+<dd><p>The function to compute forward of GCN</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bg</strong> (<em>list of dgl.heterograph.DGLHeteroGraph</em>) – the list of subgraph, to compute forward and loss</p></li>
+<li><p><strong>in_feat</strong> (<em>Torch.tensor</em>) – the node feature of geive subgraph</p></li>
+<li><p><strong>anchor_embs</strong> (<em>Torch.tensor</em>) – the anchor embeddings</p></li>
+<li><p><strong>attention</strong> (<em>Functions</em><em>, </em><em>optional</em>) – attention machanism, default None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>h</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph node after one layer GCN</p></li>
+<li><p><strong>subgraph_pool_emb</strong> (<em>Torch.tensor</em>) – the embedding of batch subgraph after one layer GCN, aggregation of batch subgraph node embedding</p></li>
+<li><p><strong>anchor_out</strong> (<em>Torch.tensor</em>) – the embedding of batch anchor node</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#OneLayerGCNWithGlobalAdg_simple.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Reinitialize learnable parameters.
+The model parameters are initialized as in the
+<a class="reference external" href="https://github.com/tkipf/gcn/blob/master/gcn/layers.py">original implementation</a>
+where the weight <span class="math notranslate nohighlight">\(W^{(l)}\)</span> is initialized using Glorot uniform initialization
+and the bias is initialized to be zero.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.SLGAD.model.OneLayerGCNWithGlobalAdg_simple.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">SL_GAD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1433</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#SL_GAD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.003</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#SL_GAD.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD.fit" title="Permalink to this definition"></a></dt>
+<dd><p>train the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>DGL.Graph</em>) – input graph with feature named “feat” in g.ndata</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device, default ‘cpu’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – batch size for training, default 300</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – learning rate for training, default 0.003</p></li>
+<li><p><strong>weight_decay</strong> (<em>float</em><em>, </em><em>optional</em>) – weight decay for training, default 1e-5</p></li>
+<li><p><strong>num_workers</strong> (<em>int</em><em>, </em><em>optional</em>) – num_workers using in <cite>pytorch DataLoader</cite>, default 4</p></li>
+<li><p><strong>num_epoch</strong> (<em>int</em><em>, </em><em>optional</em>) – number of epoch for training, default 100</p></li>
+<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – tensorboard logdir, default ‘tmp’</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – random seed, default 42</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>self</strong> – return the model.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>mpdel</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auc_test_rounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">256</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#SL_GAD.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD.predict" title="Permalink to this definition"></a></dt>
+<dd><p>test the model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>DGL.Graph</em>) – input graph with feature named “feat” in g.ndata.</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device, default ‘cpu’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – batch size for predicting, default 300</p></li>
+<li><p><strong>num_workers</strong> (<em>int</em><em>, </em><em>optional</em>) – num_workers using in pytorch DataLoader, default 4</p></li>
+<li><p><strong>auc_test_rounds</strong> (<em>int</em><em>, </em><em>optional</em>) – number of epoch for predciting, default 256</p></li>
+<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – tensorboard logdir, default ‘tmp’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>predict_score_arr</strong> – the anomaly score of anchor nodes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Torch.tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD_Model">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.SLGAD.model.</span></span><span class="sig-name descname"><span class="pre">SL_GAD_Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">global_adg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#SL_GAD_Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD_Model" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>SL-GAD_model, given two positive subgraph and one negative subgraph, return the loss and score of target nodes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of input data, default 300</p></li>
+<li><p><strong>out_feats</strong> (<em>Torch.tensor</em><em>, </em><em>optional</em>) – the feature dimensions of output data, default 64</p></li>
+<li><p><strong>global_adg</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether use the global information of node, here means the degree matrix, default True</p></li>
+<li><p><strong>args</strong> (<em>parser</em><em>, </em><em>optional</em>) – extra custom made of model, default None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD_Model.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pos_batchg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos_in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_batchg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neg_in_feat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/SLGAD/model.html#SL_GAD_Model.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD_Model.forward" title="Permalink to this definition"></a></dt>
+<dd><p>The function to compute forward and loss of SL-GAD model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos_batchg</strong> (<em>list of DGL.Graph</em>) – two batch of positive subgraph</p></li>
+<li><p><strong>pos_in_feat</strong> (<em>list of Torch.tensor</em>) – node features of two batch of positive subgraph</p></li>
+<li><p><strong>neg_batchg</strong> (<em>list of DGL.Graph</em>) – one batch of negative subgraph</p></li>
+<li><p><strong>neg_in_feat</strong> (<em>list of Torch.tensor</em>) – node features of one batch of negative subgraph</p></li>
+<li><p><strong>args</strong> (<em>parser</em>) – extra custom made of model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>L</strong> (<em>Torch.tensor</em>) – loss of model</p></li>
+<li><p><strong>single_predict_scores</strong> (<em>Torch.tensor</em>) – anomaly score of anchor nodes</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.SLGAD.model.SL_GAD_Model.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.SLGAD.model.SL_GAD_Model.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

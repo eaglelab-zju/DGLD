@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.utils.dataset &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dgld.utils.dataset</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>dgld.utils.dataset</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dgld.utils.dataset.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="dgld-utils-dataset">
+<h1>dgld.utils.dataset<a class="headerlink" href="#dgld-utils-dataset" title="Permalink to this headline"></a></h1>
+<span class="target" id="module-dgld.utils.dataset"></span><p>This is a program about loading data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">GraphNodeAnomalyDectionDataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cora'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'/Users/fangmengcheng/Downloads/DGLD-main</span> <span class="pre">7/src/dgld/data/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cola_preprocess_features</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dgl.data.dgl_dataset.DGLDataset</span></code></p>
+<p>This is a class to get graph and inject anomaly
+follow [CoLA](<a class="reference external" href="https://arxiv.org/abs/2103.00113),inject">https://arxiv.org/abs/2103.00113),inject</a> Anomaly to the oral graph
+We fix p = 15
+and set q to 10, 15, 20, 5, 5, 20, 200 for
+BlogCatalog, Flickr, ACM, Cora, Citeseer, Pubmed and ogbn-arxiv, respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – when name == ‘custom’, using custom data and please Specify custom data by g_data.
+and Specify label by y_data. [BlogCatalog, Flickr, Cora, Citeseer, Pubmed and ogbn-arxiv] is supported default follow CoLA.</p></li>
+<li><p><strong>raw_dir</strong> (<em>str</em>) – Save data path. Supports user customization.</p></li>
+<li><p><strong>p</strong> (<em>int</em>) – anomaly injection hyperparameter follow CoLA, for structural anomaly</p></li>
+<li><p><strong>k</strong> (<em>int</em>) – anomaly injection hyperparameter follow CoLA, for contextual anomaly</p></li>
+<li><p><strong>cola_preprocess_features</strong> (<em>bool</em>) – follow the same preprocess as CoLA, default by True</p></li>
+<li><p><strong>g_data</strong> (<em>DGL.Graph</em>) – Specify custom data by g_data.</p></li>
+<li><p><strong>y_data</strong> (<em>Torch.Tensor</em>) – Specify custom label by g_data.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">GraphNodeAnomalyDectionDataset</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">GraphNodeAnomalyDectionDataset</span><span class="p">(</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.anomalies_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anomalies_idx</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.anomalies_idx" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the index of anomaly node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of anomaly node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.anomaly_label">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">anomaly_label</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.anomaly_label" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Functions that return the anomaly label of node</dt><dd><p>0: normal node
+1: structural anomaly
+2: contextual anomaly</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – anomaly label of node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.contextual_anomalies_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contextual_anomalies_idx</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.contextual_anomalies_idx" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the index of contextual anomaly node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of contextual anomaly node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.evaluation_multiround">
+<span class="sig-name descname"><span class="pre">evaluation_multiround</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predict_score_arr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.evaluation_multiround"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.evaluation_multiround" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that evaluates mulit-round result(as CoLA)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>predict_score_arr</strong> (<em>torch.Tensor</em>) – prediction to be evaluated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>final_score</strong> (<em>numpy.float</em>)</p></li>
+<li><p><strong>a_score</strong> (<em>numpy.float</em>)</p></li>
+<li><p><strong>s_score</strong> (<em>numpy.float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.evalution">
+<span class="sig-name descname"><span class="pre">evalution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.evalution"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.evalution" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that evaluate prediction for separate anomaly and global, auc as metrics</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>prediction</strong> (<em>torch.Tensor</em>) – prediction to be evaluated</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>final_score</strong> (<em>numpy.float</em>)</p></li>
+<li><p><strong>a_score</strong> (<em>numpy.float</em>)</p></li>
+<li><p><strong>s_score</strong> (<em>numpy.float</em>)</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.init_anomaly_label">
+<span class="sig-name descname"><span class="pre">init_anomaly_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.init_anomaly_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.init_anomaly_label" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that initialize the anomaly label of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label</strong> (<em>torch.Tensor</em>) – initial anomaly label of node in ‘anomaly_label’ (default None)</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.inject_contextual_anomalies">
+<span class="sig-name descname"><span class="pre">inject_contextual_anomalies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.inject_contextual_anomalies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.inject_contextual_anomalies" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that inject contextual anomaly</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.inject_structural_anomalies">
+<span class="sig-name descname"><span class="pre">inject_structural_anomalies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.inject_structural_anomalies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.inject_structural_anomalies" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that inject structural anomaly</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.node_attr">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_attr</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.node_attr" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the attribute of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – attribute of node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.normal_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">normal_idx</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.normal_idx" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the index of normal node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of normal node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.num_anomaly">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_anomaly</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.num_anomaly" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the number of anomaly node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – number of anomaly node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.num_nodes">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_nodes</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.num_nodes" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the number of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – number of node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.preprocess_features">
+<span class="sig-name descname"><span class="pre">preprocess_features</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">features</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.preprocess_features"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.preprocess_features" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that process features, here norm in row</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>features</strong> (<em>torch.Tensor</em>) – features to be processed</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.process" title="Permalink to this definition"></a></dt>
+<dd><p>Undone, Useless</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.reset_anomaly_label">
+<span class="sig-name descname"><span class="pre">reset_anomaly_label</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.reset_anomaly_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.reset_anomaly_label" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that reset the anomaly label of node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.set_anomaly_label">
+<span class="sig-name descname"><span class="pre">set_anomaly_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.set_anomaly_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.set_anomaly_label" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that set the anomaly label of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attr</strong> (<em>torch.Tensor</em>) – anomaly label assigned to node in ‘anomaly_label’</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.set_node_attr">
+<span class="sig-name descname"><span class="pre">set_node_attr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">attr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#GraphNodeAnomalyDectionDataset.set_node_attr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.set_node_attr" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that set the attribute of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>attr</strong> (<em>torch.Tensor</em>) – attribute assigned to node in ‘feat’</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="dgld.utils.dataset.GraphNodeAnomalyDectionDataset.structural_anomalies_idx">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">structural_anomalies_idx</span></span><a class="headerlink" href="#dgld.utils.dataset.GraphNodeAnomalyDectionDataset.structural_anomalies_idx" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that return the index of structural anomaly node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>out</strong> – index of structural anomaly node</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.utils.dataset.test_custom_dataset">
+<span class="sig-prename descclassname"><span class="pre">dgld.utils.dataset.</span></span><span class="sig-name descname"><span class="pre">test_custom_dataset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/dataset.html#test_custom_dataset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.dataset.test_custom_dataset" title="Permalink to this definition"></a></dt>
+<dd><p>Functions that test custom dataset loading well</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
