@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.modules.dglAug.transforms.feature_dropout &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../../" id="documentation_options" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../../_static/copybutton.js"></script>
+    <script src="../../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.modules.dglAug.transforms.feature_dropout</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.modules.dglAug.transforms.feature_dropout</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Feature Dropout&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">dgl</span> <span class="kn">import</span> <span class="n">BaseTransform</span>
+
+
+<div class="viewcode-block" id="FeatureDropout"><a class="viewcode-back" href="../../../../../dgld.modules.dglAug.transforms.feature_dropout.html#dgld.modules.dglAug.transforms.feature_dropout.FeatureDropout">[docs]</a><span class="k">class</span> <span class="nc">FeatureDropout</span><span class="p">(</span><span class="n">BaseTransform</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Augment features by randomly masking node feautres with 0.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p : float, optional</span>
+<span class="sd">        Probability of a node feautre to be masked.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    &gt;&gt;&gt; import dgl</span>
+<span class="sd">    &gt;&gt;&gt; import torch</span>
+<span class="sd">    &gt;&gt;&gt; from dglAug import FeatureDropout</span>
+
+<span class="sd">    &gt;&gt;&gt; transform = FeatureDropout(p=0.2)</span>
+<span class="sd">    &gt;&gt;&gt; g = dgl.rand_graph(4,2)</span>
+<span class="sd">    &gt;&gt;&gt; g.ndata[&#39;feat&#39;] = torch.rand((4,5))</span>
+<span class="sd">    &gt;&gt;&gt; print(g.ndata[&#39;feat&#39;])</span>
+<span class="sd">    tensor([[0.7706, 0.3505, 0.1246, 0.5076, 0.3071],</span>
+<span class="sd">        [0.5388, 0.6082, 0.5088, 0.8058, 0.4955],</span>
+<span class="sd">        [0.7638, 0.3115, 0.4265, 0.5507, 0.4404],</span>
+<span class="sd">        [0.3127, 0.0056, 0.1876, 0.9971, 0.6389]])</span>
+<span class="sd">    &gt;&gt;&gt; g = transform(g)</span>
+<span class="sd">    &gt;&gt;&gt; print(g.ndata[&#39;feat&#39;])</span>
+<span class="sd">    tensor([[0.0000, 0.0000, 0.1558, 0.6345, 0.3839],</span>
+<span class="sd">        [0.0000, 0.7603, 0.6360, 0.0000, 0.6194],</span>
+<span class="sd">        [0.0000, 0.3893, 0.5331, 0.0000, 0.5505],</span>
+<span class="sd">        [0.3909, 0.0070, 0.2345, 1.2464, 0.0000]])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">g</span>
+
+        <span class="k">for</span> <span class="n">ntype</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">ntypes</span><span class="p">:</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">apply_nodes</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">node</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;feat&#39;</span><span class="p">:</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)},</span>
+                <span class="n">ntype</span><span class="o">=</span><span class="n">ntype</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span></div>
+
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+<span class="c1">#     transform = FeatureDropout(p=0.2)</span>
+<span class="c1">#     import dgl</span>
+<span class="c1">#     g = dgl.rand_graph(4, 2)</span>
+<span class="c1">#     g.ndata[&#39;feat&#39;] = torch.rand((4, 5))</span>
+<span class="c1">#     print(g.ndata[&#39;feat&#39;])</span>
+<span class="c1">#     g = transform(g)</span>
+<span class="c1">#     print(g.ndata[&#39;feat&#39;])</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

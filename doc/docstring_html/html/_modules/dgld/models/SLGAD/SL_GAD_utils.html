@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.SLGAD.SL_GAD_utils &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.SLGAD.SL_GAD_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.SLGAD.SL_GAD_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">cprint</span><span class="p">,</span> <span class="n">lcprint</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="c1"># torch.set_printoptions(precision=8)</span>
+<span class="c1"># torch.set_default_tensor_type(torch.DoubleTensor)</span>
+
+<div class="viewcode-block" id="loss_fun_BPR"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.SL_GAD_utils.html#dgld.models.SLGAD.SL_GAD_utils.loss_fun_BPR">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BPR</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to compute loss function of Bayesian personalized ranking</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos_scores : Tensor.tensor</span>
+<span class="sd">        anomaly score of postive subgraph</span>
+<span class="sd">    neg_scores : Torch.tensor</span>
+<span class="sd">        anomaly score of negative subgrph</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    device : string</span>
+<span class="sd">        device of computation</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    L : Torch.tensor</span>
+<span class="sd">        loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">pos_scores</span><span class="o">-</span><span class="n">neg_scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="loss_fun_BCE"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.SL_GAD_utils.html#dgld.models.SLGAD.SL_GAD_utils.loss_fun_BCE">[docs]</a><span class="k">def</span> <span class="nf">loss_fun_BCE</span><span class="p">(</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to compute loss function of Bayesian personalized ranking</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pos_scores : Tensor.tensor</span>
+<span class="sd">        anomaly score of postive subgraph</span>
+<span class="sd">    neg_scores : Torch.tensor</span>
+<span class="sd">        anomaly score of negative subgrph</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    device : string</span>
+<span class="sd">        device of computation</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    L : Torch.tensor</span>
+<span class="sd">        loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_scores</span><span class="p">,</span> <span class="n">neg_scores</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">pos_scores</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">pos_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">neg_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">pos_label</span><span class="p">,</span> <span class="n">neg_label</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">criterion</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span></div>
+
+<span class="n">loss_fun</span> <span class="o">=</span> <span class="n">loss_fun_BCE</span>
+<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.SL_GAD_utils.html#dgld.models.SLGAD.SL_GAD_utils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to get dictionary of parser</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    final_args_dict : dictionary</span>
+<span class="sd">        the dictionary of arg parser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># parser = argparse.ArgumentParser(description=&#39;CoLA: Self-Supervised Contrastive Learning for Anomaly Detection&#39;)</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">)</span>  <span class="c1"># &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--embedding_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--drop_prob&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--subgraph_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># parser.add_argument(&#39;--readout&#39;, type=str, default=&#39;avg&#39;)  #max min avg  weighted_sum</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--auc_test_rounds&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_workers&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--negsamp_ratio&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>  
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--global_adg&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--alpha&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">float</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--beta&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">float</span><span class="p">,</span> <span class="n">default</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--act_function&#39;</span><span class="p">,</span> <span class="nb">type</span> <span class="o">=</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span> <span class="s2">&quot;PReLU&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--degree_coefficient&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--attention&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--positive_subgraph_cor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--negative_subgraph_cor&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--arw&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--patience&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--expid&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="c1"># assert args.expid is not None, &quot;experiment id needs to be assigned.&quot;</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span><span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span><span class="s1">&#39;Pubmed&#39;</span><span class="p">,</span><span class="s1">&#39;Flickr&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">5e-4</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">3e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span><span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span><span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BlogCatalog&#39;</span><span class="p">,</span><span class="s1">&#39;Flickr&#39;</span><span class="p">,</span><span class="s1">&#39;ACM&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">20</span>
+    
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">!=</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="o">=</span> <span class="mi">256</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span> <span class="o">=</span> <span class="mi">20</span>
+
+    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
+        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
+        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
+        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
+        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12407</span><span class="p">,</span>
+        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
+        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
+    <span class="p">}</span>
+    
+    <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;in_feats&quot;</span><span class="p">:</span><span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
+            <span class="s2">&quot;out_feats&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">embedding_dim</span><span class="p">,</span>
+            <span class="s2">&quot;global_adg&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">global_adg</span><span class="p">,</span>
+            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="s2">&quot;beta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
+            <span class="s2">&quot;lr&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
+            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
+            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+            <span class="s2">&quot;seed&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+            <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
+            <span class="s2">&quot;auc_test_rounds&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span><span class="p">,</span>
+            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">final_args_dict</span>        
+    <span class="k">return</span> <span class="n">args</span></div>
+
+<span class="c1"># import Time_Process</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<div class="viewcode-block" id="train_epoch"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.SL_GAD_utils.html#dgld.models.SLGAD.SL_GAD_utils.train_epoch">[docs]</a><span class="k">def</span> <span class="nf">train_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to train</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        the number of epoch to train</span>
+<span class="sd">    loader : GraphDataLoader</span>
+<span class="sd">        get subgraph set</span>
+<span class="sd">    net : class</span>
+<span class="sd">        model</span>
+<span class="sd">    device : string</span>
+<span class="sd">        device of computation</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    optimizer : optim.Adam</span>
+<span class="sd">        optimizer to adjust model</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    L : Torch.tensor</span>
+<span class="sd">        loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">contrastive_loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">generative_loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">number_nodes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># last_time = time.time()</span>
+    <span class="c1"># Time_Process.global_time.update_Time()</span>
+    <span class="c1"># print(&quot;done&quot;, time.time())</span>
+    <span class="c1"># print(Time_Process.global_time.last_time)</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_subgraph_1</span><span class="p">,</span> <span class="n">pos_subgraph_2</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)):</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="c1"># print(&#39;sample time : &#39;, end_time - start_time)</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># print(pos_subgraph_1)</span>
+        <span class="c1"># Time_Process.global_time.process_Time(&quot;before preprocess&quot;)</span>
+        <span class="c1"># new_time = time.time()</span>
+        <span class="c1"># print(&quot;before preprocess&quot;, time.time())</span>
+        <span class="c1"># print(&quot;enumerate&quot;, new_time - last_time)</span>
+        <span class="c1"># last_time = new_time</span>
+        <span class="c1"># print(&quot;pos_subgraph_1&quot;, pos_subgraph_1)</span>
+        <span class="c1"># print(pos_subgraph_1)</span>
+        <span class="c1"># print(pos_subgraph_1.nodes())</span>
+        <span class="c1"># exit()</span>
+
+        <span class="c1"># print(pos_subgraph_1[:20])</span>
+        <span class="c1"># print(pos_subgraph_2[:20])</span>
+        <span class="c1"># print(idx)</span>
+        <span class="c1"># exit()</span>
+
+        <span class="n">pos_subgraph_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">pos_subgraph_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">pos_subgraph</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos_subgraph_1</span><span class="p">,</span> <span class="n">pos_subgraph_2</span><span class="p">]</span> <span class="c1"># .to(device)</span>
+        <span class="n">neg_subgraph</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">posfeat_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">posfeat_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">raw_posfeat_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">]</span>
+        <span class="n">raw_posfeat_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">]</span>
+        <span class="c1"># print(torch.sum(raw_posfeat_1, dim = 1))</span>
+        <span class="c1"># print(posfeat_1.dtype)</span>
+        <span class="c1"># exit()</span>
+        <span class="n">posfeat</span> <span class="o">=</span> <span class="p">[</span><span class="n">posfeat_1</span><span class="p">,</span> <span class="n">posfeat_2</span><span class="p">,</span> <span class="n">raw_posfeat_1</span><span class="p">,</span> <span class="n">raw_posfeat_2</span><span class="p">]</span> <span class="c1"># .to(device)</span>
+        <span class="n">negfeat</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        
+        <span class="c1"># pos_scores_1, pos_scores_2, neg_scores = net(pos_subgraph_1, pos_subgraph_2, posfeat_1, posfeat_2, neg_subgraph, negfeat)</span>
+        <span class="c1"># pos_scores, neg_scores = net(pos_subgraph, posfeat, neg_subgraph, negfeat)</span>
+        
+        <span class="c1"># loss = loss_fun(pos_scores_1, pos_scores_2, neg_scores, criterion, device)</span>
+        <span class="c1"># loss = loss_fun(pos_scores, neg_scores, criterion, device)</span>
+        
+        <span class="c1"># new_time = time.time()</span>
+        <span class="c1"># print(&quot;before net&quot;, time.time())</span>
+        <span class="c1"># print(&quot;before net&quot;, new_time - last_time)</span>
+        <span class="c1"># last_time = new_time</span>
+        <span class="c1"># Time_Process.global_time.process_Time(&quot;before net&quot;)</span>
+
+        <span class="n">loss</span><span class="p">,</span> <span class="n">single_predict_scores</span><span class="p">,</span> <span class="n">single_contrastive_loss</span><span class="p">,</span> <span class="n">single_generative_loss</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">posfeat</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">negfeat</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="c1"># new_time = time.time()</span>
+        <span class="c1"># print(&quot;before backward&quot;, time.time())</span>
+        <span class="c1"># print(&quot;before backward&quot;, new_time - last_time)</span>
+        <span class="c1"># last_time = new_time</span>
+        <span class="c1"># Time_Process.global_time.process_Time(&quot;before backward&quot;)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="c1"># loss_accum += loss.item()</span>
+        <span class="c1"># print(&quot;done&quot;, time.time())</span>
+        <span class="c1"># Time_Process.global_time.process_Time(&quot;done&quot;)</span>
+        <span class="c1"># print(loss.dtype)</span>
+        <span class="c1"># print(type(loss.item()))</span>
+        <span class="c1"># print(loss.item().dtype)</span>
+        <span class="c1"># exit()</span>
+        <span class="n">loss_accum</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">contrastive_loss_accum</span> <span class="o">+=</span> <span class="n">single_contrastive_loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">generative_loss_accum</span> <span class="o">+=</span> <span class="n">single_generative_loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+        <span class="n">number_nodes</span> <span class="o">=</span> <span class="n">number_nodes</span> <span class="o">+</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="n">loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    <span class="n">contrastive_loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    <span class="n">generative_loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    <span class="c1"># print(type(loss_accum))</span>
+    <span class="c1"># print(loss_accum.dtype)</span>
+    <span class="c1"># exit()</span>
+    <span class="n">lcprint</span><span class="p">(</span><span class="s1">&#39;TRAIN==&gt;epoch&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="s1">&#39;Average training loss: </span><span class="si">{:.8f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;contrastive loss : &#39;</span><span class="p">,</span> <span class="n">contrastive_loss_accum</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;generative loss : &#39;</span><span class="p">,</span> <span class="n">generative_loss_accum</span><span class="p">)</span>
+    <span class="c1"># exit()</span>
+    <span class="k">return</span> <span class="n">loss_accum</span></div>
+
+<div class="viewcode-block" id="test_epoch"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.SL_GAD_utils.html#dgld.models.SLGAD.SL_GAD_utils.test_epoch">[docs]</a><span class="k">def</span> <span class="nf">test_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">loader</span><span class="p">,</span> <span class="n">net</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The function to train</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    epoch : int</span>
+<span class="sd">        the number of epoch to train</span>
+<span class="sd">    loader : GraphDataLoader</span>
+<span class="sd">        get subgraph set</span>
+<span class="sd">    net : class</span>
+<span class="sd">        model</span>
+<span class="sd">    device : string</span>
+<span class="sd">        device of computation</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    optimizer : optim.Adam</span>
+<span class="sd">        optimizer to adjust model</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    predict_scores : Torch.tensor</span>
+<span class="sd">        anomaly scores of anchor nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">contrastive_loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">generative_loss_accum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">net</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="c1"># predict_scores = []</span>
+    <span class="n">number_nodes</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">predict_scores</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">([</span><span class="n">loader</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="p">],</span> <span class="mf">0.0</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">step</span><span class="p">,</span> <span class="p">(</span><span class="n">pos_subgraph_1</span><span class="p">,</span> <span class="n">pos_subgraph_2</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tqdm</span><span class="p">(</span><span class="n">loader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Iteration&quot;</span><span class="p">)):</span>
+        <span class="n">pos_subgraph_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">pos_subgraph_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">pos_subgraph</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos_subgraph_1</span><span class="p">,</span> <span class="n">pos_subgraph_2</span><span class="p">]</span> <span class="c1"># .to(device)</span>
+        <span class="n">neg_subgraph</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">posfeat_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># print(posfeat_1[:20, :5])</span>
+        <span class="c1"># exit()</span>
+        <span class="n">posfeat_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">raw_posfeat_1</span> <span class="o">=</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">]</span>
+        <span class="n">raw_posfeat_2</span> <span class="o">=</span> <span class="n">pos_subgraph_2</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">]</span>
+        <span class="n">posfeat</span> <span class="o">=</span> <span class="p">[</span><span class="n">posfeat_1</span><span class="p">,</span> <span class="n">posfeat_2</span><span class="p">,</span> <span class="n">raw_posfeat_1</span><span class="p">,</span> <span class="n">raw_posfeat_2</span><span class="p">]</span> <span class="c1"># .to(device)</span>
+        <span class="n">negfeat</span> <span class="o">=</span> <span class="n">neg_subgraph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">loss</span><span class="p">,</span> <span class="n">single_predict_scores</span><span class="p">,</span> <span class="n">single_contrastive_loss</span><span class="p">,</span> <span class="n">single_generative_loss</span> <span class="o">=</span> <span class="n">net</span><span class="p">(</span><span class="n">pos_subgraph</span><span class="p">,</span> <span class="n">posfeat</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">negfeat</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="c1"># predict_scores.extend([idx.tolist(), single_predict_scores.tolist()])</span>
+        <span class="n">predict_scores</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">single_predict_scores</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+        <span class="n">loss_accum</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">contrastive_loss_accum</span> <span class="o">+=</span> <span class="n">single_contrastive_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="n">generative_loss_accum</span> <span class="o">+=</span> <span class="n">single_generative_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        
+        <span class="n">number_nodes</span> <span class="o">=</span> <span class="n">number_nodes</span> <span class="o">+</span> <span class="n">pos_subgraph_1</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+
+    <span class="n">predict_scores</span> <span class="o">=</span> <span class="n">predict_scores</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1"># print(predict_scores)</span>
+    <span class="c1"># exit()</span>
+    <span class="n">loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    <span class="n">contrastive_loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    <span class="n">generative_loss_accum</span> <span class="o">/=</span> <span class="n">number_nodes</span>
+    
+    <span class="n">lcprint</span><span class="p">(</span><span class="s1">&#39;VALID==&gt;epoch&#39;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">,</span> <span class="s1">&#39;Average valid loss: </span><span class="si">{:.8f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">),</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;contrastive loss : &#39;</span><span class="p">,</span> <span class="n">contrastive_loss_accum</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;generative loss : &#39;</span><span class="p">,</span> <span class="n">generative_loss_accum</span><span class="p">)</span>
+    <span class="c1"># print(predict_scores[:10])</span>
+    <span class="c1"># exit()</span>
+    <span class="c1"># print(len(predict_scores))</span>
+    <span class="c1"># exit()</span>
+    <span class="c1"># print(torch.tensor(predict_scores)[:20])</span>
+    <span class="c1"># exit()</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">predict_scores</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">))</span></div>
+
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

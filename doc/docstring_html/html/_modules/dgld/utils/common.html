@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.utils.common &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.utils.common</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.utils.common</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">dgl</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">rankdata</span>
+<span class="kn">from</span> <span class="nn">ogb.nodeproppred</span> <span class="kn">import</span> <span class="n">DglNodePropPredDataset</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">random</span><span class="o">,</span><span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">wget</span><span class="o">,</span><span class="nn">ssl</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">texttable</span> <span class="kn">import</span> <span class="n">Texttable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">current_dir</span> <span class="o">+</span><span class="s1">&#39;/data/&#39;</span>
+
+<div class="viewcode-block" id="print_shape"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.print_shape">[docs]</a><span class="k">def</span> <span class="nf">print_shape</span><span class="p">(</span><span class="o">*</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">t</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="print_format_dict"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.print_format_dict">[docs]</a><span class="k">def</span> <span class="nf">print_format_dict</span><span class="p">(</span><span class="n">dict_input</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;print dict with json for a decent show</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dict_input : Dict</span>
+<span class="sd">        dict to print</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dict_input</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="loadargs_from_json"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.loadargs_from_json">[docs]</a><span class="k">def</span> <span class="nf">loadargs_from_json</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;load args from a format json file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : file name</span>
+<span class="sd">        json filename</span>
+<span class="sd">    indent : int, optional</span>
+<span class="sd">        description, by default 4</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict : json</span>
+<span class="sd">        args parameters</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> 
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">args</span></div>
+
+<div class="viewcode-block" id="saveargs2json"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.saveargs2json">[docs]</a><span class="k">def</span> <span class="nf">saveargs2json</span><span class="p">(</span><span class="n">jsonobject</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;save args parameters to json with a decent format</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    jsonobject : Dict</span>
+<span class="sd">        dict object to save</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        file name</span>
+<span class="sd">    indent : int, optional</span>
+<span class="sd">        description, by default 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">write_file</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">jsonobject</span><span class="p">,</span> <span class="n">write_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="seed_everything"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.seed_everything">[docs]</a><span class="k">def</span> <span class="nf">seed_everything</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">dgl</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;PYTHONHASHSEED&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed_all</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ExpRecord"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ExpRecord">[docs]</a><span class="k">class</span> <span class="nc">ExpRecord</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;create a read a existed csv file to record the experiments</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filepath : str, filepath</span>
+<span class="sd">        description, by default &#39;result.csv&#39;</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; exprecord = ExpRecord() </span>
+<span class="sd">    &gt;&gt;&gt; argsdict = vars(args)</span>
+<span class="sd">    &gt;&gt;&gt; argsdict[&#39;auc&#39;] = 1.0</span>
+<span class="sd">    &gt;&gt;&gt; argsdict[&#39;info&#39;] = &quot;test&quot;</span>
+<span class="sd">    &gt;&gt;&gt; exprecord.add_record(argsdict)</span>
+<span class="sd">    &quot;&quot;&quot;</span> 
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;result.csv&#39;</span><span class="p">):</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
+        <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_record</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="ExpRecord.add_record"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ExpRecord.add_record">[docs]</a>    <span class="k">def</span> <span class="nf">add_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;summary</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dict_record : Dict</span>
+<span class="sd">            record to add </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">dict_record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dict_record</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dict_record</span><span class="p">:</span>
+                <span class="c1"># handle new column</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dict_record</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+            <span class="c1"># check out parameters</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dict_record</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">save_record</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ExpRecord.save_record"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ExpRecord.save_record">[docs]</a>    <span class="k">def</span> <span class="nf">save_record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="ExpRecord.load_record"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ExpRecord.load_record">[docs]</a>    <span class="k">def</span> <span class="nf">load_record</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">csv_file</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="nb">list</span><span class="p">(</span><span class="n">csv_file</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">csv_file</span><span class="o">.</span><span class="n">columns</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span> </div></div>
+
+<div class="viewcode-block" id="Multidict2dict"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.Multidict2dict">[docs]</a><span class="k">class</span> <span class="nc">Multidict2dict</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;convert multilayer Dict to a single layer Dict</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    inputs : Dict</span>
+<span class="sd">    input Dict, Maybe multilayer like{</span>
+<span class="sd">        {&quot;a&quot;:{&quot;as&quot;:&quot;value&quot;}}</span>
+<span class="sd">    }</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Dict: a single layer Dict</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; tool = Multidict2dict()</span>
+<span class="sd">    &gt;&gt;&gt; inputs = {</span>
+<span class="sd">    &gt;&gt;&gt;    &quot;1layer&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;        &quot;2layer_one&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;            &quot;3layers1&quot;:4,</span>
+<span class="sd">    &gt;&gt;&gt;            &quot;3layers2&quot;:2,</span>
+<span class="sd">    &gt;&gt;&gt;        },</span>
+<span class="sd">    &gt;&gt;&gt;        &quot;2layer_two&quot;:2</span>
+<span class="sd">    &gt;&gt;&gt;    }</span>
+<span class="sd">    &gt;&gt;&gt; }</span>
+<span class="sd">    &gt;&gt;&gt; result = tool.solve(inputs)</span>
+<span class="sd">    &gt;&gt;&gt; print(result)</span>
+<span class="sd">    &gt;&gt;&gt; {&#39;3layers1&#39;: 4, &#39;3layers2&#39;: 2, &#39;2layer_two&#39;: 2}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    
+<div class="viewcode-block" id="Multidict2dict.solve"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.Multidict2dict.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">def</span> <span class="nf">helper</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Dict</span><span class="p">):</span>
+                    <span class="n">helper</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="n">helper</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span></div></div>
+
+
+<div class="viewcode-block" id="ParameterShower"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ParameterShower">[docs]</a><span class="k">class</span> <span class="nc">ParameterShower</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;show Parameter using texttable</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; inputs = {</span>
+<span class="sd">    &gt;&gt;&gt;         &quot;1layer&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;             &quot;2layer_one&quot;:{</span>
+<span class="sd">    &gt;&gt;&gt;                 &quot;3layers1&quot;:4,</span>
+<span class="sd">    &gt;&gt;&gt;                 &quot;3layers2&quot;:2,</span>
+<span class="sd">    &gt;&gt;&gt;             },</span>
+<span class="sd">    &gt;&gt;&gt;             &quot;2layer_two&quot;:2</span>
+<span class="sd">    &gt;&gt;&gt;         }</span>
+<span class="sd">    &gt;&gt;&gt;     }</span>
+<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt; tool = ParameterShower()</span>
+<span class="sd">    &gt;&gt;&gt; tool.show_multilayer(inputs)</span>
+<span class="sd">    +------------+-------+</span>
+<span class="sd">    |    Name    | Value |</span>
+<span class="sd">    +============+=======+</span>
+<span class="sd">    | 3layers1   | 4     |</span>
+<span class="sd">    +------------+-------+</span>
+<span class="sd">    | 3layers2   | 2     |</span>
+<span class="sd">    +------------+-------+</span>
+<span class="sd">    | 2layer_two | 2     |</span>
+<span class="sd">    +------------+-------+</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tool</span> <span class="o">=</span> <span class="n">Multidict2dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="ParameterShower.show_dict"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ParameterShower.show_dict">[docs]</a>    <span class="k">def</span> <span class="nf">show_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inputs_list</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;Value&quot;</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span><span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">inputs</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">Texttable</span><span class="p">()</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">set_cols_align</span><span class="p">([</span><span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">])</span>
+        <span class="n">table</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">inputs_list</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">table</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ParameterShower.show_multilayer"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ParameterShower.show_multilayer">[docs]</a>    <span class="k">def</span> <span class="nf">show_multilayer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">inputs_simple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tool</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_dict</span><span class="p">(</span><span class="n">inputs_simple</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ranknorm"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ranknorm">[docs]</a><span class="k">def</span> <span class="nf">ranknorm</span><span class="p">(</span><span class="n">input_arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return the 1-norm of rankdata of input_arr</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_arr: list</span>
+<span class="sd">        the data to be ranked</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rank : numpy.ndarray</span>
+<span class="sd">        the 1-norm of rankdata</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">rankdata</span><span class="p">(</span><span class="n">input_arr</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_arr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="allclose"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.allclose">[docs]</a><span class="k">def</span> <span class="nf">allclose</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This function checks if a and b satisfy the condition:</span>
+<span class="sd">    |a - b| &lt;= atol + rtol * |b|</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input : Tensor</span>
+<span class="sd">        first tensor to compare</span>
+<span class="sd">    other : Tensor</span>
+<span class="sd">        second tensor to compare</span>
+<span class="sd">    atol : float, optional</span>
+<span class="sd">        absolute tolerance. Default: 1e-08</span>
+<span class="sd">    rtol : float, optional</span>
+<span class="sd">        relative tolerance. Default: 1e-05</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    res : bool</span>
+<span class="sd">        True for close, False for not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span>
+                          <span class="n">b</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">rtol</span><span class="o">=</span><span class="n">rtol</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">atol</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="move_start_node_fisrt"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.move_start_node_fisrt">[docs]</a><span class="k">def</span> <span class="nf">move_start_node_fisrt</span><span class="p">(</span><span class="n">pace</span><span class="p">,</span> <span class="n">start_node</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    return a new pace in which the start node is in the first place.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pace : list</span>
+<span class="sd">        the subgraph of start node</span>
+<span class="sd">    start_node: int</span>
+<span class="sd">        target node</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pace : list</span>
+<span class="sd">        subgraph whose first value is start_node</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">pace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">start_node</span><span class="p">:</span> <span class="k">return</span> <span class="n">pace</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">pace</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">pace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">start_node</span><span class="p">:</span>
+            <span class="n">pace</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">break</span>
+    <span class="n">pace</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">start_node</span>
+    <span class="k">return</span> <span class="n">pace</span></div>
+
+
+<div class="viewcode-block" id="is_bidirected"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.is_bidirected">[docs]</a><span class="k">def</span> <span class="nf">is_bidirected</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether the graph is a bidirected graph.</span>
+<span class="sd">    A graph is bidirected if for any edge :math:`(u, v)` in :math:`G` with weight :math:`w`,</span>
+<span class="sd">    there exists an edge :math:`(v, u)` in :math:`G` with the same weight.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    g : DGL.graph</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    res : bool</span>
+<span class="sd">        True for bidirected, False for not</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">src</span><span class="p">,</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+    <span class="n">num_nodes</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">()</span>
+
+    <span class="c1"># Sort first by src then dst</span>
+    <span class="n">idx_src_dst</span> <span class="o">=</span> <span class="n">src</span> <span class="o">*</span> <span class="n">num_nodes</span> <span class="o">+</span> <span class="n">dst</span>
+    <span class="n">perm_src_dst</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">idx_src_dst</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">src1</span><span class="p">,</span> <span class="n">dst1</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="n">perm_src_dst</span><span class="p">],</span> <span class="n">dst</span><span class="p">[</span><span class="n">perm_src_dst</span><span class="p">]</span>
+
+    <span class="c1"># Sort first by dst then src</span>
+    <span class="n">idx_dst_src</span> <span class="o">=</span> <span class="n">dst</span> <span class="o">*</span> <span class="n">num_nodes</span> <span class="o">+</span> <span class="n">src</span>
+    <span class="n">perm_dst_src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">idx_dst_src</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">src2</span><span class="p">,</span> <span class="n">dst2</span> <span class="o">=</span> <span class="n">src</span><span class="p">[</span><span class="n">perm_dst_src</span><span class="p">],</span> <span class="n">dst</span><span class="p">[</span><span class="n">perm_dst_src</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">allclose</span><span class="p">(</span><span class="n">src1</span><span class="p">,</span> <span class="n">dst2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">allclose</span><span class="p">(</span><span class="n">src2</span><span class="p">,</span> <span class="n">dst1</span><span class="p">)</span></div>
+
+
+<span class="c1"># def load_raw_pyg_dataset(data_name=&#39;&#39;, verbose=True):</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     Read raw data from pyg.</span>
+<span class="c1">#         If data not in pyg, read from .mat files.</span>
+<span class="c1">#     Parameters</span>
+<span class="c1">#     ----------</span>
+<span class="c1">#     data_name : str, optional</span>
+<span class="c1">#         name of dataset, by default &#39;&#39;</span>
+<span class="c1">#     returns</span>
+<span class="c1">#     -------</span>
+<span class="c1">#     data : dgl.graph</span>
+<span class="c1">#         the graph of dataset</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     assert data_name in [&#39;Cora&#39;, &#39;Citeseer&#39;, &#39;Pubmed&#39;, &#39;BlogCatalog&#39;, &#39;Flickr&#39;, &#39;ogbn-arxiv&#39;], \</span>
+<span class="c1">#         &#39;datasets do not have this data!!!&#39;</span>
+<span class="c1">#     if data_name in [&#39;Cora&#39;, &#39;Citeseer&#39;, &#39;Pubmed&#39;, &#39;BlogCatalog&#39;]:</span>
+<span class="c1">#         data = AttributedGraphDataset(data_path + &#39;attr-graphs/&#39;, data_name, transform=T.NormalizeFeatures())[0]</span>
+<span class="c1">#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.</span>
+<span class="c1">#         data.edge_index = to_undirected(data.edge_index)</span>
+<span class="c1">#     elif data_name in [&#39;Flickr&#39;]:</span>
+<span class="c1">#         data = AttributedGraphDataset(data_path + &#39;attr-graphs/&#39;, data_name)[0]</span>
+<span class="c1">#         data.x = data.x.to_dense()</span>
+<span class="c1">#     elif data_name in [&#39;ogbn-arxiv&#39;]:</span>
+<span class="c1">#         data = PygNodePropPredDataset(name=&#39;ogbn-arxiv&#39;, root=data_path)[0]</span>
+<span class="c1">#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.</span>
+<span class="c1">#         data.edge_index = to_undirected(data.edge_index)</span>
+
+<span class="c1">#     if verbose:</span>
+<span class="c1">#         print(&#39;  PyG dataset: {}&#39;.format(data_name))</span>
+<span class="c1">#         print(&#39;  NumNodes: {}&#39;.format(data.num_nodes))</span>
+<span class="c1">#         print(&#39;  NumEdges: {}&#39;.format(data.num_edges))</span>
+<span class="c1">#         print(&#39;  NumFeats: {}&#39;.format(data.x.shape[1]))</span>
+
+<span class="c1">#     # save to mat</span>
+<span class="c1">#     adj = to_scipy_sparse_matrix(data.edge_index).tocsr()</span>
+<span class="c1">#     feat = sp.csr_matrix(data.x)</span>
+
+<span class="c1">#     mat_dict = {}</span>
+<span class="c1">#     mat_dict[&#39;Network&#39;] = adj</span>
+<span class="c1">#     mat_dict[&#39;Attributes&#39;] = feat</span>
+
+<span class="c1">#     save_path = data_path + data_name + &#39;_pyg.mat&#39;</span>
+<span class="c1">#     sio.savemat(save_path, mat_dict)</span>
+<span class="c1">#     print(&#39;save mat data to:&#39;, save_path)</span>
+<span class="c1">#     print(&#39;-&#39; * 60, &#39;\n\n&#39;)</span>
+
+<span class="c1">#     return data</span>
+
+
+<div class="viewcode-block" id="load_mat_data2dgl"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_mat_data2dgl">[docs]</a><span class="k">def</span> <span class="nf">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load data from .mat file</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data_path : str</span>
+<span class="sd">        the file to read in</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        print info, by default True</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : DGL.graph</span>
+<span class="sd">        the graph read from data_path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mat_path</span> <span class="o">=</span> <span class="n">data_path</span>
+    <span class="n">data_mat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">mat_path</span><span class="p">)</span>
+    <span class="n">adj</span> <span class="o">=</span> <span class="n">data_mat</span><span class="p">[</span><span class="s1">&#39;Network&#39;</span><span class="p">]</span>
+    <span class="n">feat</span> <span class="o">=</span> <span class="n">data_mat</span><span class="p">[</span><span class="s1">&#39;Attributes&#39;</span><span class="p">]</span>
+    <span class="c1"># feat = preprocessing.normalize(feat, axis=0)</span>
+    <span class="n">truth</span> <span class="o">=</span> <span class="n">data_mat</span><span class="p">[</span><span class="s1">&#39;Label&#39;</span><span class="p">]</span>
+    <span class="n">truth</span> <span class="o">=</span> <span class="n">truth</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">from_scipy</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">feat</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">truth</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">num_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  DGL dataset&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  NumNodes: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  NumEdges: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  NumFeats: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;  NumClasses: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">num_classes</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s1">&#39;ACM&#39;</span> <span class="ow">in</span> <span class="n">data_path</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ACM&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">graph</span><span class="p">]</span>
+    <span class="c1"># # add reverse edges</span>
+    <span class="c1"># srcs, dsts = graph.all_edges()</span>
+    <span class="c1"># graph.add_edges(dsts, srcs)</span>
+    <span class="c1"># add self-loop</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges before adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">()</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges after adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_bidirected</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">graph</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="load_ogbn_arxiv"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_ogbn_arxiv">[docs]</a><span class="k">def</span> <span class="nf">load_ogbn_arxiv</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read ogbn-arxiv from dgl.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_dir : str</span>
+<span class="sd">        Data path. Supports user customization.</span>
+
+<span class="sd">    returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : dgl.graph</span>
+<span class="sd">        the graph of ogbn-arxiv</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">DglNodePropPredDataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="n">raw_dir</span><span class="p">)</span>
+    <span class="n">graph</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># add reverse edges</span>
+    <span class="n">srcs</span><span class="p">,</span> <span class="n">dsts</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">all_edges</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">dsts</span><span class="p">,</span> <span class="n">srcs</span><span class="p">)</span>
+    <span class="c1"># add self-loop</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges before adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">()</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges after adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">is_bidirected</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">graph</span><span class="p">]</span></div>
+
+
+<span class="c1"># create this bar_progress method which is invoked automatically from wget</span>
+<div class="viewcode-block" id="bar_progress"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.bar_progress">[docs]</a><span class="k">def</span> <span class="nf">bar_progress</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+    <span class="n">progress_message</span> <span class="o">=</span> <span class="s2">&quot;Downloading: </span><span class="si">%d%%</span><span class="s2"> [</span><span class="si">%d</span><span class="s2"> / </span><span class="si">%d</span><span class="s2">] bytes&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">current</span> <span class="o">/</span> <span class="n">total</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">current</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+    <span class="c1"># Don&#39;t use print() as it will print in new line every time.</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">progress_message</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="load_BlogCatalog"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_BlogCatalog">[docs]</a><span class="k">def</span> <span class="nf">load_BlogCatalog</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load BlogCatalog dgl graph</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_dir : str</span>
+<span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : DGL.graph</span>
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; graph=load_BlogCatalog()[0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
+    <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">,</span> <span class="s1">&#39;BlogCatalog.mat&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_file</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/GRAND-Lab/CoLA/blob/main/raw_dataset/BlogCatalog/BlogCatalog.mat?raw=true&#39;</span>
+        <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar_progress</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">data_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_Flickr"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_Flickr">[docs]</a><span class="k">def</span> <span class="nf">load_Flickr</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    load Flickr dgl graph</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_dir : str</span>
+<span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : DGL.graph</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; graph=load_Flickr()[0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
+    <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">,</span> <span class="s1">&#39;Flickr.mat&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_file</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/GRAND-Lab/CoLA/blob/main/raw_dataset/Flickr/Flickr.mat?raw=true&#39;</span>
+        <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar_progress</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">data_file</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_ACM"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_ACM">[docs]</a><span class="k">def</span> <span class="nf">load_ACM</span><span class="p">(</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;load ACM dgl graph</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    raw_dir : str</span>
+<span class="sd">        Data path. Supports user customization.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    graph : DGL.graph</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; graph=load_ACM()[0]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ssl</span><span class="o">.</span><span class="n">_create_default_https_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">_create_unverified_context</span>
+    <span class="n">data_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">,</span> <span class="s1">&#39;ACM.mat&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_file</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://github.com/GRAND-Lab/CoLA/blob/main/dataset/ACM.mat?raw=true&#39;</span>
+        <span class="n">wget</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">data_file</span><span class="p">,</span> <span class="n">bar</span><span class="o">=</span><span class="n">bar_progress</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">data_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="cprint"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.cprint">[docs]</a><span class="k">def</span> <span class="nf">cprint</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">termcolor</span> <span class="kn">import</span> <span class="n">colored</span>
+    <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;info&#39;</span><span class="p">:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;INFO:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">color</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;DEBUG:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="lcprint"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.lcprint">[docs]</a><span class="k">def</span> <span class="nf">lcprint</span><span class="p">(</span><span class="o">*</span><span class="n">arr</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;:: &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">])</span>
+    <span class="kn">from</span> <span class="nn">termcolor</span> <span class="kn">import</span> <span class="n">colored</span>
+    <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;info&#39;</span><span class="p">:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;green&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;INFO:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;debug&#39;</span><span class="p">:</span>
+        <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;red&#39;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="s1">&#39;DEBUG:&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="n">colored</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

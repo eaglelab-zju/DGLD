@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.SLGAD.dataset &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.SLGAD.dataset</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.SLGAD.dataset</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This is dataset loading and processing program for SL-GAD</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">osp</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">joblib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">dgl</span>
+<span class="kn">from</span> <span class="nn">dgl.data</span> <span class="kn">import</span> <span class="n">DGLDataset</span>
+<span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">EdgeWeightNorm</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dataset</span> <span class="kn">import</span> <span class="n">GraphNodeAnomalyDectionDataset</span>
+<span class="kn">from</span> <span class="nn">sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span><span class="p">,</span> <span class="n">UniformNeighborSampling</span><span class="p">,</span> <span class="n">SLGAD_SubGraphSampling</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="c1"># torch.set_default_tensor_type(torch.DoubleTensor)</span>
+
+<div class="viewcode-block" id="safe_add_self_loop"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.safe_add_self_loop">[docs]</a><span class="k">def</span> <span class="nf">safe_add_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Add the self loop in g</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    g : DGL.graph</span>
+<span class="sd">        the graph to add self loop</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    newg : DGL.Graph</span>
+<span class="sd">        the graph has been added self loop</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">newg</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+    <span class="n">newg</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">(</span><span class="n">newg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">newg</span></div>
+
+<div class="viewcode-block" id="SL_GAD_DataSet"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet">[docs]</a><span class="k">class</span> <span class="nc">SL_GAD_DataSet</span><span class="p">(</span><span class="n">DGLDataset</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a class to generate subgraph of dataset</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    base_dataset_name : str, optional</span>
+<span class="sd">        the name of dataset, defaulr Cora</span>
+<span class="sd">    subgraph_size : int, optional</span>
+<span class="sd">        the size of subgraph, default 4</span>
+<span class="sd">    args : arg.parser, optional</span>
+<span class="sd">        the extra parameter from arg.parser, default None</span>
+<span class="sd">    g_data : DGL.graph, optional</span>
+<span class="sd">        graph of dataset made manually, default None</span>
+<span class="sd">    g_data : torch.Tensor</span>
+<span class="sd">        anomaly label of dataset made manually, default None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_dataset_name</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="n">subgraphsize</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">g_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y_data</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SL_GAD_DataSet</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># print(g_data.ndata[&#39;feat&#39;].dtype)</span>
+        <span class="c1"># exit()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">base_dataset_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subgraphsize</span> <span class="o">=</span> <span class="n">subgraphsize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">oraldataset</span> <span class="o">=</span> <span class="n">GraphNodeAnomalyDectionDataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span><span class="p">,</span> <span class="n">g_data</span> <span class="o">=</span> <span class="n">g_data</span><span class="p">,</span> <span class="n">y_data</span> <span class="o">=</span> <span class="n">y_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">oraldataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># print(self.dataset)</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># print(self.dataset.ndata[&#39;feat&#39;][:5, :5])</span>
+        <span class="c1"># exit()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">SLGAD_subgraphsampler</span> <span class="o">=</span> <span class="n">SLGAD_SubGraphSampling</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">subgraphsize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># self.write_graph()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize_feat</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalize_adj</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random_walk_sampling</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adj_matrix</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SL_GAD_DataSet.adj_matrix"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.adj_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">adj_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to store adjacency matrix</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(self.dataset)</span>
+        <span class="c1"># print(self.dataset.edata[&#39;w&#39;])</span>
+        <span class="c1"># exit()</span>
+        <span class="n">edge_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">edata</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">num_nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        <span class="c1"># print(edge_weight)</span>
+        <span class="c1"># print(src)</span>
+        <span class="c1"># print(dst)</span>
+        <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">((</span><span class="n">edge_weight</span><span class="p">,</span> <span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">dst</span><span class="p">)),</span> <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">))</span>
+        <span class="c1"># print(adj_matrix)</span>
+        <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">adj_matrix</span><span class="o">.</span><span class="n">todense</span><span class="p">()</span>
+        <span class="c1"># print(adj_matrix)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">adj_matrix</span></div>
+        <span class="c1"># exit()</span>
+
+<div class="viewcode-block" id="SL_GAD_DataSet.write_graph"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.write_graph">[docs]</a>    <span class="k">def</span> <span class="nf">write_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        write graph into graph.txt</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;write_graph&quot;</span><span class="p">)</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
+        <span class="n">edges</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;graph.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()):</span>
+            <span class="c1"># print(edges[0][i].item(), edges[1][i].item())</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+        <span class="n">attr_num</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s2">&quot;feat&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="n">attr_num</span><span class="p">))</span>
+        <span class="c1"># attr_str = &#39; &#39;.join(str(_) for _ in graph.ndata[&quot;feat&quot;][0].tolist())</span>
+
+        <span class="c1"># attr_str = &#39; &#39;.join(map(str, graph.ndata[&quot;feat&quot;][0].tolist()))</span>
+        <span class="c1"># # print(graph.ndata[&quot;feat&quot;][0].tolist())</span>
+        <span class="c1"># file.write(attr_str)</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()):</span>
+            <span class="n">attr_str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s2">&quot;feat&quot;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+            <span class="c1"># print(graph.ndata[&quot;feat&quot;][0].tolist())</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">attr_str</span><span class="p">)</span>
+            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()))</span>
+        <span class="n">label_str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">label_str</span><span class="p">)</span>
+        <span class="c1"># print(label_str)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="n">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;start_nodes.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%d</span><span class="s2"> </span><span class="si">%d</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">subgraph_size</span><span class="p">))</span>
+        <span class="n">start_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">_</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">())]</span>
+        <span class="n">start_nodes_str</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">start_nodes</span><span class="p">))</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">start_nodes_str</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+        <span class="c1"># print(graph)</span>
+
+        <span class="c1"># exit()</span>
+<div class="viewcode-block" id="SL_GAD_DataSet.normalize_feat"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.normalize_feat">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_feat</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to normalize the features of nodes in graph</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># print(self.dataset.ndata[&#39;feat&#39;][:5, :5])</span>
+        <span class="c1"># exit()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">],</span> <span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="SL_GAD_DataSet.normalize_adj"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.normalize_adj">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_adj</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to normalize the edge weight in graph</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">EdgeWeightNorm</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+        <span class="c1"># self.dataset = dgl.remove_self_loop(self.dataset)</span>
+        <span class="c1"># print(self.dataset)</span>
+        <span class="c1"># print(self.dataset.num_edges())</span>
+        <span class="c1"># print(type(self.dataset))</span>
+        <span class="n">norm_edge_weight</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span> <span class="n">edge_weight</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_edges</span><span class="p">()))</span>
+
+        <span class="n">edges_tuple</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+        <span class="n">src</span> <span class="o">=</span> <span class="n">edges_tuple</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">dst</span> <span class="o">=</span> <span class="n">edges_tuple</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">in_degrees</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">in_degrees</span><span class="p">()</span>
+        <span class="n">out_degrees</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">out_degrees</span><span class="p">()</span>
+
+        <span class="n">src_out_degrees</span> <span class="o">=</span> <span class="n">out_degrees</span><span class="p">[</span><span class="n">src</span><span class="p">]</span>
+        <span class="n">dst_in_degrees</span> <span class="o">=</span> <span class="n">in_degrees</span><span class="p">[</span><span class="n">dst</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">)</span>
+        <span class="n">self_loop_weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">())</span>
+        <span class="n">norm_edge_weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">((</span><span class="n">norm_edge_weight</span><span class="p">,</span> <span class="n">self_loop_weight</span><span class="p">),</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">edata</span><span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">norm_edge_weight</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sum of edge weight : &#39;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">norm_edge_weight</span><span class="p">))</span></div>
+        <span class="c1"># print(type(norm_edge_weight))</span>
+        <span class="c1"># print(norm_edge_weight.shape)</span>
+        <span class="c1"># print(self.dataset.edata[&#39;w&#39;][:20])</span>
+        <span class="c1"># print(self.dataset.edges()[0][:20])</span>
+        <span class="c1"># print(self.dataset.edges()[1][:20])</span>
+        <span class="c1"># print(norm_edge_weight[-10:])</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># self.dataset.edata[&#39;w&#39;] = norm_edge_weight</span>
+        <span class="c1"># print(norm_edge_weight)</span>
+
+<div class="viewcode-block" id="SL_GAD_DataSet.random_walk_sampling"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.random_walk_sampling">[docs]</a>    <span class="k">def</span> <span class="nf">random_walk_sampling</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to get random walk from target nodes</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">time_0</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="c1"># print(self.sample_graph)</span>
+        <span class="c1"># print(torch.sum(self.dataset.edata[&#39;w&#39;]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paces_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SLGAD_subgraphsampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())))</span>
+        <span class="n">time_1</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paces_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SLGAD_subgraphsampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())))</span>
+        <span class="n">time_2</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">paces_3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SLGAD_subgraphsampler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())))</span>
+        <span class="n">time_3</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+        <span class="c1"># print(self.paces_1[:20])</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># self.paces_1 = torch.tensor(self.paces_1)</span>
+        <span class="c1"># print(self.paces_1)</span>
+        <span class="c1"># equal_node = self.paces_1 == self.paces_1[:, 0: 1].repeat(1, 4)</span>
+        <span class="c1"># print(torch.sum(equal_node))</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># print(self.dataset)</span>
+        <span class="c1"># print(torch.sum(self.dataset.edata[&#39;w&#39;]))</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># print(self.paces_1[:20])</span>
+        <span class="c1"># print(self.paces_2[:20])</span>
+        <span class="c1"># exit()</span>
+        <span class="c1"># print(time_1 - time_0)</span>
+        <span class="c1"># print(time_2 - time_1)</span>
+        <span class="c1"># print(time_3 - time_2)</span>
+        
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SL_GAD_DataSet.graph_transform"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.graph_transform">[docs]</a>    <span class="k">def</span> <span class="nf">graph_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        functions to transfrom graph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : DGL.Graph</span>
+<span class="sd">            the graph to transform</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        newg : DGL.Graph</span>
+<span class="sd">            the graph after transform</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newg</span> <span class="o">=</span> <span class="n">g</span>
+        <span class="c1"># newg = safe_add_self_loop(g)</span>
+        <span class="c1"># add virtual node as target node.</span>
+        <span class="c1"># newg.add_nodes(1)</span>
+        <span class="c1"># newg.ndata[&#39;feat&#39;][-1] = newg.ndata[&#39;feat&#39;][0]</span>
+        <span class="c1"># newg = safe_add_self_loop(newg)</span>
+        <span class="c1"># Anonymization</span>
+        <span class="c1"># newg.ndata[&#39;feat&#39;][0] = 0</span>
+        <span class="k">return</span> <span class="n">newg</span></div>
+    
+<div class="viewcode-block" id="SL_GAD_DataSet.construct_graph"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.construct_graph">[docs]</a>    <span class="k">def</span> <span class="nf">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pace</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Functions that construct the ith subgraph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pace : list</span>
+<span class="sd">            random walk, the set of node to construct graph</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        temp_graph : DGL.Graph</span>
+<span class="sd">            the subgraph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">slice_adj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj_matrix</span><span class="p">[</span><span class="n">pace</span><span class="p">,</span> <span class="p">:][:,</span> <span class="n">pace</span><span class="p">]</span>
+        <span class="n">temp_graph</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">from_scipy</span><span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">(</span><span class="n">slice_adj</span><span class="p">),</span> <span class="n">eweight_name</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">temp_graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">][</span><span class="n">pace</span><span class="p">]</span>
+        <span class="n">temp_graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;Raw_Feat&#39;</span><span class="p">][</span><span class="n">pace</span><span class="p">]</span>
+        <span class="c1"># print(self.dataset.ndata[&#39;feat&#39;][pace])</span>
+        <span class="c1"># print(temp_graph.ndata[&#39;feat&#39;])</span>
+        <span class="c1"># exit()</span>
+        <span class="k">return</span> <span class="n">temp_graph</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Functions that get the ith subgraph set, including two positive subgraphs and one negative subgraph</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            The index of subgraph.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pos_subgraph_1 : DGL.Graph</span>
+<span class="sd">            the first positive subgraph of ith subgraph set</span>
+<span class="sd">        pos_subgraph_2 : DGL.Graph</span>
+<span class="sd">            the second positive subgraph of ith subgraph set</span>
+<span class="sd">        neg_subgraph : DGL.Graph</span>
+<span class="sd">            the negative subgraph of ith subgraph set</span>
+<span class="sd">        i : int</span>
+<span class="sd">            index of i</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># self.paces_1[i] = [0, 633, 1862, 2582]</span>
+        <span class="c1"># print(self.dataset)</span>
+        <span class="k">if</span> <span class="kc">False</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="c1"># self.paces_1[i] = [0, 479, 633, 655]</span>
+            <span class="c1"># self.paces_1[1] = [1, 652, 2, 654]</span>
+            <span class="c1"># self.paces_1[2] = [2, 906, 867, 962]</span>
+            <span class="c1"># self.paces_1[3] = [3, 3, 2544, 3]</span>
+            <span class="c1"># self.paces_1[4] = [4, 1761, 1016, 1256]</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paces_1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="c1"># ori_graph = self.dataset</span>
+        <span class="c1"># temp_graph = dgl.node_subgraph(self.dataset, self.paces_15])</span>
+        <span class="c1"># print(ori_graph.edges()[0][:10])</span>
+        <span class="c1"># print(ori_graph.edges()[1][:10])</span>
+        
+        <span class="c1"># print(ori_graph.out_edges(self.paces_1[i][0]))</span>
+        <span class="c1"># print(ori_graph.out_edges(self.paces_1[1]))</span>
+        <span class="c1"># print(ori_graph.out_edges(self.paces_1[2]))</span>
+        <span class="c1"># print(ori_graph.out_edges(self.paces_1[3]))</span>
+        
+        <span class="c1"># print(ori_graph.in_edges(self.paces_1[0]))</span>
+        <span class="c1"># print(ori_graph.in_edges(self.paces_1[1]))</span>
+        <span class="c1"># print(ori_graph.in_edges(self.paces_1[2]))</span>
+        <span class="c1"># print(ori_graph.in_edges(self.paces_1[3]))</span>
+
+        <span class="c1"># print(temp_graph.edges()[0][:20])</span>
+        <span class="c1"># print(temp_graph.edges()[1][:20])</span>
+        <span class="c1"># print(temp_graph.edata[&#39;w&#39;][:20])</span>
+
+        <span class="c1"># temp_graph = self.construct_graph(self.paces_1[i])</span>
+        <span class="c1"># pos_subgraph_1 = self.graph_transform(dgl.node_subgraph(self.dataset, self.paces_1[i]))</span>
+        <span class="c1"># pos_subgraph_2 = self.graph_transform(dgl.node_subgraph(self.dataset, self.paces_2[i]))</span>
+        <span class="n">pos_subgraph_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paces_1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">pos_subgraph_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paces_2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        
+        <span class="n">neg_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span> 
+        <span class="c1"># while neg_idx == i or self.dataset.ndata[&quot;label&quot;][neg_idx] == self.dataset.ndata[&quot;label&quot;][i] or self.dataset.has_edges_between(neg_idx, i):</span>
+        <span class="k">while</span> <span class="n">neg_idx</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">neg_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span> 
+        <span class="c1"># neg_subgraph = self.graph_transform(dgl.node_subgraph(self.dataset, self.paces_3[neg_idx]))</span>
+        
+        <span class="n">neg_subgraph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">construct_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paces_3</span><span class="p">[</span><span class="n">neg_idx</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">pos_subgraph_1</span><span class="p">,</span> <span class="n">pos_subgraph_2</span><span class="p">,</span> <span class="n">neg_subgraph</span><span class="p">,</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get the number of nodes of graph</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        num : int</span>
+<span class="sd">            number of nodes of graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SL_GAD_DataSet.process"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.dataset.html#dgld.models.SLGAD.dataset.SL_GAD_DataSet.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        nonsense</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">SL_GAD_DataSet</span><span class="p">()</span>
+    <span class="c1"># print(dataset[0].edges())</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">random_walk_sampling</span><span class="p">()</span>
+        <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dataset</span><span class="p">[</span><span class="mi">502</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="n">dgl</span><span class="o">.</span><span class="n">NID</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ans</span><span class="p">]))</span>
+    <span class="c1"># graph, label = dataset[0]</span>
+    <span class="c1"># print(graph, label)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

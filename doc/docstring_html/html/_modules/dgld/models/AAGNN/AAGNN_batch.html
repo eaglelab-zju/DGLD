@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.AAGNN.AAGNN_batch &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.AAGNN.AAGNN_batch</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.AAGNN.AAGNN_batch</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">This is a model for large graph training based on the AAGNN model</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+<span class="kn">from</span> <span class="nn">scipy.spatial.distance</span> <span class="kn">import</span> <span class="n">euclidean</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">spp</span>
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span> <span class="c1"># torch 中 Variable 模块</span>
+<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+
+<div class="viewcode-block" id="AAGNN_batch"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch">[docs]</a><span class="k">class</span> <span class="nc">AAGNN_batch</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is a model for large graph training based on the AAGNN model.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_feats : int</span>
+<span class="sd">        The feature dimension of the input data.</span>
+<span class="sd">    out_feats : int</span>
+<span class="sd">        The dimension of output feature.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; from DGLD.AAGNN import AAGNN_batch</span>
+<span class="sd">    &gt;&gt;&gt; model = AAGNN_batch(in_feats=in_feats, out_feats=300)</span>
+<span class="sd">    &gt;&gt;&gt; model.fit(graph, num_epoch=30, device=&#39;cuda:0&#39;, subgraph_size=32)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">out_dim</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model_base</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_feats</span> <span class="o">=</span> <span class="n">out_dim</span>
+    
+<div class="viewcode-block" id="AAGNN_batch.fit"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a function used to train the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl</span>
+<span class="sd">            The graph data you input.</span>
+<span class="sd">        </span>
+<span class="sd">        num_epoch : int</span>
+<span class="sd">            The number of times you want to train the model.</span>
+<span class="sd">        </span>
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+<span class="sd">        </span>
+<span class="sd">        lr : float</span>
+<span class="sd">            Learning rate for model training.</span>
+<span class="sd">        </span>
+<span class="sd">        logdir: str</span>
+<span class="sd">            The storage address of the training log.</span>
+
+<span class="sd">        subgraph_size : int</span>
+<span class="sd">            The size of training subgraph.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;training&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda:&#39;</span> <span class="o">+</span> <span class="n">device</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;device=&#39;</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+        
+        <span class="n">edge_dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">vs</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">us</span><span class="p">,</span> <span class="n">vs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">edge_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+        
+        <span class="n">node_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_normal_nodes</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
+            <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cal_center</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_ids</span><span class="p">),</span> <span class="n">subgraph_size</span><span class="p">):</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">subgraph_size</span>
+                <span class="n">subgraph_node_ids</span> <span class="o">=</span> <span class="n">node_ids</span><span class="p">[</span><span class="n">L</span><span class="p">:</span> <span class="n">R</span><span class="p">]</span>
+                <span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Graph_batch_sample</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subgraph_node_ids</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">)</span>
+
+                <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_fun</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="mf">0.0001</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+
+                <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;</span><span class="si">%04d</span><span class="s2">/</span><span class="si">%04d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_ids</span><span class="p">)),</span><span class="s2">&quot; train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.10f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(</span>
+                <span class="p">)))</span>
+
+            
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="AAGNN_batch.predict"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a function that loads a trained model for predicting graph data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl</span>
+<span class="sd">            The graph data you input.</span>
+<span class="sd">        </span>
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+<span class="sd">        </span>
+<span class="sd">        subgraph_size : int</span>
+<span class="sd">            The size of training subgraph.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        score : numpy</span>
+<span class="sd">            A vector of decimals representing the anomaly score for each node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;predicting&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">40</span><span class="p">)</span>
+
+        <span class="n">edge_dic</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">vs</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">us</span><span class="p">,</span> <span class="n">vs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">edge_dic</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="n">score</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">node_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda:&#39;</span> <span class="o">+</span> <span class="n">device</span>
+            
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_ids</span><span class="p">),</span> <span class="n">subgraph_size</span><span class="p">):</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">subgraph_size</span>
+                <span class="n">subgraph_node_ids</span> <span class="o">=</span> <span class="n">node_ids</span><span class="p">[</span><span class="n">L</span><span class="p">:</span> <span class="n">R</span><span class="p">]</span>
+                <span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Graph_batch_sample</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subgraph_node_ids</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">)</span>
+
+                <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span><span class="p">)</span>
+
+                <span class="n">predict_score</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">anomaly_score</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+                <span class="n">score</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">predict_score</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">score</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AAGNN_batch.Graph_batch_sample"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.Graph_batch_sample">[docs]</a>    <span class="k">def</span> <span class="nf">Graph_batch_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">node_ids</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Here is a function for sampling the large graph data.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl</span>
+<span class="sd">            The graph data you input.</span>
+<span class="sd">        </span>
+<span class="sd">        node_ids : numpy</span>
+<span class="sd">            The id of the target node you want to sample.</span>
+
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+<span class="sd">        </span>
+<span class="sd">        edge_dic: dict</span>
+<span class="sd">            The input node-to-node relationship dictionary.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        adj_matrix : numpy.ndarray</span>
+<span class="sd">            This is an adjacency matrix of sampled subgraphs.</span>
+
+<span class="sd">        eye_matrix : numpy.ndarray</span>
+<span class="sd">            This is an adjacency matrix of sampled subgraphs.</span>
+
+<span class="sd">        subgraph_feats : numpy.ndarray </span>
+<span class="sd">            Node feature vector of the subgraph.</span>
+
+<span class="sd">        node_mask : numpy.ndarray</span>
+<span class="sd">            This is a vector marking which nodes are the target nodes we need.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">feats</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">sample_u</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sample_v</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">subgraph_feats</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                
+                <span class="n">sample_u</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="n">sample_v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">sample_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">sample_u</span> <span class="o">+</span> <span class="n">sample_v</span><span class="p">))</span>
+
+
+        <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)))</span>
+        <span class="n">node_id_dic</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">)):</span>
+            <span class="n">node_id_dic</span><span class="p">[</span><span class="n">sample_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">subgraph_feats</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feats</span><span class="p">[</span><span class="n">sample_nodes</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">u</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sample_u</span><span class="p">,</span> <span class="n">sample_v</span><span class="p">):</span>
+            <span class="n">adj_matrix</span><span class="p">[</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">u</span><span class="p">]][</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">adj_matrix</span><span class="p">[</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">u</span><span class="p">]][</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">u</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">adj_matrix</span><span class="p">[</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]][</span><span class="n">node_id_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="n">eye_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sample_nodes</span><span class="p">))</span>
+        <span class="n">node_mask</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">node_ids</span><span class="p">:</span>
+            <span class="n">node_mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id_dic</span><span class="p">[</span><span class="nb">id</span><span class="p">])</span>
+        <span class="n">adj_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">eye_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">eye_matrix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">subgraph_feats</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">subgraph_feats</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">node_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">node_mask</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span></div>
+
+<div class="viewcode-block" id="AAGNN_batch.cal_center"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.cal_center">[docs]</a>    <span class="k">def</span> <span class="nf">cal_center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a function to calculate the center vector.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl</span>
+<span class="sd">            The graph data you input.</span>
+<span class="sd">        </span>
+<span class="sd">        model : tensor</span>
+<span class="sd">            The model we trained.</span>
+
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+<span class="sd">        </span>
+<span class="sd">        subgraph_size : int</span>
+<span class="sd">            The size of training subgraph.</span>
+<span class="sd">        </span>
+<span class="sd">        edge_dic: dict</span>
+<span class="sd">            The input node-to-node relationship dictionary.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            The center vector of all samples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">center</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_feats</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">features</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+            <span class="n">node_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subgraph_size</span><span class="p">):</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">index</span>
+                <span class="n">R</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">subgraph_size</span>
+                <span class="n">subgraph_node_ids</span> <span class="o">=</span> <span class="n">node_ids</span><span class="p">[</span><span class="n">L</span><span class="p">:</span> <span class="n">R</span><span class="p">]</span>
+                <span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Graph_batch_sample</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">subgraph_node_ids</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span><span class="p">)</span>
+
+                <span class="n">center</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">center</span> <span class="o">=</span> <span class="n">center</span><span class="o">/</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">center</span></div>
+
+<div class="viewcode-block" id="AAGNN_batch.loss_fun"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.loss_fun">[docs]</a>    <span class="k">def</span> <span class="nf">loss_fun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">center</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">super_param</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a function used to calculate the error loss of the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        out : tensor</span>
+<span class="sd">            Output of the model.</span>
+<span class="sd">        </span>
+<span class="sd">        center : numpy.ndarray</span>
+<span class="sd">            The center vector of all samples.</span>
+
+<span class="sd">        model : tensor</span>
+<span class="sd">            The model we trained.</span>
+
+<span class="sd">        super_param : float</span>
+<span class="sd">            A hyperparameter that takes values in [0, 1].</span>
+
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        loss : tensor</span>
+<span class="sd">            The loss of model output.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">loss_matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">out</span> <span class="o">-</span> <span class="n">center</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss_matrix</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">l2_reg</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">l2_reg</span> <span class="o">+=</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span> <span class="o">+</span> <span class="p">(</span><span class="n">super_param</span> <span class="o">*</span> <span class="n">l2_reg</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="model_base"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.model_base">[docs]</a><span class="k">class</span> <span class="nc">model_base</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This is the basic structure model of AAGNN.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_feats : int</span>
+<span class="sd">        The feature dimension of the input data.</span>
+<span class="sd">    out_feats : int</span>
+<span class="sd">        The dimension of output feature.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; self.model = model_base(in_feats, out_feats)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_feats</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a_1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">a_2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">LeakyReLU</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">softmax</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="model_base.forward"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.model_base.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj_matrix</span><span class="p">,</span> <span class="n">eye_matrix</span><span class="p">,</span> <span class="n">subgraph_feats</span><span class="p">,</span> <span class="n">node_mask</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This is a function used to calculate the forward propagation of the model.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        adj_matrix : tensor</span>
+<span class="sd">            This is an adjacency matrix of sampled subgraphs.</span>
+
+<span class="sd">        eye_matrix : tensor</span>
+<span class="sd">            This is an adjacency matrix of sampled subgraphs.</span>
+
+<span class="sd">        subgraph_feats : tensor</span>
+<span class="sd">            Node feature vector of the subgraph.</span>
+
+<span class="sd">        node_mask : tensor</span>
+<span class="sd">            This is a vector marking which nodes are the target nodes we need.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        h : tensor</span>
+<span class="sd">            Results of model forward propagation calculations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">subgraph_feats</span><span class="p">)</span>
+        <span class="n">zi</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_1</span> <span class="o">*</span> <span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">zj</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_2</span> <span class="o">*</span> <span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">attention_A</span> <span class="o">=</span> <span class="n">adj_matrix</span> <span class="o">*</span> <span class="n">zi</span>
+        <span class="n">attention_B</span> <span class="o">=</span> <span class="n">adj_matrix</span> <span class="o">*</span> <span class="p">(</span><span class="n">eye_matrix</span> <span class="o">*</span> <span class="n">zj</span><span class="p">)</span>
+        <span class="n">attention_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">attention_A</span> <span class="o">+</span> <span class="n">attention_B</span><span class="p">)</span>
+        <span class="n">attention_matrix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">attention_matrix</span><span class="p">)</span>
+
+        <span class="n">h</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-</span> <span class="n">torch</span><span class="o">.</span><span class="n">mm</span><span class="p">(</span><span class="n">attention_matrix</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">node_mask</span><span class="p">])</span></div>
+    
+    
+<div class="viewcode-block" id="model_base.get_normal_nodes"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.model_base.get_normal_nodes">[docs]</a>    <span class="k">def</span> <span class="nf">get_normal_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_feats</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Here is a function that computes normal nodes.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node_feats : tensor</span>
+<span class="sd">            All node feature vectors of graph data.</span>
+<span class="sd">        </span>
+<span class="sd">        p : float</span>
+<span class="sd">            All node feature vectors of graph data.</span>
+
+<span class="sd">        device : str</span>
+<span class="sd">            The number of times you want to train the model.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        node_ids : numpy.ndarray</span>
+<span class="sd">            The ID of the positive sample node.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="n">node_feats</span> <span class="o">=</span> <span class="n">node_feats</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">node_feats</span><span class="p">)</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">dis</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">z</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">z</span> <span class="o">-</span> <span class="n">c</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">best_min_dis</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dis</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+            <span class="n">best_min_dis</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">best_min_dis</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">best_min_dis</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="p">)]</span>
+
+            <span class="n">node_ids</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">node_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">node_feats</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">dis</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">threshold</span><span class="p">:</span>
+                    <span class="n">node_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">node_ids</span></div>
+
+<div class="viewcode-block" id="model_base.anomaly_score"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.model_base.anomaly_score">[docs]</a>    <span class="k">def</span> <span class="nf">anomaly_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Here is a function that calculates the anomaly score.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        out : tensor</span>
+<span class="sd">            Node vector representation output after model training.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        score : numpy.ndarray</span>
+<span class="sd">            Anomaly Score of Nodes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">out</span> <span class="o">*</span> <span class="n">out</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

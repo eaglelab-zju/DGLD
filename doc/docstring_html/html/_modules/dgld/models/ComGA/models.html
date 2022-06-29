@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.ComGA.models &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.ComGA.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.ComGA.models</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">ComGA: Community-Aware Attributed Graph Anomaly Detection</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">turtle</span> <span class="kn">import</span> <span class="n">forward</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">GraphConv</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">import</span> <span class="nn">dgl</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">roc_auc_score</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+<span class="kn">from</span> <span class="nn">.comga_utils</span> <span class="kn">import</span> <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span><span class="p">,</span><span class="n">normalize_adj</span>
+
+
+<div class="viewcode-block" id="ComGA"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA">[docs]</a><span class="k">class</span> <span class="nc">ComGA</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;ComGA: Community-Aware Attributed Graph Anomaly Detection</span>
+<span class="sd">    ref:https://github.com/DASE4/ComGA</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_nodes : int</span>
+<span class="sd">        number of nodes</span>
+<span class="sd">    num_feats : int</span>
+<span class="sd">        dimension of feature </span>
+<span class="sd">    n_enc_1 : int</span>
+<span class="sd">        number of encode1 units</span>
+<span class="sd">    n_enc_2 : int</span>
+<span class="sd">        number of encode2 units</span>
+<span class="sd">    n_enc_3 : int</span>
+<span class="sd">        number of encode3 units</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_feats</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">n_enc_3</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ComGA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ComGAModel</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_feats</span><span class="o">=</span><span class="n">num_feats</span><span class="p">,</span>
+                        <span class="n">n_enc_1</span><span class="o">=</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">n_enc_2</span><span class="o">=</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">n_enc_3</span><span class="o">=</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="ComGA.fit"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span><span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">eta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fitting model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl.DGLGraph</span>
+<span class="sd">            graph dataset</span>
+<span class="sd">        lr : float, optional</span>
+<span class="sd">            learning rate, by default 5e-3</span>
+<span class="sd">        logdir : str, optional</span>
+<span class="sd">            log dir, by default &#39;tmp&#39;</span>
+<span class="sd">        num_epoch : int, optional</span>
+<span class="sd">            number of training epochs , by default 1</span>
+<span class="sd">        alpha : float, optional</span>
+<span class="sd">            balance parameter, by default 0.8</span>
+<span class="sd">        eta : float, optional</span>
+<span class="sd">            Attribute penalty balance parameter, by default 5.0</span>
+<span class="sd">        theta : float, optional</span>
+<span class="sd">            structure penalty balance parameter, by default 40.0</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            cuda id, by default &#39;cpu&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;training&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">(</span><span class="n">scipy_fmt</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+
+        <span class="n">A</span><span class="o">=</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="n">k1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="n">k1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">k1k2</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">k2</span>
+        <span class="n">num_loop</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">adj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">num_loop</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">m</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">-</span><span class="n">num_loop</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="n">num_loop</span>
+        <span class="n">Eij</span> <span class="o">=</span> <span class="n">k1k2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">Eij</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adj</span><span class="p">))</span>
+        <span class="n">adj_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;B shape:&#39;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;adj_label shape:&#39;</span><span class="p">,</span> <span class="n">adj_label</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;features shape:&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        
+
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:&quot;</span> <span class="o">+</span> <span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using gpu!!!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span>      
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">adj_label</span> <span class="o">=</span> <span class="n">adj_label</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
+            <span class="n">loss</span><span class="p">,</span><span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span><span class="p">,</span><span class="n">kl_loss</span><span class="p">,</span><span class="n">re_loss</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(</span>
+                    <span class="p">)),</span><span class="s2">&quot;train/kl_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kl_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span>
+                    <span class="s2">&quot;train/struct_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">struct_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span> <span class="s2">&quot;train/feat_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feat_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span>
+            <span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalars</span><span class="p">(</span>
+                <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
+                <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;struct_loss&quot;</span><span class="p">:</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="s2">&quot;feat_loss&quot;</span><span class="p">:</span> <span class="n">feat_loss</span><span class="p">},</span>
+                <span class="n">epoch</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ComGA.predict"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">eta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;predict and return anomaly score of each node</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl.DGLGraph</span>
+<span class="sd">            graph dataset</span>
+<span class="sd">        alpha : float, optional</span>
+<span class="sd">            balance parameter, by default 0.8</span>
+<span class="sd">        eta : float, optional</span>
+<span class="sd">            Attribute penalty balance parameter, by default 5.0</span>
+<span class="sd">        theta : float, optional</span>
+<span class="sd">            structure penalty balance parameter, by default 40.0</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            cuda id, by default &#39;cpu&#39;</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            anomaly score of each node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+
+        <span class="n">features</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">(</span><span class="n">scipy_fmt</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">)</span>
+
+        <span class="n">A</span><span class="o">=</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+        <span class="n">k1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="n">k1</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">k1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">k1k2</span> <span class="o">=</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">k2</span>
+        <span class="n">num_loop</span><span class="o">=</span><span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">adj</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">num_loop</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="n">m</span><span class="o">=</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">A</span><span class="p">)</span><span class="o">-</span><span class="n">num_loop</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="o">+</span><span class="n">num_loop</span>
+        <span class="n">Eij</span> <span class="o">=</span> <span class="n">k1k2</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">A</span> <span class="o">-</span> <span class="n">Eij</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">adj</span><span class="p">))</span>
+        <span class="n">adj_label</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+        
+        <span class="nb">print</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;B shape:&#39;</span><span class="p">,</span> <span class="n">B</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;adj_label shape:&#39;</span><span class="p">,</span> <span class="n">adj_label</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;features shape:&#39;</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:&quot;</span> <span class="o">+</span> <span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using gpu!!!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span>      
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">adj_label</span> <span class="o">=</span> <span class="n">adj_label</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">predict_score</span> <span class="o">=</span> <span class="n">test_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">predict_score</span></div></div>
+
+<div class="viewcode-block" id="ComGAModel"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGAModel">[docs]</a><span class="k">class</span> <span class="nc">ComGAModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    ComGA is an anomaly detector consisting of a Community Detection Module,</span>
+<span class="sd">    a tGCN Module and an Anomaly Detection Module</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_nodes : int</span>
+<span class="sd">        number of nodes</span>
+<span class="sd">    num_feats : int</span>
+<span class="sd">        dimension of feature </span>
+<span class="sd">    n_enc_1 : int</span>
+<span class="sd">        number of encode1 units</span>
+<span class="sd">    n_enc_2 : int</span>
+<span class="sd">        number of encode2 units</span>
+<span class="sd">    n_enc_3 : int</span>
+<span class="sd">        number of encode3 units</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">num_nodes</span><span class="p">,</span>
+                 <span class="n">num_feats</span><span class="p">,</span>
+                 <span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ComGAModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commAE</span><span class="o">=</span><span class="n">CommunityAE</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgcnEnc</span><span class="o">=</span><span class="n">tGCNEncoder</span><span class="p">(</span><span class="n">num_feats</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attrDec</span><span class="o">=</span><span class="n">AttrDecoder</span><span class="p">(</span><span class="n">num_feats</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">struDec</span><span class="o">=</span><span class="n">StruDecoder</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span>
+        
+
+<div class="viewcode-block" id="ComGAModel.forward"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGAModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : dgl.DGLGraph</span>
+<span class="sd">            graph dataset</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            features of nodes</span>
+<span class="sd">        B : torch.Tensor</span>
+<span class="sd">            Modularity Matrix</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A_hat : torch.Tensor</span>
+<span class="sd">            Reconstructed adj matrix</span>
+<span class="sd">        X_hat : torch.Tensor</span>
+<span class="sd">            Reconstructed attribute matrix</span>
+<span class="sd">        B_hat : torch.Tensor</span>
+<span class="sd">            Reconstructed Modularity Matrix</span>
+<span class="sd">        z : torch.Tensor</span>
+<span class="sd">            the node latent representation of tgcnEnc</span>
+<span class="sd">        z_a : torch.Tensor</span>
+<span class="sd">            the node latent representation of CommunityAE</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">B_enc1</span><span class="p">,</span><span class="n">B_enc2</span><span class="p">,</span><span class="n">z_a</span><span class="p">,</span><span class="n">B_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commAE</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgcnEnc</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">B_enc1</span><span class="p">,</span><span class="n">B_enc2</span><span class="p">,</span><span class="n">z_a</span><span class="p">)</span>
+        <span class="n">X_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attrDec</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+        <span class="n">A_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struDec</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">A_hat</span><span class="p">,</span><span class="n">X_hat</span><span class="p">,</span><span class="n">B_hat</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">z_a</span></div></div>
+
+<div class="viewcode-block" id="init_weights"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.init_weights">[docs]</a><span class="k">def</span> <span class="nf">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Init Module Weights</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    module : nn.Module</span>
+<span class="sd">        models to initialize linear weight</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; for module in self.modules():</span>
+<span class="sd">    &gt;&gt;&gt;    init_weights(module)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+        <span class="c1"># TODO: different initialization</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Bilinear</span><span class="p">):</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">xavier_uniform_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">module</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">fill_</span><span class="p">(</span><span class="mf">0.0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="CommunityAE"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.CommunityAE">[docs]</a><span class="k">class</span> <span class="nc">CommunityAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Community Detection Module, The modularity matrix B is reconstructed by autoencode to obtain a representation </span>
+<span class="sd">    of each node with community information.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    num_nodes : int</span>
+<span class="sd">        number of nodes</span>
+<span class="sd">    n_enc_1 : int</span>
+<span class="sd">        number of encode1 units</span>
+<span class="sd">    n_enc_2 : int</span>
+<span class="sd">        number of encode2 units</span>
+<span class="sd">    n_enc_3 : int</span>
+<span class="sd">        number of encode3 units</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">num_nodes</span><span class="p">,</span>
+                 <span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CommunityAE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span>
+        <span class="c1">#encoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">n_enc_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">)</span>
+        <span class="c1">#decoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_enc_3</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec2</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec3</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_enc_1</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="n">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CommunityAE.forward"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.CommunityAE.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">B</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        B : torch.Tensor</span>
+<span class="sd">            Modularity Matrix</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        hidden1 : torch.Tensor</span>
+<span class="sd">            the node latent representation of encoder1</span>
+<span class="sd">        hidden2 : torch.Tensor</span>
+<span class="sd">            the node latent representation of encoder2</span>
+<span class="sd">        z_a : torch.Tensor</span>
+<span class="sd">            the node latent representation of encoder3</span>
+<span class="sd">        community_reconstructions : torch.Tensor</span>
+<span class="sd">            Reconstructed Modularity Matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># encoder</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc1</span><span class="p">(</span><span class="n">B</span><span class="p">))</span>
+        <span class="n">hidden1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc2</span><span class="p">(</span><span class="n">hidden1</span><span class="p">))</span>
+        <span class="n">hidden2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc3</span><span class="p">(</span><span class="n">hidden2</span><span class="p">))</span>
+        <span class="n">z_a</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="c1"># decoder</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec1</span><span class="p">(</span><span class="n">z_a</span><span class="p">))</span>
+        <span class="n">se1</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec2</span><span class="p">(</span><span class="n">se1</span><span class="p">))</span>
+        <span class="n">se2</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec3</span><span class="p">(</span><span class="n">se2</span><span class="p">))</span>
+        <span class="n">community_reconstructions</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">hidden1</span><span class="p">,</span><span class="n">hidden2</span><span class="p">,</span><span class="n">z_a</span><span class="p">,</span><span class="n">community_reconstructions</span></div></div>
+
+
+<div class="viewcode-block" id="tGCNEncoder"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.tGCNEncoder">[docs]</a><span class="k">class</span> <span class="nc">tGCNEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    tGCNEncoder, To effectively fuse community structure information to GCN model for structure anomaly,</span>
+<span class="sd">    and learn more distinguishable anomalous node representations for local, global, and structure anomalies.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_feats : int</span>
+<span class="sd">        dimension of feature </span>
+<span class="sd">    n_enc_1 : int</span>
+<span class="sd">        number of encode1 units</span>
+<span class="sd">    n_enc_2 : int</span>
+<span class="sd">        number of encode2 units</span>
+<span class="sd">    n_enc_3 : int</span>
+<span class="sd">        number of encode3 units</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">in_feats</span><span class="p">,</span>
+                 <span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">tGCNEncoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc1</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc2</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc3</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enc4</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">dropout</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="n">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+<div class="viewcode-block" id="tGCNEncoder.forward"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.tGCNEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">B_enc1</span><span class="p">,</span><span class="n">B_enc2</span><span class="p">,</span><span class="n">B_enc3</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : dgl.DGLGraph</span>
+<span class="sd">            graph dataset</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            features of nodes</span>
+<span class="sd">        B_enc1 : torch.Tensor</span>
+<span class="sd">            the node latent representation of CommunityAE encoder1</span>
+<span class="sd">        B_enc2 : torch.Tensor</span>
+<span class="sd">            the node latent representation of CommunityAE encoder2</span>
+<span class="sd">        B_enc3 : torch.Tensor</span>
+<span class="sd">            the node latent representation of CommunityAE encoder3</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            the node latent representation of tGCNEncoder</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># encoder</span>
+        <span class="n">x1</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc1</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="o">+</span><span class="n">B_enc1</span>
+        <span class="n">x2</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc2</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x2</span><span class="o">+</span><span class="n">B_enc2</span>
+        <span class="n">x3</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc3</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">x3</span><span class="o">+</span><span class="n">B_enc3</span>
+        <span class="n">z</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enc4</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">z</span></div></div>
+
+
+<div class="viewcode-block" id="AttrDecoder"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.AttrDecoder">[docs]</a><span class="k">class</span> <span class="nc">AttrDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AttrDecoder, utilize attribute decoder to take the learned latent representation</span>
+<span class="sd">    Z as input to decode them for reconstruction of original nodal attributes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    in_feats : int</span>
+<span class="sd">        dimension of feature </span>
+<span class="sd">    n_enc_1 : int</span>
+<span class="sd">        number of encode1 units</span>
+<span class="sd">    n_enc_2 : int</span>
+<span class="sd">        number of encode2 units</span>
+<span class="sd">    n_enc_3 : int</span>
+<span class="sd">        number of encode3 units</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">in_feats</span><span class="p">,</span>
+                 <span class="n">n_enc_1</span><span class="p">,</span> <span class="n">n_enc_2</span><span class="p">,</span> <span class="n">n_enc_3</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AttrDecoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec1</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec2</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec3</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dec4</span><span class="o">=</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">in_feats</span><span class="p">,</span><span class="n">activation</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+            <span class="n">init_weights</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AttrDecoder.forward"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.AttrDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">g</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : dgl.DGLGraph</span>
+<span class="sd">            graph dataset</span>
+<span class="sd">        z : torch.Tensor</span>
+<span class="sd">            the node latent representation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Reconstructed attribute matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># decoder</span>
+        <span class="n">x1</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec1</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">z</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x2</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec2</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x1</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x3</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec3</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x2</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">attribute_reconstructions</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dec4</span><span class="p">(</span><span class="n">g</span><span class="p">,</span><span class="n">x3</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">attribute_reconstructions</span>    </div></div>
+
+
+<div class="viewcode-block" id="StruDecoder"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.StruDecoder">[docs]</a><span class="k">class</span> <span class="nc">StruDecoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    StruDecoder, utilize structure decoder to take the learned latent representation </span>
+<span class="sd">    Z as input to decode them for reconstruction of original graph structure.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        Dropout rate</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">StruDecoder</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span>
+
+<div class="viewcode-block" id="StruDecoder.forward"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.StruDecoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        z : torch.Tensor</span>
+<span class="sd">            the node latent representation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        torch.Tensor</span>
+<span class="sd">            Reconstructed adj matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># decoder</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">)</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">z</span><span class="nd">@x</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">structure_reconstructions</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">structure_reconstructions</span>    </div></div>
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
