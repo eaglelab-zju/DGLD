@@ -1,0 +1,7 @@
+dgld.models.CoLA.model
+=====
+
+.. automodule:: dgld.models.CoLA.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

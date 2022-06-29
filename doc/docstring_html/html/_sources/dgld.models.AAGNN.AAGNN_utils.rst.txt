@@ -1,0 +1,7 @@
+dgld.models.AAGNN.AAGNN_utils
+=====
+
+.. automodule:: dgld.models.AAGNN.AAGNN_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

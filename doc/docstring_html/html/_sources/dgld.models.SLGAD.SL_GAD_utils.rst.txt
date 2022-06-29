@@ -1,0 +1,7 @@
+dgld.models.SLGAD.SL_GAD_utils
+=====
+
+.. automodule:: dgld.models.SLGAD.SL_GAD_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

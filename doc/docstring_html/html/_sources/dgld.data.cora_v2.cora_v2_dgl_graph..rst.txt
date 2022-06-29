@@ -1,0 +1,7 @@
+dgld.data.cora_v2.cora_v2_dgl_graph.
+=====
+
+.. automodule:: dgld.data.cora_v2.cora_v2_dgl_graph.
+   :members:
+   :undoc-members:
+   :show-inheritance:

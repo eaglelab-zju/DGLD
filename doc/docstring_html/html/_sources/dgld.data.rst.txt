@@ -1,0 +1,18 @@
+dgld.data.cora_v2
+=====
+
+.. toctree::
+   :maxdepth: 4
+
+   dgld.data.cora_v2.ind.cora_v2.test.in
+   dgld.data.cora_v2.cora_v2_dgl_graph.
+   dgld.data.cora_v2.ind.cora_v2
+   dgld.data.cora_v2.ind.cora_v2
+   dgld.data.cora_v2.ind.cora_v2.gr
+   dgld.data.cora_v2.ind.cora_v
+   dgld.data.cora_v2.cora_v2_dgl_graph.
+   dgld.data.cora_v2.ind.cora_v2.a
+   dgld.data.cora_v2.ind.cora_v
+   dgld.data.cora_v2.ind.cora_v2.a
+
+

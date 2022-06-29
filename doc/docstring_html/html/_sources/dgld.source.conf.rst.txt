@@ -1,0 +1,7 @@
+dgld.source.conf
+=====
+
+.. automodule:: dgld.source.conf
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,7 @@
+dgld.modules.dglAug.transforms.readme
+=====
+
+.. automodule:: dgld.modules.dglAug.transforms.readme
+   :members:
+   :undoc-members:
+   :show-inheritance:

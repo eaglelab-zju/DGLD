@@ -1,0 +1,7 @@
+dgld.config.README
+=====
+
+.. automodule:: dgld.config.README
+   :members:
+   :undoc-members:
+   :show-inheritance:

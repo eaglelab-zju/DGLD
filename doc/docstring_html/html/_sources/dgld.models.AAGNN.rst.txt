@@ -1,0 +1,10 @@
+dgld.models.AAGNN
+=====
+
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.AAGNN.AAGNN_batch
+   dgld.models.AAGNN.AAGNN_utils
+
+
