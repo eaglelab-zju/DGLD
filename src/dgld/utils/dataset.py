@@ -57,8 +57,10 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     >>> print(dataset[0])
     """
 
-    def __init__(self, name="Cora",raw_dir=data_path , p=15, k=50, cola_preprocess_features=True, g_data=None, y_data=None):
+    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, cola_preprocess_features=True, g_data=None, y_data=None):
         super().__init__(name=name)
+        if raw_dir == None:
+            raw_dir = data_path
         self.dataset_name = name
         self.cola_preprocess_features = cola_preprocess_features
         if name in ['Flickr', 'BlogCatalog', 'Pubmed']:
