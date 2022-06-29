@@ -1,7 +1,0 @@
-models.SLGAD.SL\_GAD\_utils 
-============================
-
-.. automodule:: models.SLGAD.SL_GAD_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

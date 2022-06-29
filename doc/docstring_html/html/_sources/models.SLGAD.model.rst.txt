@@ -1,7 +1,0 @@
-models.SLGAD.model 
-===================
-
-.. automodule:: models.SLGAD.model
-   :members:
-   :undoc-members:
-   :show-inheritance:

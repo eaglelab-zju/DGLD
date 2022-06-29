@@ -1,7 +1,0 @@
-utils.evaluation 
-=================
-
-.. automodule:: utils.evaluation
-   :members:
-   :undoc-members:
-   :show-inheritance:

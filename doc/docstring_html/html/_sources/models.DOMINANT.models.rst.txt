@@ -1,7 +1,0 @@
-models.DOMINANT.models 
-=======================
-
-.. automodule:: models.DOMINANT.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

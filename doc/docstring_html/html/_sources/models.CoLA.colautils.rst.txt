@@ -1,7 +1,0 @@
-models.CoLA.colautils 
-======================
-
-.. automodule:: models.CoLA.colautils
-   :members:
-   :undoc-members:
-   :show-inheritance:

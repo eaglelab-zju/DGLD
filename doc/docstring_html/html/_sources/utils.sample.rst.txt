@@ -1,7 +1,0 @@
-utils.sample 
-=============
-
-.. automodule:: utils.sample
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-models.AAGNN.AAGNN\_batch 
-==========================
-
-.. automodule:: models.AAGNN.AAGNN_batch
-   :members:
-   :undoc-members:
-   :show-inheritance:
