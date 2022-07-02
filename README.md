@@ -10,7 +10,15 @@ DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch
 
 ## Quick Start
 @SJK 
+## Install
+```shell
+conda create -n dgld python=3.8.0
+conda install cudatoolkit==11.3.1
+pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
+pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
+pip install -r requirements.txt
 
+```
 ## Native Datasets
 The DGLD provides native graph anomaly detection datasets that widely used by existing methods.
 @YGM 这部分后面换成表格，而不是图片
