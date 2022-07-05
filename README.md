@@ -9,7 +9,41 @@ DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch
 @ZS
 
 ## Quick Start
-@SJK 
+
+Here, we introduce how to simply run DGLD, following 4 steps.
+
+### Dataloader
+
+We support multiple data import methods, including [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/), [DGL](https://www.dgl.ai/) and custom data. DGLD combines the process of data load and anomaly injection. Except for some basic datasets(including "Cora", "Citeseer", "Pubmed", "BlogCatalog", "Flickr", "ogbn-arxiv" and "ACM"), DGLD also accept custom data.
+
+### Anomaly Injection
+
+In anomaly detection, we inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
+
+```python
+gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
+g = gnd_dataset[0]
+label = gnd_dataset.anomaly_label
+```
+
+### Model
+
+DGLD supports some basic methods. It's easy to construct and train model.
+
+```python
+model = CoLA(in_feats = g.ndata['feat'].shape[1])
+```
+
+### Train and Evaluation
+
+Function fit need parameters to specify number of epoch and device. For gpu, device should be a int, while a string 'cpu' for cpu.
+
+```python
+model.fit(g, num_epoch = 5, device = 0)
+result = model.predict(g, auc_test_rounds = 2)
+print(split_auc(label, result))
+```
+
 ## Install
 ```shell
 conda create -n dgld python=3.8.0
@@ -21,11 +55,21 @@ pip install -r requirements.txt
 ```
 ## Native Datasets
 The DGLD provides native graph anomaly detection datasets that widely used by existing methods.
-@YGM 这部分后面换成表格，而不是图片
-<img src="http://latex.codecogs.com/svg.latex?\begin{array}{c|c|c|c|c}\hline&space;\text&space;{&space;Dataset&space;}&space;&&space;\sharp&space;\text&space;{&space;nodes&space;}&space;&&space;\sharp&space;\text&space;{&space;edges&space;}&space;&&space;\sharp&space;\text&space;{&space;attributes&space;}&space;&&space;\sharp&space;\text&space;{&space;anomalies&space;}&space;\\\hline&space;\text&space;{&space;BlogCatalog&space;}&space;&&space;5,196&space;&&space;171,743&space;&&space;8,189&space;&&space;300&space;\\\text&space;{&space;Flickr&space;}&space;&&space;7,575&space;&&space;239,738&space;&&space;12,407&space;&&space;450&space;\\\text&space;{&space;ACM&space;}&space;&&space;16,484&space;&&space;71,980&space;&&space;8,337&space;&&space;600&space;\\\text&space;{&space;Cora&space;}&space;&&space;2,708&space;&&space;5,429&space;&&space;1,433&space;&&space;150&space;\\\text&space;{&space;Citeseer&space;}&space;&&space;3,327&space;&&space;4,732&space;&&space;3,703&space;&&space;150&space;\\\text&space;{&space;Pubmed&space;}&space;&&space;19,717&space;&&space;44,338&space;&&space;500&space;&&space;600&space;\\\text&space;{&space;ogbn-arxiv&space;}&space;&&space;169,343&space;&&space;1,166,243&space;&&space;128&space;&&space;6000&space;\\\hline\end{array}" title="http://latex.codecogs.com/svg.latex?\begin{array}{c|c|c|c|c}\hline \text { Dataset } & \sharp \text { nodes } & \sharp \text { edges } & \sharp \text { attributes } & \sharp \text { anomalies } \\\hline \text { BlogCatalog } & 5,196 & 171,743 & 8,189 & 300 \\\text { Flickr } & 7,575 & 239,738 & 12,407 & 450 \\\text { ACM } & 16,484 & 71,980 & 8,337 & 600 \\\text { Cora } & 2,708 & 5,429 & 1,433 & 150 \\\text { Citeseer } & 3,327 & 4,732 & 3,703 & 150 \\\text { Pubmed } & 19,717 & 44,338 & 500 & 600 \\\text { ogbn-arxiv } & 169,343 & 1,166,243 & 128 & 6000 \\\hline\end{array}" />
+
+|   Dataset   | nodes  |  edges  | attributes | anomalies |
+| :---------: | :----: | :-----: | :--------: | :-------: |
+| BlogCatalog |  5196  | 171743  |    8189    |    300    |
+|   Flickr    |  7575  | 239738  |   12047    |    450    |
+|     ACM     | 16484  |  71980  |    8337    |    600    |
+|    Cora     |  2708  |  5429   |    1433    |    150    |
+|  Citeseer   |  3327  |  4732   |    3703    |    150    |
+|   Pubmed    | 19717  |  44338  |    500     |    600    |
+| ogbn-arxiv  | 169343 | 1166243 |    128     |   6000    |
+
 
 
 ## Implemented Methods
+
 @GZN 这部分最终确认
 
 |finished| Paper                                                                                                                                |  Method  |  From   |                                 Code                                 |
