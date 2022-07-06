@@ -1,0 +1,32 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          curl  -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token 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" \
+          https://api.github.com/repos/zhoushengisnoob/zhoushengisnoob.github.io/dispatches \
+          -d '{"event_type":"webhook-1","client_payload":{"unit":false,"integration":true}}'
