@@ -66,39 +66,20 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 
 
 
-## Implemented Methods
-
-@GZN 这部分最终确认
-
-|finished| Paper                                                                                                                                |  Method  |  From   |                                 Code                                 |
-|:---| :----------------------------------------------------------------------------------------------------------------------------------- | :------: | :-----: | :------------------------------------------------------------------: |
-|- [x] | [Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning](https://arxiv.org/abs/2103.00113)                |   CoLA   | TNNLS21 |         [Pytorch+DGL0.3](https://github.com/GRAND-Lab/CoLA)          |
-|- [ ]| [Deep Anomaly Detection on Attributed Networks](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)                           | Dominant |  SDM19  | [Pytorch](https://github.com/kaize0409/GCN_AnomalyDetection_pytorch) |
-|- [x]| [Subtractive Aggregation for Attributed Network Anomaly Detection](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf) |  AAGNN   |  CIKM21   |                                                                      |
-|- [ ]| [ComGA: Community-Aware Attributed Graph Anomaly Detection](https://dl.acm.org/doi/abs/10.1145/3488560.3498389) |  ComGA    |  WSDM22   |   [Tensorflow 1.0 ](https://github.com/DASE4/ComGA)   |
-|- [ ]| [A Deep Multi-View Framework for Anomaly Detection on Attributed Networks](https://ieeexplore.ieee.org/abstract/document/9162509) |  ALARM     |  TKDE20   |     |
-|- [ ]| [ANOMALYDAE: DUAL AUTOENCODER FOR ANOMALY DETECTION ON ATTRIBUTED NETWORKS](https://arxiv.org/pdf/2002.03665.pdf) |  AnomalyDAE     |  ICASSP20   |   [Tensorflow 1.10 ](https://github.com/haoyfan/AnomalyDAE)    |
-|- [ ]| [Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com) |  SL-GAD     |  TKDE21   |     |
-|- [ ]| [ANEMONE: Graph Anomaly Detection with Multi-Scale Contrastive Learning](https://dl.acm.org/doi/abs/10.1145/3459637.3482057) |  ANEMONE      |  CIKM21  |   [DGL0.4.1 ](https://github.com/GRAND-Lab/ANEMONE)    |
+## Implemented Results
 
 
 
-
-
-## Reproduced results 
-@GZN 这个表格最终确认
-Reported/Reproduced
-
-|                 Reproducer                  |   Method   | BlogCatalog | Flickr  |  cora   | citeseer | pubmed  |   ACM   | ogbn-arxiv |
-| :-----------------------------------------: | :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
-| [@miziha-zp](https://github.com/miziha-zp/) |    CoLA    |   0.7854/   | 0.7513/ | 0.8779/ | 0.8968/  | 0.9512/ | 0.8237/ |  0.8073/   |
-|               @sjk                              |   SL-GAD   |   0.8184/   | 0.7966/ | 0.9130/ | 0.9136/  | 0.9672/ | 0.8538/ |     /      |
-|               @gzn                              |  ANEMONE   |      /      |    /    | 0.9057/ | 0.9189/  | 0.9548/ |    /    |     /      |
-|  [@GavinYGM](https://github.com/GavinYGM/)  |  DOMINANT  |   0.7813/0.5701   | 0.7490/0.5475 |    /0.9554    |    /0.8455     |    /oom    | 0.7494/oom |     /oom      |
-|  [@GavinYGM](https://github.com/GavinYGM/)  |   ComGA    |   0.814/    | 0.799/  | 0.884/  | 0.9167/  | 0.922/  | 0.8496/ |     /      |
-|  [@GavinYGM](https://github.com/GavinYGM/)   | AnomalyDAE |      0.9781/      |    0.9722/    |    /    |    /     |    /    |    0.9005/    |     /      |
-|      [@Xinstein-rx](https://github.com/Xinstein-rx)                                       |   ALARM    |      /      |    /    |    /    |    /     |    /    |    /    |     /      |
-| [@fmc123653](https://github.com/fmc123653/) |  AAGNN   |   0.8184/   | 0.8299/ |    /    |    /     | 0.8564/ |    /    |     /      |
+|Method   | BlogCatalog | Flickr  |  cora   | citeseer | pubmed  |   ACM   | ogbn-arxiv |
+| :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
+| [CoLA]((https://arxiv.org/abs/2103.00113))    |   0.7854/   | 0.7513/ | 0.8779/ | 0.8968/  | 0.9512/ | 0.8237/ |  0.8073/   |
+|  [SL-GAD](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com)   |   0.8184/   | 0.7966/ | 0.9130/ | 0.9136/  | 0.9672/ | 0.8538/ |     /      |
+|  [ANEMONE](https://dl.acm.org/doi/abs/10.1145/3459637.3482057)   |      /      |    /    | 0.9057/ | 0.9189/  | 0.9548/ |    /    |     /      |
+| [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.7813/0.5701   | 0.7490/0.5475 |    /0.9554    |    /0.8455     |    /oom    | 0.7494/oom |     /oom      |
+|   [ComGA](https://dl.acm.org/doi/abs/10.1145/3488560.3498389)    |   0.814/    | 0.799/  | 0.884/  | 0.9167/  | 0.922/  | 0.8496/ |     /      |
+| [AnomalyDAE](https://arxiv.org/pdf/2002.03665.pdf) |      0.9781/      |    0.9722/    |    /    |    /     |    /    |    0.9005/    |     /      |
+|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      /      |    /    |    /    |    /     |    /    |    /    |     /      |
+|  [AAGNN](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf)   |   0.8184/   | 0.8299/ |    /    |    /     | 0.8564/ |    /    |     /      |
 
 
 ## Citation
