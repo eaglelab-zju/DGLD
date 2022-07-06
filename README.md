@@ -5,8 +5,6 @@
 
 DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch and DGL. It provides unified interface of popular graph anomaly detection methods, including the data loader, data augmentation, model training and evaluation. Also, the widely used modules are well organized so that developers and researchers can quickly implement their own designed models.
 
-## Overview of Library
-@ZS
 
 ## Quick Start
 
