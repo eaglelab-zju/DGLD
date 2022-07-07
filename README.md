@@ -1,4 +1,6 @@
-
+<p align="center">
+    <a href=""> <img src="DGLD_logo.jpg" width="200"/></a>
+<p>
 <h1 align="center">
     <p>A Deep Graph Anomaly Detection Library based on DGL</p>
 </h1>
@@ -70,16 +72,18 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 
 
 
-|Method   | BlogCatalog | Flickr  |  cora   | citeseer | pubmed  |   ACM   | ogbn-arxiv |
+|Method   | Cora | Citeseer  |  Pubmed   | BlogCatalog | Flickr  |   ACM   | Arxiv |
 | :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
-| [CoLA]((https://arxiv.org/abs/2103.00113))    |   0.7854/   | 0.7513/ | 0.8779/ | 0.8968/  | 0.9512/ | 0.8237/ |  0.8073/   |
-|  [SL-GAD](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com)   |   0.8184/   | 0.7966/ | 0.9130/ | 0.9136/  | 0.9672/ | 0.8538/ |     /      |
-|  [ANEMONE](https://dl.acm.org/doi/abs/10.1145/3459637.3482057)   |      /      |    /    | 0.9057/ | 0.9189/  | 0.9548/ |    /    |     /      |
-| [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.7813/0.5701   | 0.7490/0.5475 |    /0.9554    |    /0.8455     |    /oom    | 0.7494/oom |     /oom      |
-|   [ComGA](https://dl.acm.org/doi/abs/10.1145/3488560.3498389)    |   0.814/    | 0.799/  | 0.884/  | 0.9167/  | 0.922/  | 0.8496/ |     /      |
-| [AnomalyDAE](https://arxiv.org/pdf/2002.03665.pdf) |      0.9781/      |    0.9722/    |    /    |    /     |    /    |    0.9005/    |     /      |
-|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      /      |    /    |    /    |    /     |    /    |    /    |     /      |
-|  [AAGNN](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf)   |   0.8184/   | 0.8299/ |    /    |    /     | 0.8564/ |    /    |     /      |
+| [CoLA]((https://arxiv.org/abs/2103.00113))    |   0.8823   | 0.8765 | 0.9632 | 0.6488  | 0.5790 | 0.8194 |  0.8833   |
+|  [SL-GAD](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com)   |   0.8937   | 0.9003 | 0.9532 | 0.7782  | 0.7664 | 0.8146 |    0.7483     |
+|  [ANEMONE](https://dl.acm.org/doi/abs/10.1145/3459637.3482057)   |     0.8916      |   0.8633    | 0.9630 | -  | - |    -    |     -      |
+| [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.8555   | 0.8236 |    0.8295   |    0.7795     |   0.7559    | 0.7067 |     -     |
+|   [ComGA](https://dl.acm.org/doi/abs/10.1145/3488560.3498389)    |   0.9677    | 0.8020  | 0.9205  | 0.7908  | 0.7346  | 0.7147 |     -     |
+| [AnomalyDAE](https://arxiv.org/pdf/2002.03665.pdf) |     0.9679     |0.8832    | 0.9182   |    0.7666      |   0.7437     |    0.7091      |    -        |
+|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      -      |    -    |    -    |    -     |    -    |    -    |     -      |
+|  [AAGNN](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf)   |   0.7371   | 0.7616 |    0.7442   |    0.7648     | 0.7388 |    0.4868    |     -    |
 
-
-## Citation
+## Upcoming Features
+* More Graph Anomaly Detection Methods
+* Edge/Community/Graph Level Anomaly Detection Tasks
+* Graphical Operation Interface
