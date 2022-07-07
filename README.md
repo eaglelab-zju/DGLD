@@ -1,6 +1,7 @@
 <p align="center">
     <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html"> <img src="DGLD_logo.jpg" width="200"/></a>
 <p>
+
 <h1 align="center">
     <p>A Deep Graph Anomaly Detection Library <br> based on DGL</p>
 </h1>
@@ -75,9 +76,6 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 
 
 ## Implemented Results
-
-
-
 |Method   | Cora | Citeseer  |  Pubmed   | BlogCatalog | Flickr  |   ACM   | Arxiv |
 | :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
 | [CoLA]((https://arxiv.org/abs/2103.00113))    |   0.8823   | 0.8765 | 0.9632 | 0.6488  | 0.5790 | 0.8194 |  0.8833   |
