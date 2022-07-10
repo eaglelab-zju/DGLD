@@ -78,7 +78,7 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 ## Implemented Results
 |Method   | Cora | Citeseer  |  Pubmed   | BlogCatalog | Flickr  |   ACM   | Arxiv |
 | :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
-| [CoLA]((https://arxiv.org/abs/2103.00113))    |   0.8823   | 0.8765 | 0.9632 | 0.6488  | 0.5790 | 0.8194 |  0.8833   |
+| [CoLA](https://arxiv.org/abs/2103.00113)    |   0.8823   | 0.8765 | 0.9632 | 0.6488  | 0.5790 | 0.8194 |  0.8833   |
 |  [SL-GAD](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com)   |   0.8937   | 0.9003 | 0.9532 | 0.7782  | 0.7664 | 0.8146 |    0.7483     |
 |  [ANEMONE](https://dl.acm.org/doi/abs/10.1145/3459637.3482057)   |     0.8916      |   0.8633    | 0.9630 | -  | - |    -    |     -      |
 | [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.8555   | 0.8236 |    0.8295   |    0.7795     |   0.7559    | 0.7067 |     -     |
