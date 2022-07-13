@@ -10,7 +10,6 @@ from tqdm import tqdm
 from torch.utils.tensorboard import SummaryWriter
 from networkx.generators.atlas import *
 import sys 
-# import sys
 sys.path.append('../../utils')
 import os
 current_file_name = __file__
