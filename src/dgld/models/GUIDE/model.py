@@ -19,40 +19,39 @@ from evaluation import split_auc
 from .guide_utils import get_struct_feat
 
 class GUIDE():
+    """
+    Higher-order Structure Based Anomaly Detection on Attributed Networks
+    2021 IEEE International Conference on Big Data
+
+    Parameters
+    ----------
+    attrb_dim : int
+        attributed feature dimensions of input data
+    attrb_hid : int
+        Hidden dimension for attribute autoencoder
+    struct_dim : int
+        struct feature dimensions of input data,you can use function get_struct_feat() to generate struct feature
+        or use 6 as same as org paper 
+    struct_hid : int
+        Hidden dimension for struct autoencoder
+    num_layers : int, optional
+        Total number of layers. Default: 4.
+    dropout : float, optional
+        Dropout rate. Default: 0. .
+    act : callable activation function, optional
+        Activation function. Default: torch.nn.functional.relu
+
+    Examples
+    -------
+    >>> gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
+    >>> g = gnd_dataset[0]
+    >>> label = gnd_dataset.anomaly_label
+    >>> model = GUIDE(g.ndata['feat'].shape[1],256,6,64,num_layers=4,dropout=0.6)
+    >>> model.fit(g,lr=0.001,num_epoch=200,device='0',alpha=0.9986,verbose=True,y_true=label)
+    >>> result = model.predict(g,alpha=0.9986)
+    >>> print(split_auc(label, result))
+    """
     def __init__(self,attrb_dim,attrb_hid,struct_dim,struct_hid,num_layers=4,dropout=0,act=F.relu):
-        """
-        Higher-order Structure Based Anomaly Detection on Attributed Networks
-
-        2021 IEEE International Conference on Big Data
-
-        Parameters
-        ----------
-        attrb_dim : int
-            attributed feature dimensions of input data
-        attrb_hid : int
-            Hidden dimension for attribute autoencoder
-        struct_dim : int
-            struct feature dimensions of input data,you can use function get_struct_feat() to generate struct feature
-            or use 6 as same as org paper 
-        struct_hid : int
-            Hidden dimension for struct autoencoder
-        num_layers : int, optional
-            Total number of layers. Default: 4.
-        dropout : float, optional
-            Dropout rate. Default: 0. .
-        act : callable activation function, optional
-            Activation function. Default: torch.nn.functional.relu
-
-        Examples
-        -------
-        >>> gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
-        >>> g = gnd_dataset[0]
-        >>> label = gnd_dataset.anomaly_label
-        >>> model = GUIDE(g.ndata['feat'].shape[1],256,6,64,num_layers=4,dropout=0.6)
-        >>> model.fit(g,lr=0.001,num_epoch=200,device='0',alpha=0.9986,verbose=True,y_true=label)
-        >>> result = model.predict(g,alpha=0.9986)
-        >>> print(split_auc(label, result))
-        """
         self.num_layers = num_layers
         self.model = GUIDEModel(attrb_dim,attrb_hid,struct_dim,struct_hid,num_layers,dropout=dropout,act=act)
         self.init_model()

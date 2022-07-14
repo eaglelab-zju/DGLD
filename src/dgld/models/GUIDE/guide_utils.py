@@ -63,10 +63,10 @@ def get_parse():
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "feat_size":in_feature_map[args.dataset],
-            "hidden_size":args.hidden_dim,
-            "attrb_hidden_size":args.attrb_hid,
-            "struct_hidden_size":args.struct_hid,
+            "attrb_dim":in_feature_map[args.dataset],
+            "attrb_hid":args.attrb_hid,
+            "struct_dim":6,
+            "struct_hid":args.struct_hid,
             "dropout":args.dropout
         },
         "fit":{
