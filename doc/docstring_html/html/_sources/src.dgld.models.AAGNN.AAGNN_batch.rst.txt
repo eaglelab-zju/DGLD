@@ -1,0 +1,7 @@
+src.dgld.models.AAGNN.AAGNN\_batch 
+===================================
+
+.. automodule:: src.dgld.models.AAGNN.AAGNN_batch
+   :members:
+   :undoc-members:
+   :show-inheritance:

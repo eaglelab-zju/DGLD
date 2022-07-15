@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>src &mdash; DGLD 0.0.1 documentation</title>
+  <title>src.dgld.utils.evaluation &mdash; DGLD 0.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
@@ -41,7 +41,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <!-- Local TOC -->
               <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">src</a></li>
+<li><a class="reference internal" href="#">src.dgld.utils.evaluation</a></li>
 </ul>
 </div>
         </div>
@@ -58,9 +58,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>src</li>
+      <li>src.dgld.utils.evaluation</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/project.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/src.dgld.utils.evaluation.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -68,24 +68,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="src">
-<h1>src<a class="headerlink" href="#src" title="Permalink to this headline"></a></h1>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="src.html">src</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="src.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="src.dgld.html">src.dgld</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="src.dgld.html#subpackages">Subpackages</a></li>
-<li class="toctree-l4"><a class="reference internal" href="src.dgld.html#module-src.dgld">Module contents</a></li>
+  <section id="module-src.dgld.utils.evaluation">
+<span id="src-dgld-utils-evaluation"></span><h1>src.dgld.utils.evaluation<a class="headerlink" href="#module-src.dgld.utils.evaluation" title="Permalink to this headline"></a></h1>
+<p>This is a program about evaluating scores.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="src.dgld.utils.evaluation.split_auc">
+<span class="sig-prename descclassname"><span class="pre">src.dgld.utils.evaluation.</span></span><span class="sig-name descname"><span class="pre">split_auc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">groundtruth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prob</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/dgld/utils/evaluation.html#split_auc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#src.dgld.utils.evaluation.split_auc" title="Permalink to this definition"></a></dt>
+<dd><p>print the scoring(AUC) of the two types of anomalies separately and global auc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>groundtruth</strong> (<em>np.ndarray</em>) – Indicates whether this node is an injected anomaly node.
+0: normal node; 1: structural anomaly; 2: contextual anomaly</p></li>
+<li><p><strong>prob</strong> (<em>np.ndarray-like array</em>) – saving the predicted score for every node</p></li>
 </ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="src.html#module-src">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
