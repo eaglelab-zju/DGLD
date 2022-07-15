@@ -1,7 +1,0 @@
-dgld.modules.dglAug.transforms.feature_dropout
-=====
-
-.. automodule:: dgld.modules.dglAug.transforms.feature_dropout
-   :members:
-   :undoc-members:
-   :show-inheritance:

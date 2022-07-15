@@ -1,7 +1,0 @@
-dgld.utils.dataset
-=====
-
-.. automodule:: dgld.utils.dataset
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-dgld.utils.evaluation
-=====
-
-.. automodule:: dgld.utils.evaluation
-   :members:
-   :undoc-members:
-   :show-inheritance:

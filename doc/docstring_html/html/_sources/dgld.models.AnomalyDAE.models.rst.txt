@@ -1,7 +1,0 @@
-dgld.models.AnomalyDAE.models
-=====
-
-.. automodule:: dgld.models.AnomalyDAE.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

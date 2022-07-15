@@ -1,7 +1,0 @@
-dgld.utils.sample
-=====
-
-.. automodule:: dgld.utils.sample
-   :members:
-   :undoc-members:
-   :show-inheritance:

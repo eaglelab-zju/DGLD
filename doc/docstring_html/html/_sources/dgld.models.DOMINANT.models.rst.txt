@@ -1,7 +1,0 @@
-dgld.models.DOMINANT.models
-=====
-
-.. automodule:: dgld.models.DOMINANT.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

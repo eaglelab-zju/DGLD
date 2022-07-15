@@ -1,7 +1,0 @@
-dgld.models.AAGNN.AAGNN_batch
-=====
-
-.. automodule:: dgld.models.AAGNN.AAGNN_batch
-   :members:
-   :undoc-members:
-   :show-inheritance:

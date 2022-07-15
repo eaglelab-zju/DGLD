@@ -1,7 +1,0 @@
-dgld.modules.dglAug.augs
-=====
-
-.. automodule:: dgld.modules.dglAug.augs
-   :members:
-   :undoc-members:
-   :show-inheritance:
