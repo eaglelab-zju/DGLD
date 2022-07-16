@@ -1,21 +1,12 @@
 import shutil
-import struct
 import sys
-import scipy.sparse as sp
 import os
-
-from sklearn.manifold import smacof
-
 sys.path.append('../../')
 
 import argparse
 import numpy as np
 import torch
-import random
-import scipy
-from sklearn.metrics import roc_auc_score
 import dgl
-from copy import deepcopy
     
 def get_parse():
     """
@@ -39,7 +30,7 @@ def get_parse():
                         help='balance parameter')
     parser.add_argument('--eta', type=float, default=0.7,
                         help='Attribute penalty balance parameter')
-    parser.add_argument('--device', type=str, default='1')
+    parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--contrast_type', type=str, default='siamese')
     parser.add_argument('--rate', type=float, default=0.2)
     parser.add_argument('--margin', type=float, default=0.5)
@@ -139,7 +130,7 @@ def get_parse():
   
     
 def loss_func(a, a_hat, x, x_hat, alpha):
-    """Compute the loss function of the reconstructed graph
+    """compute the loss function of the reconstructed graph
 
     Parameters
     ----------

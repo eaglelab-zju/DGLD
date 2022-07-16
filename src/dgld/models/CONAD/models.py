@@ -5,6 +5,7 @@ from torch.utils.tensorboard import SummaryWriter
 import dgl
 from dgl.nn import GATConv
 
+from copy import deepcopy
 from .conad_utils import train_step, test_step, train_step_batch, test_step_batch
 
 class CONAD(nn.Module):
@@ -18,7 +19,10 @@ class CONAD(nn.Module):
         
     Examples
     -------
-    TODO
+    >>> from dgld.models.CONAD import CONAD
+    >>> model = CONAD(feat_size=1433)
+    >>> model.fit(g, num_epoch=1)
+    >>> result = model.predict(g)
     """
     def __init__(self, 
                  feat_size
@@ -90,7 +94,7 @@ class CONAD(nn.Module):
         
         g_orig = graph.add_self_loop()  
         transform = KnowledgeModel(rate=rate, num_added_edge=50, surround=50, scale_factor=10)
-        g_aug = transform(graph).add_self_loop() 
+        g_aug = transform(deepcopy(graph)).add_self_loop() 
         
         self.model.to(device) 
         
@@ -99,11 +103,6 @@ class CONAD(nn.Module):
         if batch_size == 0:
             print("full graph training!!!")
             for epoch in range(num_epoch):
-                # sample
-                # node_list = list(range(graph.num_nodes()))
-                # sample_idx = random.sample(node_list, subgraph_size)
-                # sg_orig = dgl.node_subgraph(g_orig, sample_idx).to(device)
-                # sg_aug = dgl.node_subgraph(g_aug, sample_idx).to(device)
                 g_orig = g_orig.to(device)
                 g_aug = g_aug.to(device)
                 
