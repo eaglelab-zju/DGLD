@@ -1,0 +1,7 @@
+src.dgld.models.ComGA.comga\_utils 
+===================================
+
+.. automodule:: src.dgld.models.ComGA.comga_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
