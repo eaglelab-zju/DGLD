@@ -1,0 +1,19 @@
+src.dgld.models.DOMINANT 
+=========================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.dgld.models.DOMINANT.dominant_utils
+   src.dgld.models.DOMINANT.models
+
+Module contents
+---------------
+
+.. automodule:: src.dgld.models.DOMINANT
+   :members:
+   :undoc-members:
+   :show-inheritance:

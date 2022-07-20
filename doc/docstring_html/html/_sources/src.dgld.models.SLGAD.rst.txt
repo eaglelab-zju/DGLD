@@ -1,0 +1,20 @@
+src.dgld.models.SLGAD 
+======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.dgld.models.SLGAD.SL_GAD_utils
+   src.dgld.models.SLGAD.dataset
+   src.dgld.models.SLGAD.model
+
+Module contents
+---------------
+
+.. automodule:: src.dgld.models.SLGAD
+   :members:
+   :undoc-members:
+   :show-inheritance:

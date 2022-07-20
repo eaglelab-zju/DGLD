@@ -1,12 +1,36 @@
+<p align="center">
+    <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html"> <img src="DGLD_logo.jpg" width="200"/></a>
+<p>
 
 <h1 align="center">
-    <p>A Deep Graph Anomaly Detection Library based on DGL</p>
+    <p>A Deep Graph Anomaly Detection Library <br> based on DGL</p>
 </h1>
 
-DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch and DGL. It provides unified interface of popular graph anomaly detection methods, including the data loader, data augmentation, model training and evaluation. Also, the widely used modules are well organized so that developers and researchers can quickly implement their own designed models.
+<p align="center">
+    <b> <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html">Website</a> | <a href="https://zhoushengisnoob.github.io/DGLD/doc/docstring_html/html/dgld.html">Doc</a> </b>
+</p>
 
-## Overview of Library
-@ZS
+DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch and DGL. It provides unified interface of popular graph anomaly detection methods, including the data loader, data augmentation, model training and evaluation. Also, the widely used modules are well organized so that developers and researchers can quickly implement their own designed models. 
+
+
+## News
+* For PyG users, we recommend the [PyGOD](https://github.com/pygod-team/pygod/), which is another comprehensive package that also supports many graph anomaly detection methods.
+* Recently we receive feedback that the reported results are slightly different from the original paper. This is due to the anomaly injection setting, the graph augmentation and sampling. We will provide more details on the settings. 
+
+## Installation
+Basic environment installation:
+```shell
+conda create -n dgld python=3.8.0
+conda activate dgld
+conda install cudatoolkit==11.3.1
+pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
+pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
+```
+Then clone the DGLD project, enter the directory and run:
+```shell
+pip install -r requirements.txt
+```
+Now you can enjoy DGLD!
 
 ## Quick Start
 
@@ -44,15 +68,7 @@ result = model.predict(g, auc_test_rounds = 2)
 print(split_auc(label, result))
 ```
 
-## Install
-```shell
-conda create -n dgld python=3.8.0
-conda install cudatoolkit==11.3.1
-pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
-pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
-pip install -r requirements.txt
 
-```
 ## Native Datasets
 The DGLD provides native graph anomaly detection datasets that widely used by existing methods.
 
@@ -68,39 +84,21 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 
 
 
-## Implemented Methods
+## Implemented Results
+|Method   | Cora | Citeseer  |  Pubmed   | BlogCatalog | Flickr  |   ACM   | Arxiv |
+| :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
+| [CoLA](https://arxiv.org/abs/2103.00113)    |   0.8823   | 0.8765 | 0.9632 | 0.6488  | 0.5790 | 0.8194 |  0.8833   |
+|  [SL-GAD](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com)   |   0.8937   | 0.9003 | 0.9532 | 0.7782  | 0.7664 | 0.8146 |    0.7483     |
+|  [ANEMONE](https://dl.acm.org/doi/abs/10.1145/3459637.3482057)   |     0.8916      |   0.8633    | 0.9630 | -  | - |    -    |     -      |
+| [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.8555   | 0.8236 |    0.8295   |    0.7795     |   0.7559    | 0.7067 |     -     |
+|   [ComGA](https://dl.acm.org/doi/abs/10.1145/3488560.3498389)    |   0.9677    | 0.8020  | 0.9205  | 0.7908  | 0.7346  | 0.7147 |     -     |
+| [AnomalyDAE](https://arxiv.org/pdf/2002.03665.pdf) |     0.9679     |0.8832    | 0.9182   |    0.7666      |   0.7437     |    0.7091      |    -        |
+|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      -      |    -    |    -    |    -     |    -    |    -    |     -      |
+|  [AAGNN](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf)   |   0.7371   | 0.7616 |    0.7442   |    0.7648     | 0.7388 |    0.4868    |     -    |
+|[Guide](https://ieeexplore.ieee.org/document/9671990)|0.9815|0.9770|0.9452|0.7668| 0.7331 |0.7100| 0.7711 |
+|[CONAD](https://link.springer.com/chapter/10.1007/978-3-031-05936-0_35)|0.9646|0.9116|0.9396|0.7863| 0.7395 |0.7005| 0.5988 |
 
-@GZN 这部分最终确认
-
-|finished| Paper                                                                                                                                |  Method  |  From   |                                 Code                                 |
-|:---| :----------------------------------------------------------------------------------------------------------------------------------- | :------: | :-----: | :------------------------------------------------------------------: |
-|- [x] | [Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning](https://arxiv.org/abs/2103.00113)                |   CoLA   | TNNLS21 |         [Pytorch+DGL0.3](https://github.com/GRAND-Lab/CoLA)          |
-|- [ ]| [Deep Anomaly Detection on Attributed Networks](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)                           | Dominant |  SDM19  | [Pytorch](https://github.com/kaize0409/GCN_AnomalyDetection_pytorch) |
-|- [x]| [Subtractive Aggregation for Attributed Network Anomaly Detection](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf) |  AAGNN   |  CIKM21   |                                                                      |
-|- [ ]| [ComGA: Community-Aware Attributed Graph Anomaly Detection](https://dl.acm.org/doi/abs/10.1145/3488560.3498389) |  ComGA    |  WSDM22   |   [Tensorflow 1.0 ](https://github.com/DASE4/ComGA)   |
-|- [ ]| [A Deep Multi-View Framework for Anomaly Detection on Attributed Networks](https://ieeexplore.ieee.org/abstract/document/9162509) |  ALARM     |  TKDE20   |     |
-|- [ ]| [ANOMALYDAE: DUAL AUTOENCODER FOR ANOMALY DETECTION ON ATTRIBUTED NETWORKS](https://arxiv.org/pdf/2002.03665.pdf) |  AnomalyDAE     |  ICASSP20   |   [Tensorflow 1.10 ](https://github.com/haoyfan/AnomalyDAE)    |
-|- [ ]| [Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection](https://arxiv.org/pdf/2108.09896.pdf?ref=https://githubhelp.com) |  SL-GAD     |  TKDE21   |     |
-|- [ ]| [ANEMONE: Graph Anomaly Detection with Multi-Scale Contrastive Learning](https://dl.acm.org/doi/abs/10.1145/3459637.3482057) |  ANEMONE      |  CIKM21  |   [DGL0.4.1 ](https://github.com/GRAND-Lab/ANEMONE)    |
-
-
-
-
-
-## Reproduced results 
-@GZN 这个表格最终确认
-Reported/Reproduced
-
-|                 Reproducer                  |   Method   | BlogCatalog | Flickr  |  cora   | citeseer | pubmed  |   ACM   | ogbn-arxiv |
-| :-----------------------------------------: | :--------: | :---------: | :-----: | :-----: | :------: | :-----: | :-----: | :--------: |
-| [@miziha-zp](https://github.com/miziha-zp/) |    CoLA    |   0.7854/   | 0.7513/ | 0.8779/ | 0.8968/  | 0.9512/ | 0.8237/ |  0.8073/   |
-|               @sjk                              |   SL-GAD   |   0.8184/   | 0.7966/ | 0.9130/ | 0.9136/  | 0.9672/ | 0.8538/ |     /      |
-|               @gzn                              |  ANEMONE   |      /      |    /    | 0.9057/ | 0.9189/  | 0.9548/ |    /    |     /      |
-|  [@GavinYGM](https://github.com/GavinYGM/)  |  DOMINANT  |   0.7813/0.5701   | 0.7490/0.5475 |    /0.9554    |    /0.8455     |    /oom    | 0.7494/oom |     /oom      |
-|  [@GavinYGM](https://github.com/GavinYGM/)  |   ComGA    |   0.814/    | 0.799/  | 0.884/  | 0.9167/  | 0.922/  | 0.8496/ |     /      |
-|  [@GavinYGM](https://github.com/GavinYGM/)   | AnomalyDAE |      0.9781/      |    0.9722/    |    /    |    /     |    /    |    0.9005/    |     /      |
-|      [@Xinstein-rx](https://github.com/Xinstein-rx)                                       |   ALARM    |      /      |    /    |    /    |    /     |    /    |    /    |     /      |
-| [@fmc123653](https://github.com/fmc123653/) |  AAGNN   |   0.8184/   | 0.8299/ |    /    |    /     | 0.8564/ |    /    |     /      |
-
-
-## Citation
+## Upcoming Features
+* More Graph Anomaly Detection Methods
+* Edge/Community/Graph Level Anomaly Detection Tasks
+* Graphical Operation Interface

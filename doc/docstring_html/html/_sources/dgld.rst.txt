@@ -60,6 +60,13 @@ dgld.models.SLGAD
 
    dgld.models.SLGAD
 
+dgld.models.GUIDE
+-----------------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.GUIDE
+
 
 dgld.modules
 =====

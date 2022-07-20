@@ -1,0 +1,19 @@
+src.dgld.models.AAGNN 
+======================
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.dgld.models.AAGNN.AAGNN_batch
+   src.dgld.models.AAGNN.AAGNN_utils
+
+Module contents
+---------------
+
+.. automodule:: src.dgld.models.AAGNN
+   :members:
+   :undoc-members:
+   :show-inheritance:

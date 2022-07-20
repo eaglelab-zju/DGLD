@@ -1,0 +1,19 @@
+src.dgld 
+=========
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   src.dgld.models
+   src.dgld.utils
+
+Module contents
+---------------
+
+.. automodule:: src.dgld
+   :members:
+   :undoc-members:
+   :show-inheritance:
