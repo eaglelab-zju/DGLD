@@ -1,11 +1,9 @@
 dgld.models.SLGAD
-=====
-
+==============
 .. toctree::
    :maxdepth: 4
 
    dgld.models.SLGAD.SL_GAD_utils
-   dgld.models.SLGAD.model
    dgld.models.SLGAD.dataset
-
+   dgld.models.SLGAD.model
 

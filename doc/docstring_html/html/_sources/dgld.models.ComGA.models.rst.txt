@@ -1,5 +1,5 @@
-dgld.models.ComGA.models
-=====
+dgld.models.ComGA.models 
+=========================
 
 .. automodule:: dgld.models.ComGA.models
    :members:

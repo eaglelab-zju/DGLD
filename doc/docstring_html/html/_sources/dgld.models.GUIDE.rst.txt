@@ -1,6 +1,5 @@
 dgld.models.GUIDE
-======================
-
+==============
 .. toctree::
    :maxdepth: 4
 

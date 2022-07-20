@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.CONAD.models &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dgld.models.CONAD.models</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>dgld.models.CONAD.models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dgld.models.CONAD.models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-dgld.models.CONAD.models">
+<span id="dgld-models-conad-models"></span><h1>dgld.models.CONAD.models<a class="headerlink" href="#module-dgld.models.CONAD.models" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CONAD.models.</span></span><span class="sig-name descname"><span class="pre">CONAD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feat_size</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Contrastive Attributed Network Anomaly Detection with Data Augmentation.[PAKDD 2022]
+ref:https://github.com/zhiming-xu/conad</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>feat_size</strong> (<em>int</em>) – dimension of feature</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dgld.models.CONAD</span> <span class="kn">import</span> <span class="n">CONAD</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">CONAD</span><span class="p">(</span><span class="n">feat_size</span><span class="o">=</span><span class="mi">1433</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contrast_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'siamese'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD.fit" title="Permalink to this definition"></a></dt>
+<dd><p>Fitting model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>dgl.DGLGraph</em>) – graph dataset</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – learning rate, by default 1e-3</p></li>
+<li><p><strong>weight_decay</strong> (<em>float</em><em>, </em><em>optional</em>) – weight decay (L2 penalty), by default 0.</p></li>
+<li><p><strong>logdir</strong> (<em>str</em><em>, </em><em>optional</em>) – log dir, by default ‘tmp’</p></li>
+<li><p><strong>num_epoch</strong> (<em>int</em><em>, </em><em>optional</em>) – number of training epochs, by default 1</p></li>
+<li><p><strong>margin</strong> (<em>float</em><em>, </em><em>optional</em>) – parameter of the contrastive loss function, by default 0.5</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – balance parameter, by default 0.9</p></li>
+<li><p><strong>eta</strong> (<em>float</em><em>, </em><em>optional</em>) – balance parameter, by default 0.7</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device of computation, by default ‘cpu’</p></li>
+<li><p><strong>rate</strong> (<em>float</em><em>, </em><em>optional</em>) – the rate of anomalies, by default 0.2</p></li>
+<li><p><strong>contrast_type</strong> (<em>str</em><em>, </em><em>optional</em>) – categories of contrastive loss functions, by default ‘siamese’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – the size of training batch, by default 0</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD.predict" title="Permalink to this definition"></a></dt>
+<dd><p>predict and return anomaly score of each node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>dgl.DGLGraph</em>) – graph dataset</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – balance parameter, by default 0.9</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device of computation, by default ‘cpu’</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – the size of training batch, by default 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>anomaly score of each node</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.CONAD.models.CONAD.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CONAD.models.</span></span><span class="sig-name descname"><span class="pre">CONAD_Base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feats</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hid_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_feats</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">64</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_heads</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">LeakyReLU(negative_slope=0.01)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>This is a basic structure model of CONAD.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in_feats</strong> (<em>int</em>) – the feature dimension of the input data.</p></li>
+<li><p><strong>hid_feats</strong> (<em>int</em><em>, </em><em>optional</em>) – the dimension of hidden feature, by default 128</p></li>
+<li><p><strong>out_feats</strong> (<em>int</em><em>, </em><em>optional</em>) – the dimension of output feature, by default 64</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em><em>, </em><em>optional</em>) – number of heads in Multi-Head Attention.</p></li>
+<li><p><strong>activation</strong> (<em>callable activation function/layer</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – if not None, applies an activation function to the updated node features, by default nn.LeakyReLU()</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.embed">
+<span class="sig-name descname"><span class="pre">embed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.embed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.embed" title="Permalink to this definition"></a></dt>
+<dd><p>compute embeddings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em><em> or </em><em>list</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>torch.Tensor</em>) – features of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>embeddings of nodes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.embed_batch">
+<span class="sig-name descname"><span class="pre">embed_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.embed_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.embed_batch" title="Permalink to this definition"></a></dt>
+<dd><p>compute embeddings for mini-batch graph training</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>list</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>torch.Tensor</em>) – features of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>embeddings of nodes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Forward Propagation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>torch.Tensor</em><em> or </em><em>list</em>) – feature representation of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>torch.Tensor</em> – reconstructed adjacency matrix</p></li>
+<li><p><em>torch.Tensor</em> – reconstructed attribute matrix</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.forward_batch">
+<span class="sig-name descname"><span class="pre">forward_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.forward_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.forward_batch" title="Permalink to this definition"></a></dt>
+<dd><p>Forward Propagation for mini-batch graph training</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>list</em>) – feature representation of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>torch.Tensor</em> – reconstructed adjacency matrix</p></li>
+<li><p><em>torch.Tensor</em> – reconstructed attribute matrix</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.reconstruct">
+<span class="sig-name descname"><span class="pre">reconstruct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.reconstruct"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.reconstruct" title="Permalink to this definition"></a></dt>
+<dd><p>reconstruct attribute matrix and adjacency matrix</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em><em> or </em><em>list</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>torch.Tensor</em>) – feature representation of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>torch.Tensor</em> – reconstructed adjacency matrix</p></li>
+<li><p><em>torch.Tensor</em> – reconstructed attribute matrix</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.reconstruct_batch">
+<span class="sig-name descname"><span class="pre">reconstruct_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">blocks</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#CONAD_Base.reconstruct_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.reconstruct_batch" title="Permalink to this definition"></a></dt>
+<dd><p>reconstruct attribute matrix and adjacency matrix for mini-batch graph training</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>list</em>) – graph dataset</p></li>
+<li><p><strong>h</strong> (<em>torch.Tensor</em>) – feature representation of nodes</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>torch.Tensor</em> – reconstructed adjacency matrix</p></li>
+<li><p><em>torch.Tensor</em> – reconstructed attribute matrix</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.CONAD_Base.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.CONAD.models.CONAD_Base.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.KnowledgeModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CONAD.models.</span></span><span class="sig-name descname"><span class="pre">KnowledgeModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_added_edge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surround</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#KnowledgeModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.KnowledgeModel" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransform</span></code></p>
+<p>Knowledge Modeling Module, introduce a certain amount of anomalies belonging to each anomaly type to the input attributed network to form an augmented attributed network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rate</strong> (<em>float</em>) – rate for generating anomalies</p></li>
+<li><p><strong>num_added_edge</strong> (<em>int</em>) – parameter for generating high-degree anomalies</p></li>
+<li><p><strong>surround</strong> (<em>int</em>) – parameter for generating outlying anomalies</p></li>
+<li><p><strong>scale_factor</strong> (<em>float</em>) – parameter for generating disproportionate anomalies</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.SiameseContrastiveLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CONAD.models.</span></span><span class="sig-name descname"><span class="pre">SiameseContrastiveLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#SiameseContrastiveLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.SiameseContrastiveLoss" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>siamese contrastive loss function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>margin</strong> (<em>float</em>) – parameter of the contrastive loss function</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.SiameseContrastiveLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#SiameseContrastiveLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.SiameseContrastiveLoss.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Forward Propagation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>z</strong> (<em>torch.Tensor</em>) – feature representation of the original graph</p></li>
+<li><p><strong>z_hat</strong> (<em>torch.Tensor</em>) – feature representation for data augmentation graphs</p></li>
+<li><p><strong>l</strong> (<em>torch.Tensor</em>) – anomaly labels</p></li>
+<li><p><strong>adj</strong> (<em>torch.Tensor</em>) – adjacency matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the result of the loss function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.SiameseContrastiveLoss.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.CONAD.models.SiameseContrastiveLoss.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.TripletContrastiveLoss">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CONAD.models.</span></span><span class="sig-name descname"><span class="pre">TripletContrastiveLoss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">margin</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#TripletContrastiveLoss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.TripletContrastiveLoss" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>triplet contrastive loss function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>margin</strong> (<em>float</em>) – parameter of the contrastive loss function</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.TripletContrastiveLoss.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">aug</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CONAD/models.html#TripletContrastiveLoss.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CONAD.models.TripletContrastiveLoss.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Forward Propagation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orig</strong> (<em>torch.Tensor</em>) – feature representation of the original graph</p></li>
+<li><p><strong>aug</strong> (<em>torch.Tensor</em>) – feature representation for data augmentation graphs</p></li>
+<li><p><strong>l</strong> (<em>torch.Tensor</em>) – anomaly labels</p></li>
+<li><p><strong>adj</strong> (<em>torch.Tensor</em>) – adjacency matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the result of the loss function</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="dgld.models.CONAD.models.TripletContrastiveLoss.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#dgld.models.CONAD.models.TripletContrastiveLoss.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
