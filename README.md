@@ -18,7 +18,7 @@ We support multiple data import methods, including [PyTorch Geometric](https://p
 
 ### Anomaly Injection
 
-In anomaly detection, we inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
+In anomaly detection, DGLD inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
 
 ```python
 gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
