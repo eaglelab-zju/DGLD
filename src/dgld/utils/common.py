@@ -93,10 +93,7 @@ class ExpRecord():
     """ 
     def __init__(self, filepath='result.csv'): 
         self.filepath = filepath
-        if osp.exists(self.filepath):
-            self.record = self.load_record()
-        else:
-            self.record = None
+        
     def add_record(self, dict_record):
         """summary
 
@@ -105,6 +102,11 @@ class ExpRecord():
         dict_record : Dict
             record to add 
         """
+        
+        if osp.exists(self.filepath):
+            self.record = self.load_record()
+        else:
+            self.record = None
         print(dict_record)
         if not self.record:
             self.record = {k:[v] for k, v in dict_record.items()}
