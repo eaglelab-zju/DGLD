@@ -1,5 +1,5 @@
-dgld.utils.sample
-=====
+dgld.utils.sample 
+==================
 
 .. automodule:: dgld.utils.sample
    :members:

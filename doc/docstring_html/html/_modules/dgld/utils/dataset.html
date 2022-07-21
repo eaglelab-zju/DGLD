@@ -15,6 +15,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/clipboard.min.js"></script>
         <script src="../../../_static/copybutton.js"></script>
@@ -124,8 +125,10 @@
 <span class="sd">    &gt;&gt;&gt; print(dataset[0])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cora&quot;</span><span class="p">,</span><span class="n">raw_dir</span><span class="o">=</span><span class="n">data_path</span> <span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cola_preprocess_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cora&quot;</span><span class="p">,</span><span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span> <span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cola_preprocess_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">raw_dir</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">raw_dir</span> <span class="o">=</span> <span class="n">data_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cola_preprocess_features</span> <span class="o">=</span> <span class="n">cola_preprocess_features</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Flickr&#39;</span><span class="p">,</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>

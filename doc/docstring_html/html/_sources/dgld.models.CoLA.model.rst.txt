@@ -1,5 +1,5 @@
-dgld.models.CoLA.model
-=====
+dgld.models.CoLA.model 
+=======================
 
 .. automodule:: dgld.models.CoLA.model
    :members:

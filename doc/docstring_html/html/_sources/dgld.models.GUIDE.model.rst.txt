@@ -1,5 +1,5 @@
-dgld.models.GUIDE.model
-============================
+dgld.models.GUIDE.model 
+========================
 
 .. automodule:: dgld.models.GUIDE.model
    :members:

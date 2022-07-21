@@ -16,6 +16,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
@@ -68,9 +69,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dgld-utils-sample">
-<h1>dgld.utils.sample<a class="headerlink" href="#dgld-utils-sample" title="Permalink to this headline"></a></h1>
-<span class="target" id="module-dgld.utils.sample"></span><p>This is a program about sample random walk.</p>
+  <section id="module-dgld.utils.sample">
+<span id="dgld-utils-sample"></span><h1>dgld.utils.sample<a class="headerlink" href="#module-dgld.utils.sample" title="Permalink to this heading"></a></h1>
+<p>This is a program about sample random walk.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.utils.sample.BaseSubGraphSampling">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.sample.</span></span><span class="sig-name descname"><span class="pre">BaseSubGraphSampling</span></span><a class="reference internal" href="_modules/dgld/utils/sample.html#BaseSubGraphSampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.sample.BaseSubGraphSampling" title="Permalink to this definition"></a></dt>
@@ -81,7 +82,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.utils.sample.CoLASubGraphSampling">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.sample.</span></span><span class="sig-name descname"><span class="pre">CoLASubGraphSampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/sample.html#CoLASubGraphSampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.sample.CoLASubGraphSampling" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">dgld.utils.sample.BaseSubGraphSampling</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSubGraphSampling</span></code></a></p>
 <p>we adopt random walk with restart (RWR)
 as local subgraph sampling strategy due to its usability and efficiency.
 we fixed the size 𝑆 of the sampled subgraph (number of nodes in the subgraph) to 4.
@@ -109,7 +110,7 @@ described in [CoLA Anomaly Detection on Attributed Networks via Contrastive Self
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.utils.sample.SLGAD_SubGraphSampling">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.sample.</span></span><span class="sig-name descname"><span class="pre">SLGAD_SubGraphSampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/sample.html#SLGAD_SubGraphSampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.sample.SLGAD_SubGraphSampling" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">dgld.utils.sample.BaseSubGraphSampling</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSubGraphSampling</span></code></a></p>
 <p>we adopt random walk with restart (RWR)
 as local subgraph sampling strategy due to its usability and efficiency.
 we fixed the size 𝑆 of the sampled subgraph (number of nodes in the subgraph) to 4.
@@ -127,7 +128,7 @@ described in [CoLA Anomaly Detection on Attributed Networks via Contrastive Self
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.utils.sample.UniformNeighborSampling">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.utils.sample.</span></span><span class="sig-name descname"><span class="pre">UniformNeighborSampling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/utils/sample.html#UniformNeighborSampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.utils.sample.UniformNeighborSampling" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">dgld.utils.sample.BaseSubGraphSampling</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#dgld.utils.sample.BaseSubGraphSampling" title="dgld.utils.sample.BaseSubGraphSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSubGraphSampling</span></code></a></p>
 <p>Uniform sampling Neighbors to generate subgraph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

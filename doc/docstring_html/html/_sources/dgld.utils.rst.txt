@@ -1,12 +1,21 @@
-dgld.utils
-=====
+dgld.utils 
+===========
+
+Submodules
+----------
 
 .. toctree::
    :maxdepth: 4
 
-   dgld.utils.evaluation
-   dgld.utils.dataset
    dgld.utils.common
+   dgld.utils.dataset
+   dgld.utils.evaluation
    dgld.utils.sample
 
+Module contents
+---------------
 
+.. automodule:: dgld.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

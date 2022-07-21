@@ -1,7 +1,7 @@
-src
-===
+dgld
+====
 
 .. toctree::
    :maxdepth: 4
 
-   src
+   dgld

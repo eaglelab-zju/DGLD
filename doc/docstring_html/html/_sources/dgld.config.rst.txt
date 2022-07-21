@@ -1,9 +1,0 @@
-dgld.config
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.config.README
-
-

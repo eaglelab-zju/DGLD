@@ -1,12 +1,26 @@
-dgld.modules.dglAug.transforms
-=====
+dgld.modules.dglAug 
+====================
+
+Subpackages
+-----------
 
 .. toctree::
    :maxdepth: 4
 
-   dgld.modules.dglAug.transforms.feature_dropout
-   dgld.modules.dglAug.transforms.random_mask
-   dgld.modules.dglAug.transforms.readme
-   dgld.modules.dglAug.transforms.node_shuffle
+   dgld.modules.dglAug.transforms
 
+Submodules
+----------
 
+.. toctree::
+   :maxdepth: 4
+
+   dgld.modules.dglAug.augs
+
+Module contents
+---------------
+
+.. automodule:: dgld.modules.dglAug
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,5 +1,5 @@
-dgld.modules.dglAug.transforms.feature_dropout
-=====
+dgld.modules.dglAug.transforms.feature\_dropout 
+================================================
 
 .. automodule:: dgld.modules.dglAug.transforms.feature_dropout
    :members:
