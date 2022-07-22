@@ -12,3 +12,5 @@ t.py
 src/dgld/data/*
 doc_html_auto_generator
 !src/dgld/data/README.md
+.DS_Store
+src/.DS_Store
