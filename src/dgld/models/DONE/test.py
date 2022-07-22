@@ -47,7 +47,6 @@ def load_paper_dataset(dataset):
     print("#Edges: {}".format(adj.nonzero()[0].shape[0]))
     print("#Labels: ", np.unique(label).shape[0])
     print("#Attributes: {}".format(feat.shape[1]))
-    
     graph = dgl.graph(adj.nonzero())
     graph.ndata['feat'] = torch.FloatTensor(feat)
     graph.ndata['label'] = torch.IntTensor(label)
@@ -61,9 +60,8 @@ def recall_at_k(truth, score, k):
     return top_k_label.sum() / truth.sum()
 
 # 使用论文数据集和实验设置进行测试
-dataset = 'cora'
+dataset = 'citeseer'
 g, indices = load_paper_dataset(dataset)
-# newg = random_walk_with_restart(g)
 feat = g.ndata['feat']
 label = g.ndata.pop('label').squeeze()
 label_aug = np.zeros_like(label)
@@ -78,9 +76,9 @@ label_aug[indices > unseeded_num_dict[dataset]] = 1
 num_nodes = g.number_of_nodes()
 
 model = DONE(feat.shape[1], num_nodes)
-model.fit(g, batch_size=0, num_epoch=20, lr=0.03, y_true=label_aug)
+model.fit(g, batch_size=0, num_epoch=1, 
+          lr=0.01, y_true=label_aug, num_neighbors=-1)
 score = model.predict(g, batch_size=0)
-
 auc = roc_auc_score(label_aug, score)
 
 print(f"auc: {auc:.5f}")

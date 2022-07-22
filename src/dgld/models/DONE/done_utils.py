@@ -31,6 +31,7 @@ def get_parse():
     parser.add_argument('--weight_decay', type=float, default=0.)
     parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--batch_size', type=int, default=0)
+    parser.add_argument('--num_neighbors', type=int, default=-1)
     
     args = parser.parse_args()
 
@@ -87,6 +88,7 @@ def get_parse():
             "num_epoch": args.num_epoch,
             "device": args.device,
             "batch_size": args.batch_size,
+            "num_neighbors": args.num_neighbors,
         },
         "predict":{
             "device": args.device,
@@ -96,7 +98,7 @@ def get_parse():
     return final_args_dict
 
 
-def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eweight_name='w', eps=0.1):
+def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
     """Consistent with the description of "Network Preprocessing" in Section 4.1 of the paper.
 
     Parameters
@@ -107,100 +109,69 @@ def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eweight_name='w', eps=0
         The maximum length of the truncated random walk, by default 3
     r : float, optional
         Probability of restart, by default 0.3
-    eweight_name : str, optional
-        The name of the edge weight store, by default 'w'
     eps : float, optional
         To avoid errors when the reciprocal of a node's out-degree is inf, by default 0.1
 
     Returns
     -------
-    dgl.DGLGraph
-        
-    Examples
-    --------
-    >>> g = dgl.rand_graph(4, 3)
-    >>> newg = random_walk_with_restart(g)
-    >>> print(g, newg)
+    torch.Tensor
     """
     newg = deepcopy(g)
-    
-    adj = newg.adj().to_dense()
+    newg = newg.remove_self_loop().add_self_loop()
+    # D^-1
     inv_degree = torch.pow(newg.out_degrees().float(), -1)
     inv_degree = torch.where(torch.isinf(inv_degree), torch.full_like(inv_degree, eps), inv_degree)
+    inv_degree = torch.diag(inv_degree)
+    # A
+    adj = newg.adj().to_dense()
+    mat = inv_degree @ adj 
     
     P_0 = torch.eye(newg.number_of_nodes()).float()
-    mat = inv_degree @ adj
-    X = P = P_0
-    for i in range(k):
-        P = r * P @ mat + (1 - r) * P_0 # BUG: fix
+    X = torch.zeros_like(P_0) 
+    P = P_0 
+    for i in range(k): 
+        P = r * P @ mat + (1 - r) * P_0 
         X += P 
     X /= k
     
-    newg = dgl.graph(X.nonzero(as_tuple=True))
-    newg.edata[eweight_name] = X[newg.edges()]
-    newg.ndata['feat'] = g.ndata['feat']
-    return newg
-
-
-class RWR(dgl.transforms.BaseTransform):
-    def __init__(self, T=3, r=0.3):
-        super(RWR, self).__init__()
-        self.T = T
-        self.r = r
-        
-    def __call__(self, g, eweight_name='w'):
-        newg = deepcopy(g).remove_self_loop()
-    
-        adj = newg.adj().to_dense()
-        inv_degree = torch.pow(newg.out_degrees().float(), -1)
-        inv_degree = torch.where(torch.isinf(inv_degree), torch.full_like(inv_degree, 0.1), inv_degree)
-        
-        P_0 = torch.eye(newg.number_of_nodes()).float()
-        mat = inv_degree @ adj
-        X = P = P_0
-        for i in range(self.T):
-            P = self.r * P @ mat + (1 - self.r) * P_0 
-            X += P 
-        X /= self.T
-        
-        newg = dgl.graph(X.nonzero(as_tuple=True))
-        newg.edata[eweight_name] = X[newg.edges()]
-        return newg    
+    return X
     
 
-def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas:dict, pretrain=False):
+def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_factor, pretrain=False):
     # closed form update rules
-    # Eq.8
-    dx_norm = torch.norm(x-x_hat, dim=1)
-    numerator = alphas[0] * dx_norm + alphas[1] * hom_str
-    os = numerator / torch.sum(numerator)
-    # Eq.9
-    da_norm = torch.norm(c-c_hat, dim=1)
-    numerator = alphas[2] * da_norm + alphas[3] * hom_attr
-    oa = numerator / torch.sum(numerator)
-    # Eq.10
-    dc_norm = torch.norm(h_s-h_a, dim=1)
-    oc = dc_norm / torch.sum(dc_norm)
+    # Eq.8 struct score
+    ds = torch.norm(x-x_hat, dim=1)
+    numerator = alphas[0] * ds + alphas[1] * hom_str
+    os = numerator / torch.sum(numerator) * scale_factor
+    # Eq.9 attr score
+    da = torch.norm(c-c_hat, dim=1)
+    numerator = alphas[2] * da + alphas[3] * hom_attr
+    oa = numerator / torch.sum(numerator) * scale_factor
+    # Eq.10 com score
+    dc = torch.norm(h_s-h_a, dim=1)
+    oc = dc / torch.sum(dc) * scale_factor
     
     # using Adam
     if pretrain is True:
-        loss_prox_str = torch.mean(dx_norm)     # Eq.2
+        loss_prox_str = torch.mean(ds)          # Eq.2
         loss_hom_str = torch.mean(hom_str)      # Eq.3
-        loss_prox_attr = torch.mean(da_norm)    # Eq.4
+        loss_prox_attr = torch.mean(da)         # Eq.4
         loss_hom_attr = torch.mean(hom_attr)    # Eq.5
-        loss_com = torch.mean(dc_norm)          # Eq.6
+        loss_com = torch.mean(dc)               # Eq.6
     else:
-        # Eq.2
-        loss_prox_str = torch.mean(torch.log(torch.pow(os, -1)) * dx_norm)
-        # Eq.3
-        loss_hom_str = torch.mean(torch.log(torch.pow(os, -1)) * hom_str) 
-        # Eq.4
-        loss_prox_attr = torch.mean(torch.log(torch.pow(oa, -1)) * da_norm)
-        # Eq.5
-        loss_hom_attr = torch.mean(torch.log(torch.pow(oa, -1)) * hom_attr)
-        # Eq.6
-        loss_com = torch.mean(torch.log(torch.pow(oc, -1)) * dc_norm) 
+        loss_prox_str = torch.mean(torch.log(torch.pow(os, -1)) * ds)       # Eq.2
+        loss_hom_str = torch.mean(torch.log(torch.pow(os, -1)) * hom_str)   # Eq.3
+        loss_prox_attr = torch.mean(torch.log(torch.pow(oa, -1)) * da)      # Eq.4
+        loss_hom_attr = torch.mean(torch.log(torch.pow(oa, -1)) * hom_attr) # Eq.5
+        loss_com = torch.mean(torch.log(torch.pow(oc, -1)) * dc)            # Eq.6
         
+    # sum = loss_prox_str + loss_hom_str + loss_prox_attr + loss_hom_attr + loss_com
+    # print("a0={:.3f}".format((loss_prox_str/sum).item()), 
+    #       "a1={:.3f}".format((loss_hom_str/sum).item()), 
+    #       "a2={:.3f}".format((loss_prox_attr/sum).item()), 
+    #       "a3={:.3f}".format((loss_hom_attr/sum).item()), 
+    #       "a4={:.3f}".format((loss_com/sum).item()), 
+    #       )
     # Eq.7
     loss = alphas[0] * loss_prox_str + alphas[1] * loss_hom_str + alphas[2] * loss_prox_attr + alphas[3] * loss_hom_attr + alphas[4] * loss_com
     
@@ -208,60 +179,67 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas:dict, pret
     return loss, score
   
     
-def train_step(model, optimizer:torch.optim.Optimizer, graph:dgl.DGLGraph, adj:torch.Tensor,batch_size:int, alphas:dict, num_neighbors:int, pretrain=False):
+def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch.Tensor, batch_size:int, alphas:list, num_neighbors:int, device, pretrain=False):
+    g = deepcopy(g)
+    model.train()
     sampler = SubgraphNeighborSampler(num_neighbors)
     dataloader = dgl.dataloading.DataLoader(
-        graph, torch.arange(graph.num_nodes()), sampler,
+        g, torch.arange(g.num_nodes()), sampler,
         batch_size=batch_size,
         shuffle=True,
         drop_last=False,
     )
     
     epoch_loss = 0
-    predict_score = torch.zeros(graph.num_nodes())
-    
-    # adj = graph.remove_self_loop().adj().to_dense()
+    predict_score = torch.zeros(g.num_nodes())
     
     for sg in dataloader:
         feat = sg.ndata['feat']
-        sub_adj = adj[sg.ndata['_ID']]
+        indices = sg.ndata['_ID']
+        sub_adj = adj[indices]
+        scale_factor = 1.0 * g.num_nodes() / sg.num_nodes()
+        
+        sg = sg.to(device)
+        sub_adj = sub_adj.to(device)
         
         h_s, x_hat, h_a, c_hat, hom_str, hom_attr = model(sg, sub_adj, feat)
-        loss, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, alphas, pretrain=pretrain)
-        
-        epoch_loss += loss * sg.num_nodes()
-        predict_score[sg.ndata['_ID']] = score.cpu().detach()
+        loss, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_factor, pretrain=pretrain)
         
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
         
-    epoch_loss /= graph.num_nodes()
+        epoch_loss += loss.item() * sg.num_nodes()
+        predict_score[indices] = score.detach().cpu()
+        
+    epoch_loss /= g.num_nodes()
         
     return predict_score, epoch_loss
 
 
-def test_step(model, graph, adj, batch_size, alphas):
+def test_step(model, g, adj, batch_size, alphas, device):
+    g = deepcopy(g)
+    model.eval()
     sampler = SubgraphNeighborSampler()
     dataloader = dgl.dataloading.DataLoader(
-        graph, torch.arange(graph.num_nodes()), sampler,
+        g, torch.arange(g.num_nodes()), sampler,
         batch_size=batch_size,
         shuffle=True,
         drop_last=False,
     )
 
-    predict_score = torch.zeros(graph.num_nodes())
-    
-    # adj = graph.adj().to_dense()
+    predict_score = torch.zeros(g.num_nodes())
     
     for sg in tqdm(dataloader):
         feat = sg.ndata['feat']
-        sub_adj = adj[sg.ndata['_ID']]
+        indices = sg.ndata['_ID']
+        sub_adj = adj[indices]
+        scale_factor = 1.0 * g.num_nodes() / sg.num_nodes()
         
         h_s, x_hat, h_a, c_hat, hom_str, hom_attr = model(sg, sub_adj, feat)
-        _, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, alphas)
+        _, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_factor)
 
-        predict_score[sg.ndata['_ID']] = score.cpu().detach()
+        predict_score[indices] = score.detach().cpu()
         
     return predict_score.numpy()
 
@@ -273,5 +251,5 @@ class SubgraphNeighborSampler(dgl.dataloading.Sampler):
 
     def sample(self, g, indices):
         g = g.subgraph(indices)
-        g = dgl.sampling.sample_neighbors(g, g.nodes(), self.num_neighbors)
+        g = dgl.sampling.sample_neighbors(g, indices, self.num_neighbors)
         return g

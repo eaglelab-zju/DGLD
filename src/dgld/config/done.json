@@ -1,0 +1,37 @@
+{
+    "Cora": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Citeseer": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Pubmed": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "BlogCatalog": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Flickr": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "ACM": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "obgn-arxiv": {
+        "fit": {
+            "lr": 0.01
+        }
+    }
+}

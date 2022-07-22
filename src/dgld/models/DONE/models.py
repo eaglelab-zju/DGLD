@@ -6,11 +6,16 @@ import dgl
 import dgl.function as fn
 
 # TODO: add .
-from done_utils import random_walk_with_restart, train_step, test_step, RWR
+from .done_utils import random_walk_with_restart, train_step, test_step
 
 # TODO: del
 from sklearn.metrics import roc_auc_score
-
+import numpy as np
+def recall_at_k(truth, score, k):
+    ranking = np.argsort(-score)
+    top_k = ranking[:k]
+    top_k_label = truth[top_k]
+    return top_k_label.sum() / truth.sum()
 
 class DONE():
     def __init__(self, 
@@ -26,7 +31,7 @@ class DONE():
     def fit(self, 
             graph:dgl.DGLGraph,
             lr=1e-3,
-            weight_decay=0,
+            weight_decay=0.,
             num_epoch=1,
             num_neighbors=-1,
             alphas=[0.2]*5,
@@ -51,23 +56,25 @@ class DONE():
         
         writer = SummaryWriter(log_dir=logdir)
         
-        # newg = random_walk_with_restart(graph)
-        transform = RWR()
-        newg = transform(graph)
-        adj = newg.adj().to_dense()
+        # adj = random_walk_with_restart(graph)
+        # print(adj.shape)
+        adj = graph.adj().to_dense()
         
         # pretrain w/o the outlier scores
         for epoch in range(num_epoch):
-            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, pretrain=True)
+            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device, pretrain=True)
             print(f"Epoch: {epoch:04d}, pretrain/loss={loss:.5f}")
         
         # train with the outlier scores
         for epoch in range(num_epoch):
-            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors)
+            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device)
             if y_true is not None and len(y_true.shape)==1:
+                self.model.eval()
+                recall = recall_at_k(y_true, score, int(adj.shape[0] * 0.05))
                 auc = roc_auc_score(y_true, score)
-                print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}, train/auc: {auc:.5f}")
+                print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}, train/auc: {auc:.5f}, train/recall@5%={recall:.5f}")
                 writer.add_scalar('train/auc', auc, epoch)
+                writer.add_scalar('train/recall', recall, epoch)
             else:
                 print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
                 
@@ -92,10 +99,10 @@ class DONE():
         if batch_size == 0:
             batch_size = graph.number_of_nodes()
         
-        newg = random_walk_with_restart(graph)
-        adj = newg.adj().to_dense()
+        # adj = random_walk_with_restart(graph)
+        adj = graph.adj().to_dense()
             
-        predict_score = test_step(self.model, graph, adj, batch_size, alphas)
+        predict_score = test_step(self.model, graph, adj, batch_size, alphas, device)
         
         return predict_score
    
