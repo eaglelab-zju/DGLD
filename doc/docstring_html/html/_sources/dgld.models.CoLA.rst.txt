@@ -1,11 +1,9 @@
 dgld.models.CoLA
-=====
-
+==============
 .. toctree::
    :maxdepth: 4
 
-   dgld.models.CoLA.model
    dgld.models.CoLA.colautils
    dgld.models.CoLA.dataset
-
+   dgld.models.CoLA.model
 

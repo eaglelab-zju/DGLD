@@ -12,9 +12,25 @@
 
 DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch and DGL. It provides unified interface of popular graph anomaly detection methods, including the data loader, data augmentation, model training and evaluation. Also, the widely used modules are well organized so that developers and researchers can quickly implement their own designed models. 
 
+
 ## News
+* For PyG users, we recommend the [PyGOD](https://github.com/pygod-team/pygod/), which is another comprehensive package that also supports many graph anomaly detection methods.
 * Recently we receive feedback that the reported results are slightly different from the original paper. This is due to the anomaly injection setting, the graph augmentation and sampling. We will provide more details on the settings. 
 
+## Installation
+Basic environment installation:
+```shell
+conda create -n dgld python=3.8.0
+conda activate dgld
+conda install cudatoolkit==11.3.1
+pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
+pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
+```
+Then clone the DGLD project, enter the directory and run:
+```shell
+pip install -r requirements.txt
+```
+Now you can enjoy DGLD!
 
 ## Quick Start
 
@@ -22,11 +38,11 @@ Here, we introduce how to simply run DGLD, following 4 steps.
 
 ### Dataloader
 
-We support multiple data import methods, including [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/), [DGL](https://www.dgl.ai/) and custom data. DGLD combines the process of data load and anomaly injection. Except for some basic datasets(including "Cora", "Citeseer", "Pubmed", "BlogCatalog", "Flickr", "ogbn-arxiv" and "ACM"), DGLD also accept custom data.
+DGLD support multiple data import methods, including [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/), [DGL](https://www.dgl.ai/) and custom data. DGLD combines the process of data load and anomaly injection. Except for some basic datasets(including "Cora", "Citeseer", "Pubmed", "BlogCatalog", "Flickr", "ogbn-arxiv" and "ACM"), DGLD also accept custom data.
 
 ### Anomaly Injection
 
-In anomaly detection, we inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
+In anomaly detection, DGLD inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
 
 ```python
 gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
@@ -52,15 +68,7 @@ result = model.predict(g, auc_test_rounds = 2)
 print(split_auc(label, result))
 ```
 
-## Install
-```shell
-conda create -n dgld python=3.8.0
-conda install cudatoolkit==11.3.1
-pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
-pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
-pip install -r requirements.txt
 
-```
 ## Native Datasets
 The DGLD provides native graph anomaly detection datasets that widely used by existing methods.
 
@@ -85,10 +93,11 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 | [DOMINANT](https://epubs.siam.org/doi/pdf/10.1137/1.9781611975673.67)  |   0.8555   | 0.8236 |    0.8295   |    0.7795     |   0.7559    | 0.7067 |     -     |
 |   [ComGA](https://dl.acm.org/doi/abs/10.1145/3488560.3498389)    |   0.9677    | 0.8020  | 0.9205  | 0.7908  | 0.7346  | 0.7147 |     -     |
 | [AnomalyDAE](https://arxiv.org/pdf/2002.03665.pdf) |     0.9679     |0.8832    | 0.9182   |    0.7666      |   0.7437     |    0.7091      |    -        |
-|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      -      |    -    |    -    |    -     |    -    |    -    |     -      |
+|   [ALARM](https://ieeexplore.ieee.org/abstract/document/9162509)    |      0.9479      |    0.8318    |    0.8296    |    0.7718     |    0.7596    |    0.6952    |     -      |
 |  [AAGNN](https://www4.comp.polyu.edu.hk/~xiaohuang/docs/Shuang_CIKM21.pdf)   |   0.7371   | 0.7616 |    0.7442   |    0.7648     | 0.7388 |    0.4868    |     -    |
-|[Guide](https://ieeexplore.ieee.org/document/9671990)|0.9815|0.9770|0.9452|0.7668| 0.7331 |0.7100| 0.7711 |
+|[GUIDE](https://ieeexplore.ieee.org/document/9671990)|0.9815|0.9770|0.9452|0.7668| 0.7331 |0.7100| 0.7711 |
 |[CONAD](https://link.springer.com/chapter/10.1007/978-3-031-05936-0_35)|0.9646|0.9116|0.9396|0.7863| 0.7395 |0.7005| 0.5988 |
+|[GAAN](https://dl.acm.org/doi/abs/10.1145/3340531.3412070)|0.7964|0.7979|0.7861|0.7978|0.7838|0.7081|0.6787|
 
 ## Upcoming Features
 * More Graph Anomaly Detection Methods

@@ -1,7 +1,0 @@
-src.dgld.models.AAGNN.AAGNN\_utils 
-===================================
-
-.. automodule:: src.dgld.models.AAGNN.AAGNN_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

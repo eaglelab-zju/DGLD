@@ -1,5 +1,5 @@
-dgld.utils.evaluation
-=====
+dgld.utils.evaluation 
+======================
 
 .. automodule:: dgld.utils.evaluation
    :members:

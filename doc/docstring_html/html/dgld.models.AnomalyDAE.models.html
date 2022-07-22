@@ -16,6 +16,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
@@ -68,13 +69,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dgld-models-anomalydae-models">
-<h1>dgld.models.AnomalyDAE.models<a class="headerlink" href="#dgld-models-anomalydae-models" title="Permalink to this headline"></a></h1>
-<span class="target" id="module-dgld.models.AnomalyDAE.models"></span><p>AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks</p>
+  <section id="module-dgld.models.AnomalyDAE.models">
+<span id="dgld-models-anomalydae-models"></span><h1>dgld.models.AnomalyDAE.models<a class="headerlink" href="#module-dgld.models.AnomalyDAE.models" title="Permalink to this heading"></a></h1>
+<p>AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.AnomalyDAE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">AnomalyDAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feat_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#AnomalyDAE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.AnomalyDAE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks
 ref:https://github.com/haoyfan/AnomalyDAE</p>
 <dl class="field-list simple">
@@ -141,7 +142,7 @@ ref:https://github.com/haoyfan/AnomalyDAE</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.AnomalyDAEModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">AnomalyDAEModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_feat_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_num_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#AnomalyDAEModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.AnomalyDAEModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>AdnomalyDAE is an anomaly detector consisting of a structure autoencoder,
 and an attribute reconstruction autoencoder.</p>
 <dl class="field-list simple">
@@ -187,7 +188,7 @@ Default: 0</p></li>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.AttributeAE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">AttributeAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#AttributeAE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.AttributeAE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Attribute Autoencoder in AnomalyDAE model: the encoder
 employs two non-linear feature transform to the node attribute
 x. The decoder takes both the node embeddings from the structure
@@ -234,7 +235,7 @@ reconstruct the original node attribute.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.NodeAttention">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">NodeAttention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_sz</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_nodes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout=0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">act=&lt;function</span> <span class="pre">elu&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">**kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#NodeAttention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.NodeAttention" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>node attention layer</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -277,7 +278,7 @@ reconstruct the original node attribute.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.StructureAE">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">StructureAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">in_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_num_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">embed_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#StructureAE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.StructureAE" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Structure Autoencoder in AnomalyDAE model: the encoder
 transforms the node attribute X into the latent
 representation with the linear layer, and a graph attention
@@ -327,7 +328,7 @@ See <a href="#id1"><span class="problematic" id="id2">:cite:`fan2020anomalydae`<
 
 <dl class="py function">
 <dt class="sig sig-object py" id="dgld.models.AnomalyDAE.models.init_weights">
-<span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">init_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">torch.nn.modules.module.Module</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#init_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.init_weights" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AnomalyDAE.models.</span></span><span class="sig-name descname"><span class="pre">init_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/dgld/models/AnomalyDAE/models.html#init_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AnomalyDAE.models.init_weights" title="Permalink to this definition"></a></dt>
 <dd><p>Init Module Weights</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

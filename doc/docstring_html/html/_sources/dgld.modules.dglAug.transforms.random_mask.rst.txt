@@ -1,5 +1,5 @@
-dgld.modules.dglAug.transforms.random_mask
-=====
+dgld.modules.dglAug.transforms.random\_mask 
+============================================
 
 .. automodule:: dgld.modules.dglAug.transforms.random_mask
    :members:
