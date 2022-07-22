@@ -1,17 +1,13 @@
-if [ ! -d log  ];then
-  mkdir log
-  echo mkdir log
-else
-  echo log dir exist
-fi
 
 seed=4096
 for data in Cora Citeseer Pubmed ogbn-arxiv ACM Flickr BlogCatalog
 do
   expname=$data'_AnomalyDAE'
-  echo ${expname}
+  echo
+  echo ${expname}'-----START-----'
   dataset=$data
-  CUDA_VISIBLE_DEVICES=2 PYTHONHASHSEED=$seed python main_anomalydae.py --dataset $dataset --device 0 --seed $seed --logdir log/$expname > log/$expname.log 2>&1
+  python main_anomalydae.py --dataset $dataset --device 0 --seed $seed --logdir logs/$expname > logs/$expname.log 2>&1
+  cat logs/$expname.log
 done
 
 

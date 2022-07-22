@@ -4,7 +4,8 @@ t.py
 *.png
 *.pyc
 *.log
-**/log/*
+**/logs/*
+!scripts/logs/README.md
 **/log_bp/*
 **/tmp/*
 **__pycache__
