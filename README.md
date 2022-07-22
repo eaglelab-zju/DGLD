@@ -34,7 +34,7 @@ Now you can enjoy DGLD!
 
 ## Quick Start
 
-Here, we introduce how to simply run DGLD, following 4 steps.
+We support an example.py showing how it works. Here, we introduce how to simply run DGLD, following 4 steps.
 
 ### Dataloader
 
