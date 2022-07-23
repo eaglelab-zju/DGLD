@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append('src')
+sys.path.append('./src')
 
 from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
 from dgld.models.CoLA import CoLA
