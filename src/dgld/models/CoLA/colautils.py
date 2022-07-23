@@ -12,7 +12,7 @@ current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 sys.path.append(current_dir)
 
 
-from utils.common import cprint, lcprint
+from common import cprint, lcprint
 
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
