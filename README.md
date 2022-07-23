@@ -34,11 +34,11 @@ To check whether you have successfully installed the package and environment, yo
 ```shell
 python example.py
 ```
-Now you can enjoy DGLD!
+Hopefully, you will see the data processing, training and evaluation results.
+Then you can enjoy DGLD!
 
 ## Quick Start
-
-We support an example.py showing how it works. Here, we introduce how to simply run DGLD, following 4 steps.
+Here, we introduce how to simply build a model with DGLD and run the experiments, which contains four main steps.
 
 ### Dataloader
 
