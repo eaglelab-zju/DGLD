@@ -1,0 +1,8 @@
+dgld.models.OCGNN
+==============
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.OCGNN.model
+   dgld.models.OCGNN.ocgnn_utils
+
