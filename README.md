@@ -30,6 +30,10 @@ Then clone the DGLD project, enter the directory and run:
 ```shell
 pip install -r requirements.txt
 ```
+To check whether you have successfully installed the package and environment, you can simply run
+```shell
+python example.py
+```
 Now you can enjoy DGLD!
 
 ## Quick Start
