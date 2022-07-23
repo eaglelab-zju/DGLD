@@ -12,12 +12,7 @@ import torch
 import random
 import torch.nn.functional as F
 
-def get_parse():
-    parser = argparse.ArgumentParser(
-        description='ComGA: Community-Aware Attributed Graph Anomaly Detection')
-    # "Cora", "Pubmed", "Citeseer","BlogCatalog","Flickr","ACM", "ogbn-arxiv"
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=7)
+def set_subargs(parser):
     # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
@@ -35,13 +30,11 @@ def get_parse():
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
     parser.add_argument('--no_cuda', action='store_true')
-    parser.add_argument('--device', type=str, default='0')
     parser.add_argument('--n_enc_1', type=int, default=2000,help='number of encode1 units')
     parser.add_argument('--n_enc_2', type=int, default=500,help='number of encode2 units')
     parser.add_argument('--n_enc_3', type=int, default=128,help='number of encode2 units')
 
-
-    args = parser.parse_args()
+def get_subargs(args):
 
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
@@ -83,8 +76,6 @@ def get_parse():
         args.alpha = 0.2
         args.eta = 3.0
         args.theta = 10.0
-
-
 
 
     in_feature_map = {
@@ -132,7 +123,7 @@ def get_parse():
             "device":args.device,
         }
     }
-    return final_args_dict
+    return final_args_dict,args
 
 
 def loss_func(B,B_hat,z_mean,z_arg,adj, A_hat, attrs, X_hat, alpha,eta, theta,device):

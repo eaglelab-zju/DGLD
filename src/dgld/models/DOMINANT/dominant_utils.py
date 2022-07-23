@@ -10,12 +10,12 @@ import numpy as np
 import torch
 
 
-def get_parse():
-    parser = argparse.ArgumentParser(
-        description='Deep Anomaly Detection on Attributed Networks')
+def set_subargs(parser):
+    # parser = argparse.ArgumentParser(
+    #     description='Deep Anomaly Detection on Attributed Networks')
     # "Cora", "Pubmed", "Citeseer"
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=2022)
+    # parser.add_argument('--dataset', type=str, default='Cora')
+    # parser.add_argument('--seed', type=int, default=2022)
     # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--hidden_dim', type=int, default=64,
@@ -26,10 +26,10 @@ def get_parse():
                         default=0.0, help='Dropout rate')
     parser.add_argument('--alpha', type=float, default=0.6,
                         help='balance parameter')
-    parser.add_argument('--device', type=str, default='0')
+    # parser.add_argument('--device', type=str, default='0')
 
-    args = parser.parse_args()
 
+def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
 
@@ -104,8 +104,7 @@ def get_parse():
             "device":args.device,
         }
     }
-    return final_args_dict
-
+    return final_args_dict,args
 
 def loss_func(adj, A_hat, attrs, X_hat, alpha):
     # Attribute reconstruction loss
