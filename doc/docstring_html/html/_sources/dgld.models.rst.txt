@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 
 
    dgld.models.AAGNN
    dgld.models.AnomalyDAE
@@ -15,6 +15,7 @@ Subpackages
    dgld.models.DOMINANT
    dgld.models.GAAN
    dgld.models.GUIDE
+   dgld.models.OCGNN
    dgld.models.SLGAD
 
 Module contents

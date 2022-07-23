@@ -161,10 +161,7 @@
 <span class="sd">    &quot;&quot;&quot;</span> 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="s1">&#39;result.csv&#39;</span><span class="p">):</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span>
-        <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_record</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="kc">None</span>
+        
 <div class="viewcode-block" id="ExpRecord.add_record"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.ExpRecord.add_record">[docs]</a>    <span class="k">def</span> <span class="nf">add_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_record</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;summary</span>
 
@@ -173,6 +170,11 @@
 <span class="sd">        dict_record : Dict</span>
 <span class="sd">            record to add </span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_record</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">dict_record</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">record</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">record</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">dict_record</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
