@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch
 # from layers import GraphConvolution
 from dgl.nn.pytorch import GraphConv
-from .dominant_utils import get_parse, train_step, test_step,normalize_adj
+from .dominant_utils import  train_step, test_step,normalize_adj
 import numpy as np
 from torch.utils.tensorboard import SummaryWriter
 

@@ -1,2 +1,2 @@
-from .comga_utils import get_parse
+from .comga_utils import set_subargs,get_subargs
 from .models import ComGA
