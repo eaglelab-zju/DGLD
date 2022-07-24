@@ -81,7 +81,7 @@ class DONE():
             adj = random_walk_with_restart(graph, k=max_len, r=1-restart)
         else:
             adj = graph.adj().to_dense()
-        
+
         # pretrain w/o the outlier scores
         for epoch in range(num_epoch):
             score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device, pretrain=True)

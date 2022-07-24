@@ -1,5 +1,5 @@
-dgld.models.SLGAD.model
-=====
+dgld.models.SLGAD.model 
+========================
 
 .. automodule:: dgld.models.SLGAD.model
    :members:

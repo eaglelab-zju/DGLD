@@ -1,11 +1,18 @@
-dgld.modules.dglAug
-=====
+dgld.modules 
+=============
 
-dgld.modules.dglAug.transforms
------------------
+Subpackages
+-----------
+
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 
 
-   dgld.modules.dglAug.transforms
+   dgld.modules.dglAug
 
+Module contents
+---------------
 
+.. automodule:: dgld.modules
+   :members:
+   :undoc-members:
+   :show-inheritance:

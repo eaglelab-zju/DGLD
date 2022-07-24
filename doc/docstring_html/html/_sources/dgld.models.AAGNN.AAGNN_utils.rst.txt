@@ -1,5 +1,5 @@
-dgld.models.AAGNN.AAGNN_utils
-=====
+dgld.models.AAGNN.AAGNN\_utils 
+===============================
 
 .. automodule:: dgld.models.AAGNN.AAGNN_utils
    :members:

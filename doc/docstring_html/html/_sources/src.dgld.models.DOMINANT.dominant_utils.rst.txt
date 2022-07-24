@@ -1,7 +1,0 @@
-src.dgld.models.DOMINANT.dominant\_utils 
-=========================================
-
-.. automodule:: src.dgld.models.DOMINANT.dominant_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

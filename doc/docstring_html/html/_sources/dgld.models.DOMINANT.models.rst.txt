@@ -1,5 +1,5 @@
-dgld.models.DOMINANT.models
-=====
+dgld.models.DOMINANT.models 
+============================
 
 .. automodule:: dgld.models.DOMINANT.models
    :members:

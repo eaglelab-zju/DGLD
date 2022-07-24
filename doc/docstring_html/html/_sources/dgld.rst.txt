@@ -1,86 +1,90 @@
 dgld.utils
 =====
-
 .. toctree::
    :maxdepth: 4
 
-   dgld.utils.evaluation
-   dgld.utils.dataset
    dgld.utils.common
+   dgld.utils.dataset
+   dgld.utils.evaluation
    dgld.utils.sample
 
+dgld.modules
+=====
+.. toctree::
+   :maxdepth: 4
+
+   dgld.modules.dglAug.transforms
+   dgld.modules.dglAug.augs
 
 dgld.models
 =====
-
-dgld.models.CoLA
------------------
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.CoLA
-
-
-dgld.models.AnomalyDAE
------------------
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.AnomalyDAE
-
-
 dgld.models.AAGNN
------------------
+-----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.AAGNN
 
+dgld.models.AnomalyDAE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.AnomalyDAE
+
+dgld.models.CONAD
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.CONAD
+
+dgld.models.CoLA
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.CoLA
 
 dgld.models.ComGA
------------------
+-----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.ComGA
 
-
 dgld.models.DOMINANT
------------------
+-----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.DOMINANT
 
-
-dgld.models.SLGAD
------------------
+dgld.models.GAAN
+-----------
 .. toctree::
    :maxdepth: 4
 
-   dgld.models.SLGAD
+   dgld.models.GAAN
 
 dgld.models.GUIDE
------------------
+-----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.GUIDE
 
-
-dgld.modules
-=====
-
-dgld.modules.dglAug
------------------
+dgld.models.OCGNN
+-----------
 .. toctree::
    :maxdepth: 4
 
-   dgld.modules.dglAug
+   dgld.models.OCGNN
 
-dgld.modules.dglAug.augs
------------------
+dgld.models.SLGAD
+-----------
 .. toctree::
    :maxdepth: 4
 
-   dgld.modules.dglAug.augs
+   dgld.models.SLGAD
+

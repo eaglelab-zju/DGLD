@@ -1,62 +1,27 @@
-dgld.models.CoLA
-=====
+dgld.models 
+============
+
+Subpackages
+-----------
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 
 
-   dgld.models.CoLA.model
-   dgld.models.CoLA.colautils
-   dgld.models.CoLA.dataset
+   dgld.models.AAGNN
+   dgld.models.AnomalyDAE
+   dgld.models.CONAD
+   dgld.models.CoLA
+   dgld.models.ComGA
+   dgld.models.DOMINANT
+   dgld.models.GAAN
+   dgld.models.GUIDE
+   dgld.models.OCGNN
+   dgld.models.SLGAD
 
+Module contents
+---------------
 
-dgld.models.AnomalyDAE
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.AnomalyDAE.models
-   dgld.models.AnomalyDAE.anomalydae_utils
-
-
-dgld.models.AAGNN
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.AAGNN.AAGNN_batch
-   dgld.models.AAGNN.AAGNN_utils
-
-
-dgld.models.ComGA
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.ComGA.models
-   dgld.models.ComGA.comga_utils
-
-
-dgld.models.DOMINANT
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.DOMINANT.models
-   dgld.models.DOMINANT.dominant_utils
-
-
-dgld.models.SLGAD
-=====
-
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.SLGAD.SL_GAD_utils
-   dgld.models.SLGAD.model
-   dgld.models.SLGAD.dataset
-
-
+.. automodule:: dgld.models
+   :members:
+   :undoc-members:
+   :show-inheritance:

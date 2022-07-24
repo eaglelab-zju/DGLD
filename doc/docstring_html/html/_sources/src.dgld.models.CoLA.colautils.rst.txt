@@ -1,7 +1,0 @@
-src.dgld.models.CoLA.colautils 
-===============================
-
-.. automodule:: src.dgld.models.CoLA.colautils
-   :members:
-   :undoc-members:
-   :show-inheritance:

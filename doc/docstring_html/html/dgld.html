@@ -16,6 +16,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
@@ -42,19 +43,18 @@
               <!-- Local TOC -->
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">dgld.utils</a></li>
+<li><a class="reference internal" href="#dgld-modules">dgld.modules</a></li>
 <li><a class="reference internal" href="#dgld-models">dgld.models</a><ul>
-<li><a class="reference internal" href="#dgld-models-cola">dgld.models.CoLA</a></li>
-<li><a class="reference internal" href="#dgld-models-anomalydae">dgld.models.AnomalyDAE</a></li>
 <li><a class="reference internal" href="#dgld-models-aagnn">dgld.models.AAGNN</a></li>
+<li><a class="reference internal" href="#dgld-models-anomalydae">dgld.models.AnomalyDAE</a></li>
+<li><a class="reference internal" href="#dgld-models-conad">dgld.models.CONAD</a></li>
+<li><a class="reference internal" href="#dgld-models-cola">dgld.models.CoLA</a></li>
 <li><a class="reference internal" href="#dgld-models-comga">dgld.models.ComGA</a></li>
 <li><a class="reference internal" href="#dgld-models-dominant">dgld.models.DOMINANT</a></li>
-<li><a class="reference internal" href="#dgld-models-slgad">dgld.models.SLGAD</a></li>
+<li><a class="reference internal" href="#dgld-models-gaan">dgld.models.GAAN</a></li>
 <li><a class="reference internal" href="#dgld-models-guide">dgld.models.GUIDE</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#dgld-modules">dgld.modules</a><ul>
-<li><a class="reference internal" href="#dgld-modules-dglaug">dgld.modules.dglAug</a></li>
-<li><a class="reference internal" href="#dgld-modules-dglaug-augs">dgld.modules.dglAug.augs</a></li>
+<li><a class="reference internal" href="#dgld-models-ocgnn">dgld.models.OCGNN</a></li>
+<li><a class="reference internal" href="#dgld-models-slgad">dgld.models.SLGAD</a></li>
 </ul>
 </li>
 </ul>
@@ -84,45 +84,34 @@
            <div itemprop="articleBody">
              
   <section id="dgld-utils">
-<h1>dgld.utils<a class="headerlink" href="#dgld-utils" title="Permalink to this headline"></a></h1>
+<h1>dgld.utils<a class="headerlink" href="#dgld-utils" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.utils.evaluation.html">dgld.utils.evaluation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dgld.utils.dataset.html">dgld.utils.dataset</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dgld.utils.common.html">dgld.utils.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.utils.dataset.html">dgld.utils.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.utils.evaluation.html">dgld.utils.evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dgld.utils.sample.html">dgld.utils.sample</a></li>
 </ul>
 </div>
 </section>
+<section id="dgld-modules">
+<h1>dgld.modules<a class="headerlink" href="#dgld-modules" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dgld.modules.dglAug.transforms.html">dgld.modules.dglAug.transforms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.feature_dropout.html">dgld.modules.dglAug.transforms.feature_dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.node_shuffle.html">dgld.modules.dglAug.transforms.node_shuffle</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.random_mask.html">dgld.modules.dglAug.transforms.random_mask</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.modules.dglAug.augs.html">dgld.modules.dglAug.augs</a></li>
+</ul>
+</div>
+</section>
 <section id="dgld-models">
-<h1>dgld.models<a class="headerlink" href="#dgld-models" title="Permalink to this headline"></a></h1>
-<section id="dgld-models-cola">
-<h2>dgld.models.CoLA<a class="headerlink" href="#dgld-models-cola" title="Permalink to this headline"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.models.CoLA.html">dgld.models.CoLA</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.model.html">dgld.models.CoLA.model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.colautils.html">dgld.models.CoLA.colautils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.dataset.html">dgld.models.CoLA.dataset</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
-<section id="dgld-models-anomalydae">
-<h2>dgld.models.AnomalyDAE<a class="headerlink" href="#dgld-models-anomalydae" title="Permalink to this headline"></a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.models.AnomalyDAE.html">dgld.models.AnomalyDAE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.AnomalyDAE.models.html">dgld.models.AnomalyDAE.models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.AnomalyDAE.anomalydae_utils.html">dgld.models.AnomalyDAE.anomalydae_utils</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</section>
+<h1>dgld.models<a class="headerlink" href="#dgld-models" title="Permalink to this heading"></a></h1>
 <section id="dgld-models-aagnn">
-<h2>dgld.models.AAGNN<a class="headerlink" href="#dgld-models-aagnn" title="Permalink to this headline"></a></h2>
+<h2>dgld.models.AAGNN<a class="headerlink" href="#dgld-models-aagnn" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dgld.models.AAGNN.html">dgld.models.AAGNN</a><ul>
@@ -133,45 +122,81 @@
 </ul>
 </div>
 </section>
+<section id="dgld-models-anomalydae">
+<h2>dgld.models.AnomalyDAE<a class="headerlink" href="#dgld-models-anomalydae" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.AnomalyDAE.html">dgld.models.AnomalyDAE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.AnomalyDAE.anomalydae_utils.html">dgld.models.AnomalyDAE.anomalydae_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.AnomalyDAE.models.html">dgld.models.AnomalyDAE.models</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="dgld-models-conad">
+<h2>dgld.models.CONAD<a class="headerlink" href="#dgld-models-conad" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.CONAD.html">dgld.models.CONAD</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.CONAD.conad_utils.html">dgld.models.CONAD.conad_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.CONAD.models.html">dgld.models.CONAD.models</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="dgld-models-cola">
+<h2>dgld.models.CoLA<a class="headerlink" href="#dgld-models-cola" title="Permalink to this heading"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.CoLA.html">dgld.models.CoLA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.colautils.html">dgld.models.CoLA.colautils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.dataset.html">dgld.models.CoLA.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.CoLA.model.html">dgld.models.CoLA.model</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 <section id="dgld-models-comga">
-<h2>dgld.models.ComGA<a class="headerlink" href="#dgld-models-comga" title="Permalink to this headline"></a></h2>
+<h2>dgld.models.ComGA<a class="headerlink" href="#dgld-models-comga" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dgld.models.ComGA.html">dgld.models.ComGA</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.ComGA.models.html">dgld.models.ComGA.models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dgld.models.ComGA.comga_utils.html">dgld.models.ComGA.comga_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.ComGA.models.html">dgld.models.ComGA.models</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="dgld-models-dominant">
-<h2>dgld.models.DOMINANT<a class="headerlink" href="#dgld-models-dominant" title="Permalink to this headline"></a></h2>
+<h2>dgld.models.DOMINANT<a class="headerlink" href="#dgld-models-dominant" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dgld.models.DOMINANT.html">dgld.models.DOMINANT</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.DOMINANT.models.html">dgld.models.DOMINANT.models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dgld.models.DOMINANT.dominant_utils.html">dgld.models.DOMINANT.dominant_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.DOMINANT.models.html">dgld.models.DOMINANT.models</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
-<section id="dgld-models-slgad">
-<h2>dgld.models.SLGAD<a class="headerlink" href="#dgld-models-slgad" title="Permalink to this headline"></a></h2>
+<section id="dgld-models-gaan">
+<h2>dgld.models.GAAN<a class="headerlink" href="#dgld-models-gaan" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.models.SLGAD.html">dgld.models.SLGAD</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.SL_GAD_utils.html">dgld.models.SLGAD.SL_GAD_utils</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.model.html">dgld.models.SLGAD.model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.dataset.html">dgld.models.SLGAD.dataset</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.GAAN.html">dgld.models.GAAN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.GAAN.ganna_utils.html">dgld.models.GAAN.ganna_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.GAAN.model.html">dgld.models.GAAN.model</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
 <section id="dgld-models-guide">
-<h2>dgld.models.GUIDE<a class="headerlink" href="#dgld-models-guide" title="Permalink to this headline"></a></h2>
+<h2>dgld.models.GUIDE<a class="headerlink" href="#dgld-models-guide" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dgld.models.GUIDE.html">dgld.models.GUIDE</a><ul>
@@ -182,28 +207,28 @@
 </ul>
 </div>
 </section>
-</section>
-<section id="dgld-modules">
-<h1>dgld.modules<a class="headerlink" href="#dgld-modules" title="Permalink to this headline"></a></h1>
-<section id="dgld-modules-dglaug">
-<h2>dgld.modules.dglAug<a class="headerlink" href="#dgld-modules-dglaug" title="Permalink to this headline"></a></h2>
+<section id="dgld-models-ocgnn">
+<h2>dgld.models.OCGNN<a class="headerlink" href="#dgld-models-ocgnn" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.modules.dglAug.html">dgld.modules.dglAug.transforms</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.feature_dropout.html">dgld.modules.dglAug.transforms.feature_dropout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.random_mask.html">dgld.modules.dglAug.transforms.random_mask</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.readme.html">dgld.modules.dglAug.transforms.readme</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dgld.modules.dglAug.transforms.node_shuffle.html">dgld.modules.dglAug.transforms.node_shuffle</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.OCGNN.html">dgld.models.OCGNN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.OCGNN.model.html">dgld.models.OCGNN.model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.OCGNN.ocgnn_utils.html">dgld.models.OCGNN.ocgnn_utils</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
-<section id="dgld-modules-dglaug-augs">
-<h2>dgld.modules.dglAug.augs<a class="headerlink" href="#dgld-modules-dglaug-augs" title="Permalink to this headline"></a></h2>
+<section id="dgld-models-slgad">
+<h2>dgld.models.SLGAD<a class="headerlink" href="#dgld-models-slgad" title="Permalink to this heading"></a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dgld.modules.dglAug.augs.html">dgld.modules.dglAug.augs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dgld.models.SLGAD.html">dgld.models.SLGAD</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.SL_GAD_utils.html">dgld.models.SLGAD.SL_GAD_utils</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.dataset.html">dgld.models.SLGAD.dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dgld.models.SLGAD.model.html">dgld.models.SLGAD.model</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>

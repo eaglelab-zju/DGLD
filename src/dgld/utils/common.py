@@ -93,10 +93,7 @@ class ExpRecord():
     """ 
     def __init__(self, filepath='result.csv'): 
         self.filepath = filepath
-        if osp.exists(self.filepath):
-            self.record = self.load_record()
-        else:
-            self.record = None
+        
     def add_record(self, dict_record):
         """summary
 
@@ -105,6 +102,11 @@ class ExpRecord():
         dict_record : Dict
             record to add 
         """
+        
+        if osp.exists(self.filepath):
+            self.record = self.load_record()
+        else:
+            self.record = None
         print(dict_record)
         if not self.record:
             self.record = {k:[v] for k, v in dict_record.items()}
@@ -547,3 +549,22 @@ def lcprint(*arr, color='green'):
         x = 'DEBUG:' + str(x)
         
     print(colored(x, color))
+
+
+def tab_printer(args: Dict, thead: List[str] = None) -> None:
+    """Function to print the logs in a nice tabular format.
+
+    Args:
+        args (Dict): Parameters used for the model.
+    """
+    args = vars(args) if hasattr(args, '__dict__') else args
+    keys = sorted(args.keys())
+    txt = Texttable()
+    txt.set_precision(5)
+    params = [["Parameter", "Value"] if thead is None else thead]
+    params.extend([[
+        k.replace("_", " "),
+        f"{args[k]}" if isinstance(args[k], bool) else args[k]
+    ] for k in keys])
+    txt.add_rows(params)
+    print(txt.draw())

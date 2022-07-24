@@ -1,5 +1,5 @@
-dgld.modules.dglAug.augs
-=====
+dgld.modules.dglAug.augs 
+=========================
 
 .. automodule:: dgld.modules.dglAug.augs
    :members:

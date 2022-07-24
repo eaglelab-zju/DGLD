@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.CONAD.conad_utils &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.CONAD.conad_utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.CONAD.conad_utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">dgl</span>
+    
+<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    get hyperparameter by parser from command line</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    final_args_dict : dictionary</span>
+<span class="sd">        dict of args parser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;CONAD: Contrastive Attributed Network Anomaly Detection with Data Augmentation&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Flickr&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;learning rate&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--alpha&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;balance parameter&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--eta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Attribute penalty balance parameter&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--contrast_type&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;siamese&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--rate&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--margin&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">5e-4</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">3e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;BlogCatalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">,</span> <span class="s1">&#39;ACM&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">400</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">10</span>
+      
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Cora&#39;</span><span class="p">:</span> 
+        <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.85</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.8</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.95</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.2</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.4</span> 
+        <span class="n">args</span><span class="o">.</span><span class="n">contrast_type</span> <span class="o">=</span> <span class="s1">&#39;triplet&#39;</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">50</span>
+            
+    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
+        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
+        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
+        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
+        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12047</span><span class="p">,</span>
+        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
+        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">num_nodes_map</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">2708</span><span class="p">,</span>
+        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3327</span><span class="p">,</span>
+        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">19717</span><span class="p">,</span>
+        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">5196</span><span class="p">,</span>
+        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">7575</span><span class="p">,</span>
+        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">16484</span><span class="p">,</span>
+        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">169343</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
+        <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span> <span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="n">in_feature_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
+            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
+            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
+            <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
+            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="s2">&quot;rate&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span>
+            <span class="s2">&quot;contrast_type&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">contrast_type</span><span class="p">,</span>
+            <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
+            <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
+            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">final_args_dict</span></div>
+  
+    
+<div class="viewcode-block" id="loss_func"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.loss_func">[docs]</a><span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">a_hat</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;compute the loss function of the reconstructed graph</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a : tensor.Torch</span>
+<span class="sd">        The adjacency matrix of the original graph</span>
+<span class="sd">    a_hat : tensor.Torch</span>
+<span class="sd">        The adjacency matrix of the reconstructed graph    </span>
+<span class="sd">    x : tensor.Torch</span>
+<span class="sd">        feature matrix of the original graph</span>
+<span class="sd">    x_hat : tensor.Torch</span>
+<span class="sd">        feature matrix of the reconstructed graph</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        balance parameter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    loss : torch.Tensor</span>
+<span class="sd">        total loss</span>
+<span class="sd">    struct_loss : torch.Tensor</span>
+<span class="sd">        loss of reconstructed structure</span>
+<span class="sd">    feat_loss : torch.Tensor</span>
+<span class="sd">        loss of reconstructed features</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># adjacency matrix reconstruction loss</span>
+    <span class="n">struct_norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">a_hat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">struct_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">struct_norm</span><span class="p">)</span>
+    <span class="c1"># feature matrix reconstruction loss</span>
+    <span class="n">feat_norm</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="n">x_hat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">feat_norm</span><span class="p">)</span>
+    <span class="c1"># total reconstruction loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">struct_norm</span> <span class="o">+</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">feat_norm</span>
+    <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span></div>
+
+
+<div class="viewcode-block" id="train_step"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.train_step">[docs]</a><span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">g_orig</span><span class="p">,</span> <span class="n">g_aug</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;train model in one epoch</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : class</span>
+<span class="sd">        CONAD model</span>
+<span class="sd">    optimizer : optim.Adam</span>
+<span class="sd">        optimizer to adjust model</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    g_orig : dgl.DGLGraph</span>
+<span class="sd">        original graph</span>
+<span class="sd">    g_aug : dgl.DGLGraph</span>
+<span class="sd">        augmented graph</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        balance parameter</span>
+<span class="sd">    eta : float</span>
+<span class="sd">        balance parameter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    contrast_loss : torch.Tensor</span>
+<span class="sd">        contrastive loss</span>
+<span class="sd">    recon_loss : torch.Tensor</span>
+<span class="sd">        total recontructed loss</span>
+<span class="sd">    feat_loss : torch.Tensor</span>
+<span class="sd">        recontructed feature loss    </span>
+<span class="sd">    struct_loss : torch.Tensor</span>
+<span class="sd">        recontructed structure loss    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">feat_orig</span><span class="p">,</span> <span class="n">feat_aug</span> <span class="o">=</span> <span class="n">g_orig</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">],</span> <span class="n">g_aug</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">g_aug</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+    <span class="c1"># contrastive loss</span>
+    <span class="n">h_orig</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">g_orig</span><span class="p">,</span> <span class="n">feat_orig</span><span class="p">)</span>
+    <span class="n">h_aug</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">g_aug</span><span class="p">,</span> <span class="n">feat_aug</span><span class="p">)</span>
+    <span class="n">adj_orig</span> <span class="o">=</span> <span class="n">g_orig</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">contrast_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">h_orig</span><span class="p">,</span> <span class="n">h_aug</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">adj_orig</span><span class="p">)</span>
+    <span class="c1"># recontruct loss</span>
+    <span class="n">a_hat</span><span class="p">,</span> <span class="n">x_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">g_orig</span><span class="p">,</span> <span class="n">feat_orig</span><span class="p">)</span>
+    <span class="n">recon_loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_orig</span><span class="p">,</span> <span class="n">a_hat</span><span class="p">,</span> <span class="n">feat_orig</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+    <span class="c1"># total loss</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">contrast_loss</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="n">recon_loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="c1"># backward</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">contrast_loss</span><span class="p">,</span> <span class="n">recon_loss</span><span class="p">,</span> <span class="n">feat_loss</span><span class="p">,</span> <span class="n">struct_loss</span></div>
+
+
+<div class="viewcode-block" id="train_step_batch"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.train_step_batch">[docs]</a><span class="k">def</span> <span class="nf">train_step_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">g_orig</span><span class="p">,</span> <span class="n">g_aug</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;train model in one epoch for mini-batch graph training</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : class</span>
+<span class="sd">        CONAD model</span>
+<span class="sd">    optimizer : optim.Adam</span>
+<span class="sd">        optimizer to adjust model</span>
+<span class="sd">    criterion : torch.nn.Functions</span>
+<span class="sd">        functions to compute loss</span>
+<span class="sd">    g_orig : dgl.DGLGraph</span>
+<span class="sd">        original graph</span>
+<span class="sd">    g_aug : dgl.DGLGraph</span>
+<span class="sd">        augmented graph</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        balance parameter</span>
+<span class="sd">    eta : float</span>
+<span class="sd">        balance parameter</span>
+<span class="sd">    batch_size : int</span>
+<span class="sd">        the size of training batch</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device of computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    loss : float</span>
+<span class="sd">        epoch loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">node_list</span> <span class="o">=</span> <span class="n">g_orig</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">MultiLayerFullNeighborSampler</span><span class="p">(</span><span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">dataloader_orig</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">g_orig</span><span class="p">,</span> <span class="n">node_list</span><span class="p">,</span> <span class="n">sampler</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">dataloader_aug</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">g_aug</span><span class="p">,</span> <span class="n">node_list</span><span class="p">,</span> <span class="n">sampler</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span>
+            
+    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># adj = g_orig.adj().to_dense()</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">input_nodes_orig</span><span class="p">,</span> <span class="n">output_nodes_orig</span><span class="p">,</span> <span class="n">blocks_orig</span><span class="p">),</span> <span class="p">(</span><span class="n">input_nodes_aug</span><span class="p">,</span> <span class="n">output_nodes_aug</span><span class="p">,</span> <span class="n">blocks_aug</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">dataloader_orig</span><span class="p">,</span> <span class="n">dataloader_aug</span><span class="p">):</span>
+        <span class="n">blocks_orig</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks_orig</span><span class="p">]</span> 
+        <span class="n">blocks_aug</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks_aug</span><span class="p">]</span> 
+        
+        <span class="n">input_feat_orig</span> <span class="o">=</span> <span class="n">blocks_orig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">srcdata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">input_feat_aug</span> <span class="o">=</span> <span class="n">blocks_aug</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">srcdata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        
+        <span class="n">label</span> <span class="o">=</span> <span class="n">blocks_aug</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dstdata</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+        <span class="c1"># contrastive loss</span>
+        <span class="n">h_orig</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">blocks_orig</span><span class="p">,</span> <span class="n">input_feat_orig</span><span class="p">)</span>
+        <span class="n">h_aug</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">blocks_aug</span><span class="p">,</span> <span class="n">input_feat_aug</span><span class="p">)</span>
+        <span class="n">adj_orig</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">node_subgraph</span><span class="p">(</span><span class="n">g_orig</span><span class="p">,</span> <span class="n">output_nodes_orig</span><span class="p">)</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">label</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># adj_orig = adj[output_nodes_orig, output_nodes_orig].to(label.device)</span>
+        <span class="c1"># print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)</span>
+        <span class="n">output_nodes_num</span> <span class="o">=</span> <span class="n">blocks_orig</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_dst_nodes</span><span class="p">()</span>
+        <span class="n">contrast_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">h_orig</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">h_aug</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">label</span><span class="p">,</span> <span class="n">adj_orig</span><span class="p">)</span>
+        <span class="c1"># recontruct loss</span>
+        <span class="n">a_hat</span><span class="p">,</span> <span class="n">x_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">blocks_orig</span><span class="p">,</span> <span class="n">input_feat_orig</span><span class="p">)</span>
+        <span class="n">output_feat_orig</span> <span class="o">=</span> <span class="n">blocks_orig</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dstdata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">recon_loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_orig</span><span class="p">,</span> <span class="n">a_hat</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">,</span> <span class="p">:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">output_feat_orig</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="c1"># total loss</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">eta</span> <span class="o">*</span> <span class="n">contrast_loss</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="n">recon_loss</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="c1"># backward</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        
+        <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">batch_size</span>
+        
+    <span class="k">return</span> <span class="n">epoch_loss</span></div>
+    
+    
+<div class="viewcode-block" id="test_step"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.test_step">[docs]</a><span class="k">def</span> <span class="nf">test_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;test model in one epoch</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : class</span>
+<span class="sd">        CONAD model</span>
+<span class="sd">    graph : dgl.DGLGraph</span>
+<span class="sd">        graph dataset</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        balance parameter</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    score : numpy.ndarray</span>
+<span class="sd">        anomaly scores of nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">feat</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+    <span class="n">a_hat</span><span class="p">,</span> <span class="n">x_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">feat</span><span class="p">)</span>
+    <span class="n">a_hat</span><span class="p">,</span> <span class="n">x_hat</span> <span class="o">=</span> <span class="n">a_hat</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">x_hat</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+
+    <span class="n">adj_orig</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+    <span class="n">feat_orig</span> <span class="o">=</span> <span class="n">feat</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+    <span class="n">recon_loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_orig</span><span class="p">,</span> <span class="n">a_hat</span><span class="p">,</span> <span class="n">feat_orig</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">recon_loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">score</span></div>
+
+
+<div class="viewcode-block" id="test_step_batch"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.test_step_batch">[docs]</a><span class="k">def</span> <span class="nf">test_step_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;test model in one epoch for mini-batch graph training</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : class</span>
+<span class="sd">        CONAD model</span>
+<span class="sd">    graph : dgl.DGLGraph</span>
+<span class="sd">        graph dataset</span>
+<span class="sd">    alpha : float</span>
+<span class="sd">        balance parameter</span>
+<span class="sd">    batch_size : int</span>
+<span class="sd">        the size of training batch</span>
+<span class="sd">    device : str</span>
+<span class="sd">        device of computation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    score : numpy.ndarray</span>
+<span class="sd">        anomaly scores of nodes</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="n">sampler</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">MultiLayerFullNeighborSampler</span><span class="p">(</span><span class="n">num_layers</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">graph</span><span class="p">,</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">(),</span> <span class="n">sampler</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">)</span>
+    
+    <span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span>
+    
+    <span class="k">for</span> <span class="n">input_nodes</span><span class="p">,</span> <span class="n">output_nodes</span><span class="p">,</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]</span>
+        <span class="n">feat</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">srcdata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">a_hat</span><span class="p">,</span> <span class="n">x_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">feat</span><span class="p">)</span>
+        
+        <span class="n">adj_orig</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">node_subgraph</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">output_nodes</span><span class="p">)</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">feat_orig</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">dstdata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
+        <span class="n">output_nodes_num</span> <span class="o">=</span> <span class="n">blocks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">number_of_dst_nodes</span><span class="p">()</span>
+        <span class="n">recon_loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_orig</span><span class="p">,</span> <span class="n">a_hat</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">,</span> <span class="p">:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">feat_orig</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">[:</span><span class="n">output_nodes_num</span><span class="p">],</span> <span class="n">alpha</span><span class="p">)</span>
+        <span class="n">score</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">recon_loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        
+    <span class="k">return</span> <span class="n">score</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

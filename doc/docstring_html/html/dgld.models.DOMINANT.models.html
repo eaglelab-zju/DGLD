@@ -16,6 +16,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/clipboard.min.js"></script>
         <script src="_static/copybutton.js"></script>
@@ -68,13 +69,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dgld-models-dominant-models">
-<h1>dgld.models.DOMINANT.models<a class="headerlink" href="#dgld-models-dominant-models" title="Permalink to this headline"></a></h1>
-<span class="target" id="module-dgld.models.DOMINANT.models"></span><p>Deep Anomaly Detection on Attributed Networks.[SDM19]</p>
+  <section id="module-dgld.models.DOMINANT.models">
+<span id="dgld-models-dominant-models"></span><h1>dgld.models.DOMINANT.models<a class="headerlink" href="#module-dgld.models.DOMINANT.models" title="Permalink to this heading"></a></h1>
+<p>Deep Anomaly Detection on Attributed Networks.[SDM19]</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.DOMINANT.models.Attribute_Decoder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.DOMINANT.models.</span></span><span class="sig-name descname"><span class="pre">Attribute_Decoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nfeat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/DOMINANT/models.html#Attribute_Decoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.DOMINANT.models.Attribute_Decoder" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Attribute Decoder of DominantModel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -115,7 +116,7 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.DOMINANT.models.Dominant">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.DOMINANT.models.</span></span><span class="sig-name descname"><span class="pre">Dominant</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feat_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/DOMINANT/models.html#Dominant"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.DOMINANT.models.Dominant" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Deep Anomaly Detection on Attributed Networks.[SDM19]
 ref:https://github.com/kaize0409/GCN_AnomalyDetection_pytorch</p>
 <dl class="field-list simple">
@@ -176,7 +177,7 @@ ref:https://github.com/kaize0409/GCN_AnomalyDetection_pytorch</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.DOMINANT.models.DominantModel">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.DOMINANT.models.</span></span><span class="sig-name descname"><span class="pre">DominantModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feat_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/DOMINANT/models.html#DominantModel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.DOMINANT.models.DominantModel" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Deep Anomaly Detection on Attributed Networks.[SDM19]</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -218,7 +219,7 @@ ref:https://github.com/kaize0409/GCN_AnomalyDetection_pytorch</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.DOMINANT.models.Encoder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.DOMINANT.models.</span></span><span class="sig-name descname"><span class="pre">Encoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nfeat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nhid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/DOMINANT/models.html#Encoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.DOMINANT.models.Encoder" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Encoder of DominantModel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -259,7 +260,7 @@ ref:https://github.com/kaize0409/GCN_AnomalyDetection_pytorch</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="dgld.models.DOMINANT.models.Structure_Decoder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.DOMINANT.models.</span></span><span class="sig-name descname"><span class="pre">Structure_Decoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nhid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dropout</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/DOMINANT/models.html#Structure_Decoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.DOMINANT.models.Structure_Decoder" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <p>Structure Decoder of DominantModel</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

@@ -1,5 +1,5 @@
-dgld.models.SLGAD.SL_GAD_utils
-=====
+dgld.models.SLGAD.SL\_GAD\_utils 
+=================================
 
 .. automodule:: dgld.models.SLGAD.SL_GAD_utils
    :members:
