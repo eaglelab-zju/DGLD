@@ -3,6 +3,7 @@ dgld.utils
 .. toctree::
    :maxdepth: 4
 
+   dgld.utils.argparser
    dgld.utils.common
    dgld.utils.dataset
    dgld.utils.evaluation
@@ -24,6 +25,13 @@ dgld.models.AAGNN
    :maxdepth: 4
 
    dgld.models.AAGNN
+
+dgld.models.ALARM
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.ALARM
 
 dgld.models.AnomalyDAE
 -----------
@@ -59,6 +67,13 @@ dgld.models.DOMINANT
    :maxdepth: 4
 
    dgld.models.DOMINANT
+
+dgld.models.DONE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.DONE
 
 dgld.models.GAAN
 -----------

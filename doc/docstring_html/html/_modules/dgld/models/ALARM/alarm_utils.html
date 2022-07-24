@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dgld.models.AnomalyDAE.anomalydae_utils &mdash; DGLD 0.0.1 documentation</title>
+  <title>dgld.models.ALARM.alarm_utils &mdash; DGLD 0.0.1 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
@@ -56,7 +56,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>dgld.models.AnomalyDAE.anomalydae_utils</li>
+      <li>dgld.models.ALARM.alarm_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -65,7 +65,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for dgld.models.AnomalyDAE.anomalydae_utils</h1><div class="highlight"><pre>
+  <h1>Source code for dgld.models.ALARM.alarm_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">ast</span> <span class="kn">import</span> <span class="n">arg</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -77,42 +77,45 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">import</span> <span class="nn">random</span>
 
 
-<div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
-    <span class="c1"># parser = argparse.ArgumentParser(</span>
-    <span class="c1">#     description=&#39;AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks&#39;)</span>
-    <span class="c1"># # &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;</span>
-    <span class="c1"># parser.add_argument(&#39;--dataset&#39;, type=str, default=&#39;Cora&#39;)</span>
-    <span class="c1"># parser.add_argument(&#39;--seed&#39;, type=int, default=7)</span>
+<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../../dgld.models.ALARM.alarm_utils.html#dgld.models.ALARM.alarm_utils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;A Deep Multi-View Framework for Anomaly Detection on Attributed Networks&#39;</span><span class="p">)</span>
+    <span class="c1"># &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="c1"># max min avg  weighted_sum</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--embed_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dimension of hidden embedding (default: 256)&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--out_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dimension of output embedding (default: 128)&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;learning rate&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--hidden_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dimension of hidden embedding (default: 64)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;learning rate&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dropout&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                        <span class="n">default</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dropout rate&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
-                        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;weight decay&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--alpha&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dropout rate&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--alpha&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;balance parameter&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--eta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Attribute penalty balance parameter&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--theta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;structure penalty balance parameter&#39;</span><span class="p">)</span></div>
-    <span class="c1"># parser.add_argument(&#39;--device&#39;, type=str, default=&#39;0&#39;)</span>
-    
-    
-<div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--no_cuda&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--view_num&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--agg_type&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Aggregator type (default: 0)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--agg_vec&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39; Weighted aggregation vector (default: [1,1,1])&#39;</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">]:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">5e-4</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">3e-3</span>
+        <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
+            <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">1e-3</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>
@@ -122,23 +125,29 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">10</span>
 
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">100</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">5.0</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="mf">40.0</span>
-    
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">4096</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">32</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">4096</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.3</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">128</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">100</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.9</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">8.0</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="mf">90.0</span>
-
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.6</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">1024</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">64</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">80</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.7</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">3.0</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="mf">10.0</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="mi">4096</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">16</span>
+        <span class="c1"># args.lr = 1e-5</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">300</span>
+
 
     <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
@@ -149,54 +158,41 @@
         <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
         <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
     <span class="p">}</span>
-    <span class="n">num_nodes_map</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">2708</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3327</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">19717</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">5196</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">7575</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">16484</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">169343</span><span class="p">,</span>
-    <span class="p">}</span>
     <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
         <span class="s2">&quot;seed&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
             <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span><span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
-            <span class="s2">&quot;num_nodes&quot;</span><span class="p">:</span><span class="n">num_nodes_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
-            <span class="s2">&quot;embed_dim&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">embed_dim</span><span class="p">,</span>
-            <span class="s2">&quot;out_dim&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">out_dim</span><span class="p">,</span>
-            <span class="s2">&quot;dropout&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">dropout</span>
+            <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
+            <span class="s2">&quot;dropout&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">dropout</span><span class="p">,</span>
+            <span class="s2">&quot;view_num&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">view_num</span><span class="p">,</span>
+            <span class="s2">&quot;agg_type&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">agg_type</span><span class="p">,</span>
+            <span class="s2">&quot;agg_vec&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">agg_vec</span>
         <span class="p">},</span>
         <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
             <span class="s2">&quot;lr&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
             <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
             <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
             <span class="s2">&quot;alpha&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="s2">&quot;eta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
-            <span class="s2">&quot;theta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
             <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
             <span class="s2">&quot;alpha&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="s2">&quot;eta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
-            <span class="s2">&quot;theta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
             <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">}</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="n">final_args_dict</span><span class="p">,</span><span class="n">args</span></div>
+    <span class="k">return</span> <span class="n">final_args_dict</span></div>
 
 
-<div class="viewcode-block" id="loss_func"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.loss_func">[docs]</a><span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span> <span class="n">theta</span><span class="p">):</span>
+
+<div class="viewcode-block" id="loss_func"><a class="viewcode-back" href="../../../../dgld.models.ALARM.alarm_utils.html#dgld.models.ALARM.alarm_utils.loss_func">[docs]</a><span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">adj</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
     <span class="c1"># Attribute reconstruction loss</span>
-    <span class="n">etas</span><span class="o">=</span><span class="n">attrs</span><span class="o">*</span><span class="p">(</span><span class="n">eta</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span>
-    <span class="n">diff_attribute</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">((</span><span class="n">X_hat</span> <span class="o">-</span> <span class="n">attrs</span><span class="p">)</span><span class="o">*</span> <span class="n">etas</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+    <span class="n">diff_attribute</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">X_hat</span> <span class="o">-</span> <span class="n">attrs</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">attribute_reconstruction_errors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">diff_attribute</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">attribute_cost</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">attribute_reconstruction_errors</span><span class="p">)</span>
 
     <span class="c1"># structure reconstruction loss</span>
-    <span class="n">thetas</span> <span class="o">=</span> <span class="n">adj</span> <span class="o">*</span> <span class="p">(</span><span class="n">theta</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> 
-    <span class="n">diff_structure</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">((</span><span class="n">A_hat</span> <span class="o">-</span> <span class="n">adj</span><span class="p">)</span><span class="o">*</span> <span class="n">thetas</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> 
+    <span class="n">diff_structure</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">A_hat</span> <span class="o">-</span> <span class="n">adj</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">structure_reconstruction_errors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">diff_structure</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
     <span class="n">structure_cost</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">structure_reconstruction_errors</span><span class="p">)</span>
 
@@ -206,27 +202,32 @@
     <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">structure_cost</span><span class="p">,</span> <span class="n">attribute_cost</span></div>
 
 
-<div class="viewcode-block" id="train_step"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.train_step">[docs]</a><span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+<div class="viewcode-block" id="train_step"><a class="viewcode-back" href="../../../../dgld.models.ALARM.alarm_utils.html#dgld.models.ALARM.alarm_utils.train_step">[docs]</a><span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span> <span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
+
     <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    
     <span class="n">A_hat</span><span class="p">,</span> <span class="n">X_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+    <span class="c1"># A_hat, X_hat = model(features,adj)</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span>
-        <span class="n">adj_label</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+        <span class="n">adj_label</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
     <span class="n">l</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">l</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span><span class="p">,</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">l</span><span class="p">,</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span></div>
+    <span class="c1"># print(&quot;Epoch:&quot;, &#39;%04d&#39; % (epoch), &quot;train_loss=&quot;, &quot;{:.5f}&quot;.format(l.item()), &quot;train/struct_loss=&quot;, &quot;{:.5f}&quot;.format(struct_loss.item()),&quot;train/feat_loss=&quot;, &quot;{:.5f}&quot;.format(feat_loss.item()))</span>
 
 
-<div class="viewcode-block" id="test_step"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.test_step">[docs]</a><span class="k">def</span> <span class="nf">test_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">):</span>
+<div class="viewcode-block" id="test_step"><a class="viewcode-back" href="../../../../dgld.models.ALARM.alarm_utils.html#dgld.models.ALARM.alarm_utils.test_step">[docs]</a><span class="k">def</span> <span class="nf">test_step</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">):</span>
     <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
     <span class="n">A_hat</span><span class="p">,</span> <span class="n">X_hat</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
-    <span class="n">loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_label</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">)</span>
+    <span class="c1"># A_hat, X_hat = model(features,adj)</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">loss_func</span><span class="p">(</span><span class="n">adj_label</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">)</span>
     <span class="n">score</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
     <span class="c1"># print(&quot;Epoch:&quot;, &#39;%04d&#39; % (epoch), &#39;Auc&#39;, roc_auc_score(label, score))</span>
     <span class="k">return</span> <span class="n">score</span></div>
 
-<div class="viewcode-block" id="normalize_adj"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.normalize_adj">[docs]</a><span class="k">def</span> <span class="nf">normalize_adj</span><span class="p">(</span><span class="n">adj</span><span class="p">):</span>
+<div class="viewcode-block" id="normalize_adj"><a class="viewcode-back" href="../../../../dgld.models.ALARM.alarm_utils.html#dgld.models.ALARM.alarm_utils.normalize_adj">[docs]</a><span class="k">def</span> <span class="nf">normalize_adj</span><span class="p">(</span><span class="n">adj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Symmetrically normalize adjacency matrix.&quot;&quot;&quot;</span>
     <span class="n">adj</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">coo_matrix</span><span class="p">(</span><span class="n">adj</span><span class="p">)</span>
     <span class="n">rowsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">adj</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
