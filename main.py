@@ -9,6 +9,8 @@ from dgld.utils.argparser import parse_all_args
 from dgld.models.DOMINANT import Dominant
 from dgld.models.AnomalyDAE import AnomalyDAE
 from dgld.models.ComGA import ComGA
+from dgld.models.DONE import DONE
+from dgld.models.CONAD import CONAD
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -23,6 +25,10 @@ if __name__ == "__main__":
         model = AnomalyDAE(**args_dict["model"])
     elif args.model == 'ComGA':
         model = ComGA(**args_dict["model"])
+    elif args.model == 'DONE':
+        model = DONE(**args_dict["model"])
+    elif args.model == 'CONAD':
+        model = CONAD(**args_dict["model"])
         
     else:
         raise ValueError(f"{args.model} is not implemented!")

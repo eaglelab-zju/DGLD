@@ -10,7 +10,6 @@ from copy import deepcopy
 import torch
 import dgl
 
-
 def get_parse():
     """
     get hyperparameter by parser from command line
@@ -21,7 +20,7 @@ def get_parse():
         dict of args parser
     """
     parser = argparse.ArgumentParser(
-        description='CONAD: Contrastive Attributed Network Anomaly Detection with Data Augmentation')
+        description='DONE: Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding')
 
     parser.add_argument('--dataset', type=str, default='Cora')
     parser.add_argument('--seed', type=int, default=42)
@@ -90,6 +89,82 @@ def get_parse():
     return final_args_dict
 
 
+def set_subargs(parser):
+    parser.add_argument('--logdir', type=str, default='tmp')
+    parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
+    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--weight_decay', type=float, default=0.)
+    parser.add_argument('--dropout', type=float, default=0.)
+    parser.add_argument('--batch_size', type=int, default=0)
+    parser.add_argument('--max_len', type=int, default=0)
+    parser.add_argument('--restart', type=float, default=0.)
+    parser.add_argument('--num_neighbors', type=int, default=-1)
+    parser.add_argument('--embedding_dim', type=int, default=32)
+    
+
+def get_subargs(args):
+    if os.path.exists(args.logdir):
+        shutil.rmtree(args.logdir)
+        
+    if args.dataset in ['Cora', 'Citeseer', 'BlogCatalog', 'Flickr']:
+        args.lr = 0.01
+    elif args.dataset == 'Pubmed':
+        args.lf = 0.005
+    elif args.dataset == 'ACM':
+        args.lr = 0.1
+    elif args.dataset == 'obgn-arxiv':
+        args.lr = 0.01
+        args.batch_size = 1024
+        args.num_epoch = 20
+            
+    in_feature_map = {
+        "Cora":1433,
+        "Citeseer":3703,
+        "Pubmed":500,
+        "BlogCatalog":8189,
+        "Flickr":12047,
+        "ACM":8337,
+        "ogbn-arxiv":128,
+    }
+    num_nodes_map={
+        "Cora":2708,
+        "Citeseer":3327,
+        "Pubmed":19717,
+        "BlogCatalog":5196,
+        "Flickr":7575,
+        "ACM":16484,
+        "ogbn-arxiv":169343,
+    }
+    final_args_dict = {
+        "dataset": args.dataset,
+        "seed": args.seed,
+        "model":{
+            "feat_size": in_feature_map[args.dataset],
+            "num_nodes": num_nodes_map[args.dataset],
+            "embedding_dim": args.embedding_dim,
+            "dropout": args.dropout,
+        },
+        "fit":{
+            "lr": args.lr,
+            "weight_decay": args.weight_decay,
+            "logdir": args.logdir,
+            "num_epoch": args.num_epoch,
+            "device": args.device,
+            "batch_size": args.batch_size,
+            "num_neighbors": args.num_neighbors,
+            "max_len": args.max_len, 
+            "restart": args.restart,
+        },
+        "predict":{
+            "device": args.device,
+            "batch_size": args.batch_size,
+            "max_len": args.max_len, 
+            "restart": args.restart,
+        }
+    }
+    return final_args_dict, args
+
+
 def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
     """Consistent with the description of "Network Preprocessing" in Section 4.1 of the paper.
 
@@ -130,37 +205,39 @@ def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
     
 
 def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_factor, pretrain=False):
-    """_summary_
+    """loss function
 
     Parameters
     ----------
     x : torch.Tensor
-        _description_
+        adjacency matrix of the original graph
     x_hat : torch.Tensor
-        _description_
+        adjacency matrix of the reconstructed graph
     c : torch.Tensor
-        _description_
+        attribute matrix of the original graph
     c_hat : torch.Tensor
-        _description_
+        attribute matrix of the reconstructed graph
     h_a : torch.Tensor
-        _description_
+        embedding of attribute autoencoders
     h_s : torch.Tensor
-        _description_
+        embedding of structure autoencoders
     hom_str : torch.Tensor
-        _description_
+        intermediate value of homogeneity loss of structure autoencoder
     hom_attr : torch.Tensor
-        _description_
+        intermediate value of homogeneity loss of attribute autoencoder
     alphas : list
-        _description_
+        balance parameters
     scale_factor : float
-        _description_
+        scale factor
     pretrain : bool, optional
-        _description_, by default False
+        whether to pre-train, by default False
 
     Returns
     -------
-    _type_
-        _description_
+    loss : torch.Tensor
+        loss value
+    score : torch.Tensor
+        outlier score
     """
     # closed form update rules
     # Eq.8 struct score
@@ -189,13 +266,6 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_fac
         loss_hom_attr = torch.mean(torch.log(torch.pow(oa, -1)) * hom_attr) # Eq.5
         loss_com = torch.mean(torch.log(torch.pow(oc, -1)) * dc)            # Eq.6
         
-    # sum = loss_prox_str + loss_hom_str + loss_prox_attr + loss_hom_attr + loss_com
-    # print("a0={:.3f}".format((loss_prox_str/sum).item()), 
-    #       "a1={:.3f}".format((loss_hom_str/sum).item()), 
-    #       "a2={:.3f}".format((loss_prox_attr/sum).item()), 
-    #       "a3={:.3f}".format((loss_hom_attr/sum).item()), 
-    #       "a4={:.3f}".format((loss_com/sum).item()), 
-    #       )
     # Eq.7
     loss = alphas[0] * loss_prox_str + alphas[1] * loss_hom_str + alphas[2] * loss_prox_attr + alphas[3] * loss_hom_attr + alphas[4] * loss_com
     
@@ -204,33 +274,35 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, alphas, scale_fac
   
     
 def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch.Tensor, batch_size:int, alphas:list, num_neighbors:int, device, pretrain=False):
-    """_summary_
+    """train model in one epoch
 
     Parameters
     ----------
-    model : _type_
-        _description_
+    model : class
+        DONE base model
     optimizer : torch.optim.Optimizer
-        _description_
+        optimizer to adjust model
     g : dgl.DGLGraph
-        _description_
+        original graph
     adj : torch.Tensor
-        _description_
+        adjacency matrix
     batch_size : int
-        _description_
+        the size of training batch
     alphas : list
-        _description_
+        balance parameters
     num_neighbors : int
-        _description_
-    device : _type_
-        _description_
+        number of sampling neighbors
+    device : str
+        device of computation
     pretrain : bool, optional
-        _description_, by default False
+        whether to pre-train, by default False
 
     Returns
     -------
-    _type_
-        _description_
+    predict_score : numpy.ndarray
+        outlier score
+    epoch_loss : torch.Tensor
+        loss value for epoch
     """
     # g = deepcopy(g)
     model.train()
@@ -271,27 +343,26 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
 
 
 def test_step(model, g, adj, batch_size, alphas, device):
-    """_summary_
+    """test model in one epoch
 
     Parameters
     ----------
-    model : _type_
-        _description_
-    g : _type_
-        _description_
-    adj : _type_
-        _description_
-    batch_size : _type_
-        _description_
-    alphas : _type_
-        _description_
-    device : _type_
-        _description_
+    model : nn.Module
+        DONE base model 
+    g : dgl.DGLGraph
+        graph data
+    adj : torch.Tensor
+        adjacency matrix
+    batch_size : int
+        the size of training batch
+    alphas : list
+        balance parameters
+    device : str
+        device of computation
 
     Returns
     -------
-    _type_
-        _description_
+    numpy.ndarray
     """
     # g = deepcopy(g)
     model.eval()
@@ -324,12 +395,12 @@ def test_step(model, g, adj, batch_size, alphas, device):
 
 
 class SubgraphNeighborSampler(dgl.dataloading.Sampler):
-    """_summary_
+    """the neighbor sampler of the subgraph
 
     Parameters
     ----------
     num_neighbors : int, optional
-        _description_, by default -1
+        number of sampling neighbors, by default -1
     """
     def __init__(self, num_neighbors=-1):
         super().__init__()

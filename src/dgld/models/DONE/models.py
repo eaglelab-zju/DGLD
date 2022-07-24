@@ -5,17 +5,7 @@ from torch.utils.tensorboard import SummaryWriter
 import dgl
 import dgl.function as fn
 
-# TODO: add .
 from .done_utils import random_walk_with_restart, train_step, test_step
-
-# TODO: del
-from sklearn.metrics import roc_auc_score
-import numpy as np
-def recall_at_k(truth, score, k):
-    ranking = np.argsort(-score)
-    top_k = ranking[:k]
-    top_k_label = truth[top_k]
-    return top_k_label.sum() / truth.sum()
 
 class DONE():
     def __init__(self, 
@@ -26,22 +16,22 @@ class DONE():
                  activation=nn.LeakyReLU(negative_slope=0.2),
                  dropout=0.,
                  ):
-        """_summary_
+        """Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding
 
         Parameters
         ----------
         feat_size : int
-            _description_
+            dimension of feature
         num_nodes : int
-            _description_
+            number of nodes
         embedding_dim : int, optional
-            _description_, by default 32
+            dimension of embedding, by default 32
         num_layers : int, optional
-            _description_, by default 2
-        activation : _type_, optional
-            _description_, by default nn.LeakyReLU(negative_slope=0.2)
-        dropout : _type_, optional
-            _description_, by default 0.
+            number of layers of the auto-encoder, where the number of layers of the encoder and decoder is the same number, by default 2
+        activation : torch.nn.quantized.functional, optional
+            activation function, by default nn.LeakyReLU(negative_slope=0.2)
+        dropout : float, optional
+            rate of dropout, by default 0.
         """
         self.model = DONE_Base(feat_size, num_nodes, embedding_dim, num_layers, activation, dropout)
     
@@ -57,8 +47,34 @@ class DONE():
             max_len=0, 
             restart=0.5,
             device='cpu',
-            y_true=None,
             ):
+        """Fitting model
+
+        Parameters
+        ----------
+        graph : dgl.DGLGraph
+            graph data
+        lr : _type_, optional
+            learning rate, by default 1e-3
+        weight_decay : _type_, optional
+            weight decay (L2 penalty), by default 0.
+        num_epoch : int, optional
+            number of training epochs, by default 1
+        num_neighbors : int, optional
+            number of sampling neighbors, by default -1
+        alphas : list, optional
+            balance parameters, by default [0.2]*5
+        logdir : str, optional
+            log dir, by default 'tmp'
+        batch_size : int, optional
+            the size of training batch, by default 0
+        max_len : int, optional
+            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0
+        restart : float, optional
+            probability of restart, by default 0.5
+        device : str, optional
+            device of computation, by default 'cpu'
+        """
         print('*'*20,'training','*'*20)
         
         if torch.cuda.is_available() and device != 'cpu':
@@ -90,16 +106,7 @@ class DONE():
         # train with the outlier scores
         for epoch in range(num_epoch):
             score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device)
-            if y_true is not None and len(y_true.shape)==1:
-                self.model.eval()
-                recall = recall_at_k(y_true, score, int(adj.shape[0] * 0.05))
-                auc = roc_auc_score(y_true, score)
-                print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}, train/auc: {auc:.5f}, train/recall@5%={recall:.5f}")
-                writer.add_scalar('train/auc', auc, epoch)
-                writer.add_scalar('train/recall', recall, epoch)
-            else:
-                print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
-                
+            print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
             writer.add_scalar('train/loss', loss, epoch)
             writer.flush()
     
@@ -111,27 +118,27 @@ class DONE():
                 device='cpu',
                 alphas=[0.2]*5,
                 ):
-        """_summary_
+        """predict and return anomaly score of each node
 
         Parameters
         ----------
         graph : dgl.DGLGraph
-            _description_
-        batch_size : int
-            _description_
+            graph data
+        batch_size : int, optional
+            the size of training batch, by default 0
         max_len : int, optional
-            _description_, by default 0
+            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0
         restart : float, optional
-            _description_, by default 0.5
+            probability of restart, by default 0.5
         device : str, optional
-            _description_, by default 'cpu'
-        alphas : _type_, optional
-            _description_, by default [0.2]*5
+            device of computation, by default 'cpu'
+        alphas : list, optional
+            balance parameters, by default [0.2]*5
 
         Returns
         -------
-        _type_
-            _description_
+        predict_score : numpy.ndarray
+            predicted outlier score
         """
         print('*'*20,'predict','*'*20)
         
@@ -158,7 +165,25 @@ class DONE():
    
     
 class DONE_Base(nn.Module):
+    """This is a basic structure model of DONE.
+
+    Parameters
+    ----------
+    feat_size : int
+        the feature dimension of the input data
+    num_nodes : int
+        number of nodes
+    hid_feats : int
+        the feature dimension of the hidden layers
+    num_layers : int
+        number of layers of the auto-encoder, where the number of layers of the encoder and decoder is the same number
+    activation : torch.nn.quantized.functional
+        activation function
+    dropout : float
+        probability of restart
+    """
     def __init__(self, feat_size, num_nodes, hid_feats, num_layers, activation, dropout):
+        
         super(DONE_Base, self).__init__()
         
         self.attr_encoder = self._add_mlp(feat_size, hid_feats, hid_feats, num_layers, activation, dropout)
@@ -177,7 +202,7 @@ class DONE_Base(nn.Module):
         g : dgl.DGLGraph
             graph data
         x : torch.Tensor
-            adjacency matrix
+            structure matrix
         c : torch.Tensor
             attribute matrix
 
