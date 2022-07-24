@@ -318,55 +318,6 @@ def is_bidirected(g):
     return allclose(src1, dst2) and allclose(src2, dst1)
 
 
-# def load_raw_pyg_dataset(data_name='', verbose=True):
-#     """
-#     Read raw data from pyg.
-#         If data not in pyg, read from .mat files.
-#     Parameters
-#     ----------
-#     data_name : str, optional
-#         name of dataset, by default ''
-#     returns
-#     -------
-#     data : dgl.graph
-#         the graph of dataset
-#     """
-#     assert data_name in ['Cora', 'Citeseer', 'Pubmed', 'BlogCatalog', 'Flickr', 'ogbn-arxiv'], \
-#         'datasets do not have this data!!!'
-#     if data_name in ['Cora', 'Citeseer', 'Pubmed', 'BlogCatalog']:
-#         data = AttributedGraphDataset(data_path + 'attr-graphs/', data_name, transform=T.NormalizeFeatures())[0]
-#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.
-#         data.edge_index = to_undirected(data.edge_index)
-#     elif data_name in ['Flickr']:
-#         data = AttributedGraphDataset(data_path + 'attr-graphs/', data_name)[0]
-#         data.x = data.x.to_dense()
-#     elif data_name in ['ogbn-arxiv']:
-#         data = PygNodePropPredDataset(name='ogbn-arxiv', root=data_path)[0]
-#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.
-#         data.edge_index = to_undirected(data.edge_index)
-
-#     if verbose:
-#         print('  PyG dataset: {}'.format(data_name))
-#         print('  NumNodes: {}'.format(data.num_nodes))
-#         print('  NumEdges: {}'.format(data.num_edges))
-#         print('  NumFeats: {}'.format(data.x.shape[1]))
-
-#     # save to mat
-#     adj = to_scipy_sparse_matrix(data.edge_index).tocsr()
-#     feat = sp.csr_matrix(data.x)
-
-#     mat_dict = {}
-#     mat_dict['Network'] = adj
-#     mat_dict['Attributes'] = feat
-
-#     save_path = data_path + data_name + '_pyg.mat'
-#     sio.savemat(save_path, mat_dict)
-#     print('save mat data to:', save_path)
-#     print('-' * 60, '\n\n')
-
-#     return data
-
-
 def load_mat_data2dgl(data_path, verbose=True):
     """
     load data from .mat file
