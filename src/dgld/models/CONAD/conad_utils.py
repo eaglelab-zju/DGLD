@@ -81,7 +81,9 @@ def get_parse():
         args.contrast_type = 'triplet'
     elif args.dataset == 'ogbn-arxiv':
         args.batch_size = 1024
-        args.num_epoch = 50
+        args.num_epoch = 30
+        # args.eta = 0.1
+        pass
             
     in_feature_map = {
         "Cora":1433,
@@ -263,8 +265,6 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
             
     epoch_loss = 0
     
-    # adj = g_orig.adj().to_dense()
-    
     for (input_nodes_orig, output_nodes_orig, blocks_orig), (input_nodes_aug, output_nodes_aug, blocks_aug) in zip(dataloader_orig, dataloader_aug):
         blocks_orig = [b.to(device) for b in blocks_orig] 
         blocks_aug = [b.to(device) for b in blocks_aug] 
@@ -276,10 +276,9 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
         # contrastive loss
         h_orig = model.embed(blocks_orig, input_feat_orig)
         h_aug = model.embed(blocks_aug, input_feat_aug)
-        adj_orig = dgl.node_subgraph(g_orig, output_nodes_orig).adj().to_dense().to(label.device)
-        # adj_orig = adj[output_nodes_orig, output_nodes_orig].to(label.device)
-        # print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)
         output_nodes_num = blocks_orig[-1].number_of_dst_nodes()
+        adj_orig = dgl.block_to_graph(blocks_orig[-1]).adj().to_dense().to(label.device)[:output_nodes_num, :output_nodes_num]
+        # print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)
         contrast_loss = criterion(h_orig[:output_nodes_num], h_aug[:output_nodes_num], label, adj_orig)
         # recontruct loss
         a_hat, x_hat = model(blocks_orig, input_feat_orig)

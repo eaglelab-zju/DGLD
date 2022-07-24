@@ -1,0 +1,81 @@
+{
+    "Cora": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Citeseer": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Pubmed": {
+        "model": {
+            "feat_size": 500, 
+            "num_nodes": 19717, 
+            "embedding_dim": 32, 
+            "dropout": 0.0
+        },
+        "fit": {
+            "lr": 0.005, 
+            "weight_decay": 0.0, 
+            "logdir": "tmp", 
+            "num_epoch": 100, 
+            "device": "1", 
+            "batch_size": 0, 
+            "num_neighbors": -1
+        }, 
+        "predict": {
+            "device": "1", 
+            "batch_size": 0
+        }
+    },
+    "BlogCatalog": {
+        "fit": {
+            "lr": 0.01
+        }
+    },
+    "Flickr": {
+        "model": {
+            "feat_size": 12047, 
+            "num_nodes": 7575
+        }, 
+        "fit": {
+            "lr": 0.01, 
+            "weight_decay": 0.0, 
+            "logdir": "tmp", 
+            "num_epoch": 100, 
+            "device": "1", 
+            "batch_size": 0, 
+            "num_neighbors": -1
+        }, 
+        "predict": {
+            "device": "1", 
+            "batch_size": 0
+        }
+    },
+    "ACM": {
+        "model": {
+            "feat_size": 8337, 
+            "num_nodes": 16484
+        }, 
+        "fit": {
+            "lr": 0.1, 
+            "weight_decay": 0.0, 
+            "logdir": "tmp", 
+            "num_epoch": 100, 
+            "device": "1", 
+            "batch_size": 0, 
+            "num_neighbors": -1
+        }, 
+        "predict": {
+            "device": "1", 
+            "batch_size": 0
+        }
+    },
+    "obgn-arxiv": {
+        "fit": {
+            "lr": 0.01
+        }
+    }
+}
