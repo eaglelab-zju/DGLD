@@ -74,6 +74,13 @@ dgld.models.GUIDE
 
    dgld.models.GUIDE
 
+dgld.models.OCGNN
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.OCGNN
+
 dgld.models.SLGAD
 -----------
 .. toctree::

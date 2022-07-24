@@ -43,7 +43,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         anomaly injection hyperparameter follow CoLA, for structural anomaly
     k : int
         anomaly injection hyperparameter follow CoLA, for contextual anomaly
-    cola_preprocess_features : bool 
+    is_preprocess_features : bool 
         follow the same preprocess as CoLA, default by True
     g_data : DGL.Graph
         Specify custom data by g_data.
@@ -57,14 +57,14 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     >>> print(dataset[0])
     """
 
-    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, cola_preprocess_features=True, g_data=None, y_data=None):
+    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, is_preprocess_features=True, g_data=None, y_data=None):
         super().__init__(name=name)
         if raw_dir == None:
             raw_dir = data_path
         self.dataset_name = name
-        self.cola_preprocess_features = cola_preprocess_features
+        self.is_preprocess_features = is_preprocess_features
         if name in ['Flickr', 'BlogCatalog', 'Pubmed']:
-            self.cola_preprocess_features = False
+            self.is_preprocess_features = False
         self.p = p
         self.q_map = {
             "BlogCatalog": 10,
@@ -107,8 +107,8 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
             self.inject_contextual_anomalies()
             self.inject_structural_anomalies()
 
-        if self.cola_preprocess_features:
-            print('preprocess_features as CoLA')
+        if self.is_preprocess_features:
+            # print('preprocess_features as CoLA')
             self.dataset.ndata['feat'] = self.preprocess_features(self.dataset.ndata['feat'])
     @property
     def num_anomaly(self):

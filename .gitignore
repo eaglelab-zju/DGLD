@@ -4,10 +4,13 @@ t.py
 *.png
 *.pyc
 *.log
-**/log/*
+**/logs/*
+!scripts/logs/README.md
 **/log_bp/*
 **/tmp/*
 **__pycache__
 src/dgld/data/*
 doc_html_auto_generator
 !src/dgld/data/README.md
+.DS_Store
+src/.DS_Store

@@ -17,7 +17,8 @@ from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
 sys.path.append('../../')
-from utils.sample import CoLASubGraphSampling, UniformNeighborSampling
+# print(sys.path)
+from sample import CoLASubGraphSampling, UniformNeighborSampling
 
 def safe_add_self_loop(g):
     """

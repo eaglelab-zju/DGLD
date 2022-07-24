@@ -30,11 +30,15 @@ Then clone the DGLD project, enter the directory and run:
 ```shell
 pip install -r requirements.txt
 ```
+To check whether you have successfully installed the package and environment, you can simply run
+```shell
+python example.py
+```
 Now you can enjoy DGLD!
 
 ## Quick Start
 
-Here, we introduce how to simply run DGLD, following 4 steps.
+We support an example.py showing how it works. Here, we introduce how to simply run DGLD, following 4 steps.
 
 ### Dataloader
 
@@ -98,6 +102,7 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 |[GUIDE](https://ieeexplore.ieee.org/document/9671990)|0.9815|0.9770|0.9452|0.7668| 0.7331 |0.7100| 0.7711 |
 |[CONAD](https://link.springer.com/chapter/10.1007/978-3-031-05936-0_35)|0.9646|0.9116|0.9396|0.7863| 0.7395 |0.7005| 0.5988 |
 |[GAAN](https://dl.acm.org/doi/abs/10.1145/3340531.3412070)|0.7964|0.7979|0.7861|0.7978|0.7838|0.7081|0.6787|
+|[OCGNN](https://link.springer.com/article/10.1007/s00521-021-05924-9)|0.8071|0.7565|0.7124|0.6285|0.6532|0.4556|0.5455|
 
 ## Upcoming Features
 * More Graph Anomaly Detection Methods

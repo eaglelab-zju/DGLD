@@ -12,12 +12,12 @@ import torch
 import random
 
 
-def get_parse():
-    parser = argparse.ArgumentParser(
-        description='AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks')
-    # "Cora", "Pubmed", "Citeseer"
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=7)
+def set_subargs(parser):
+    # parser = argparse.ArgumentParser(
+    #     description='AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks')
+    # # "Cora", "Pubmed", "Citeseer"
+    # parser.add_argument('--dataset', type=str, default='Cora')
+    # parser.add_argument('--seed', type=int, default=7)
     # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--embed_dim', type=int, default=256,
@@ -36,13 +36,10 @@ def get_parse():
                         help='Attribute penalty balance parameter')
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
-    parser.add_argument('--device', type=str, default='0')
+    # parser.add_argument('--device', type=str, default='0')
     
-
-
-
-    args = parser.parse_args()
-
+    
+def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
 
@@ -74,8 +71,6 @@ def get_parse():
         args.alpha = 0.7
         args.eta = 3.0
         args.theta = 10.0
-
-
 
     in_feature_map = {
         "Cora":1433,
@@ -121,7 +116,7 @@ def get_parse():
             "device":args.device,
         }
     }
-    return final_args_dict
+    return final_args_dict,args
 
 
 def loss_func(adj, A_hat, attrs, X_hat, alpha,eta, theta):
