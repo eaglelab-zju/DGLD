@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.DONE.models &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/clipboard.min.js"></script>
+        <script src="../../../../_static/copybutton.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.models.DONE.models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.models.DONE.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+
+<span class="kn">import</span> <span class="nn">dgl</span>
+<span class="kn">import</span> <span class="nn">dgl.function</span> <span class="k">as</span> <span class="nn">fn</span>
+
+<span class="kn">from</span> <span class="nn">.done_utils</span> <span class="kn">import</span> <span class="n">random_walk_with_restart</span><span class="p">,</span> <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span>
+
+<div class="viewcode-block" id="DONE"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE">[docs]</a><span class="k">class</span> <span class="nc">DONE</span><span class="p">():</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                 <span class="n">feat_size</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+                 <span class="n">num_nodes</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span>
+                 <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+                 <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">activation</span><span class="o">=</span><span class="n">nn</span><span class="o">.</span><span class="n">LeakyReLU</span><span class="p">(</span><span class="n">negative_slope</span><span class="o">=</span><span class="mf">0.2</span><span class="p">),</span>
+                 <span class="n">dropout</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                 <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        feat_size : int</span>
+<span class="sd">            dimension of feature</span>
+<span class="sd">        num_nodes : int</span>
+<span class="sd">            number of nodes</span>
+<span class="sd">        embedding_dim : int, optional</span>
+<span class="sd">            dimension of embedding, by default 32</span>
+<span class="sd">        num_layers : int, optional</span>
+<span class="sd">            number of layers of the auto-encoder, where the number of layers of the encoder and decoder is the same number, by default 2</span>
+<span class="sd">        activation : torch.nn.quantized.functional, optional</span>
+<span class="sd">            activation function, by default nn.LeakyReLU(negative_slope=0.2)</span>
+<span class="sd">        dropout : float, optional</span>
+<span class="sd">            rate of dropout, by default 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">DONE_Base</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="DONE.fit"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+            <span class="n">graph</span><span class="p">:</span><span class="n">dgl</span><span class="o">.</span><span class="n">DGLGraph</span><span class="p">,</span>
+            <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+            <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+            <span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">num_neighbors</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">alphas</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span>
+            <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+            <span class="n">restart</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+            <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Fitting model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl.DGLGraph</span>
+<span class="sd">            graph data</span>
+<span class="sd">        lr : _type_, optional</span>
+<span class="sd">            learning rate, by default 1e-3</span>
+<span class="sd">        weight_decay : _type_, optional</span>
+<span class="sd">            weight decay (L2 penalty), by default 0.</span>
+<span class="sd">        num_epoch : int, optional</span>
+<span class="sd">            number of training epochs, by default 1</span>
+<span class="sd">        num_neighbors : int, optional</span>
+<span class="sd">            number of sampling neighbors, by default -1</span>
+<span class="sd">        alphas : list, optional</span>
+<span class="sd">            balance parameters, by default [0.2]*5</span>
+<span class="sd">        logdir : str, optional</span>
+<span class="sd">            log dir, by default &#39;tmp&#39;</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            the size of training batch, by default 0</span>
+<span class="sd">        max_len : int, optional</span>
+<span class="sd">            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0</span>
+<span class="sd">        restart : float, optional</span>
+<span class="sd">            probability of restart, by default 0.5</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device of computation, by default &#39;cpu&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;training&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:&quot;</span> <span class="o">+</span> <span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using gpu!!!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+            
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
+        
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">max_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">adj</span> <span class="o">=</span> <span class="n">random_walk_with_restart</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">max_len</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">restart</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">adj</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+
+        <span class="c1"># pretrain w/o the outlier scores</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
+            <span class="n">score</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">pretrain</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">, pretrain/loss=</span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        
+        <span class="c1"># train with the outlier scores</span>
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
+            <span class="n">score</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">, train/loss=</span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;train/loss&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="DONE.predict"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
+                <span class="n">graph</span><span class="p">:</span><span class="n">dgl</span><span class="o">.</span><span class="n">DGLGraph</span><span class="p">,</span> 
+                <span class="n">batch_size</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> 
+                <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
+                <span class="n">restart</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>
+                <span class="n">alphas</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span>
+                <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;predict and return anomaly score of each node</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        graph : dgl.DGLGraph</span>
+<span class="sd">            graph data</span>
+<span class="sd">        batch_size : int, optional</span>
+<span class="sd">            the size of training batch, by default 0</span>
+<span class="sd">        max_len : int, optional</span>
+<span class="sd">            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0</span>
+<span class="sd">        restart : float, optional</span>
+<span class="sd">            probability of restart, by default 0.5</span>
+<span class="sd">        device : str, optional</span>
+<span class="sd">            device of computation, by default &#39;cpu&#39;</span>
+<span class="sd">        alphas : list, optional</span>
+<span class="sd">            balance parameters, by default [0.2]*5</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        predict_score : numpy.ndarray</span>
+<span class="sd">            predicted outlier score</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;predict&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="ow">and</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda:&quot;</span> <span class="o">+</span> <span class="n">device</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using gpu!!!&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span> 
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch_size</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">number_of_nodes</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">max_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">adj</span> <span class="o">=</span> <span class="n">random_walk_with_restart</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">max_len</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">restart</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">adj</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+            
+        <span class="n">predict_score</span> <span class="o">=</span> <span class="n">test_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">predict_score</span></div></div>
+   
+    
+<div class="viewcode-block" id="DONE_Base"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE_Base">[docs]</a><span class="k">class</span> <span class="nc">DONE_Base</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a basic structure model of DONE.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    feat_size : int</span>
+<span class="sd">        the feature dimension of the input data</span>
+<span class="sd">    num_nodes : int</span>
+<span class="sd">        number of nodes</span>
+<span class="sd">    hid_feats : int</span>
+<span class="sd">        the feature dimension of the hidden layers</span>
+<span class="sd">    num_layers : int</span>
+<span class="sd">        number of layers of the auto-encoder, where the number of layers of the encoder and decoder is the same number</span>
+<span class="sd">    activation : torch.nn.quantized.functional</span>
+<span class="sd">        activation function</span>
+<span class="sd">    dropout : float</span>
+<span class="sd">        probability of restart</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">DONE_Base</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">attr_encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_mlp</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">attr_decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_mlp</span><span class="p">(</span><span class="n">hid_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">struct_encoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_mlp</span><span class="p">(</span><span class="n">num_nodes</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">struct_decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_mlp</span><span class="p">(</span><span class="n">hid_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">num_nodes</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="DONE_Base.forward"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE_Base.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        g : dgl.DGLGraph</span>
+<span class="sd">            graph data</span>
+<span class="sd">        x : torch.Tensor</span>
+<span class="sd">            structure matrix</span>
+<span class="sd">        c : torch.Tensor</span>
+<span class="sd">            attribute matrix</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">g</span><span class="o">.</span><span class="n">local_scope</span><span class="p">():</span>
+            <span class="c1"># structure</span>
+            <span class="n">h_s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struct_encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">struct_decoder</span><span class="p">(</span><span class="n">h_s</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">h_s</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">update_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_homophily_loss_message_func</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s1">&#39;hh&#39;</span><span class="p">,</span> <span class="s1">&#39;h_str&#39;</span><span class="p">))</span>
+            
+            <span class="c1"># attribute</span>
+            <span class="n">h_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_encoder</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+            <span class="n">c_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_decoder</span><span class="p">(</span><span class="n">h_a</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">h_a</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">update_all</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_homophily_loss_message_func</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="s1">&#39;hh&#39;</span><span class="p">,</span> <span class="s1">&#39;h_attr&#39;</span><span class="p">))</span>
+            
+            <span class="k">return</span> <span class="n">h_s</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">h_a</span><span class="p">,</span> <span class="n">c_hat</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;h_str&#39;</span><span class="p">],</span> <span class="n">g</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;h_attr&#39;</span><span class="p">]</span></div>
+    
+    <span class="k">def</span> <span class="nf">_add_mlp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">activation</span><span class="p">,</span> <span class="n">dropout</span><span class="p">):</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">num_layers</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">mlp</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">()</span>
+        <span class="c1"># input layer</span>
+        <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;linear_in&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">))</span>
+        <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;act_in&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="p">)</span>
+        <span class="c1"># hidden layers</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_layers</span><span class="o">-</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;dropout_hid_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">))</span>
+            <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;linear_hid_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid_feats</span><span class="p">,</span> <span class="n">hid_feats</span><span class="p">))</span>
+            <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;act_hid_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="p">)</span>
+        <span class="c1"># output layer</span>
+        <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;dropout_out&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">))</span>
+        <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;linear_out&#39;</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hid_feats</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">))</span>
+        <span class="n">mlp</span><span class="o">.</span><span class="n">add_module</span><span class="p">(</span><span class="s1">&#39;act_out&#39;</span><span class="p">,</span> <span class="n">activation</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mlp</span>
+    
+    <span class="k">def</span> <span class="nf">_homophily_loss_message_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;hh&#39;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">edges</span><span class="o">.</span><span class="n">src</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">edges</span><span class="o">.</span><span class="n">dst</span><span class="p">[</span><span class="s1">&#39;h&#39;</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

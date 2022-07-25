@@ -40,24 +40,6 @@ def get_parse():
 
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
-
-    if args.lr is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
-            args.lr = 1e-3
-        elif args.dataset == 'ACM':
-            args.lr = 5e-4
-        elif args.dataset == 'BlogCatalog':
-            args.lr = 3e-3
-        elif args.dataset == 'ogbn-arxiv':
-            args.lr = 1e-3
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
       
     if args.dataset == 'Cora': 
         args.rate = 0.1
@@ -81,7 +63,9 @@ def get_parse():
         args.contrast_type = 'triplet'
     elif args.dataset == 'ogbn-arxiv':
         args.batch_size = 1024
-        args.num_epoch = 50
+        args.num_epoch = 30
+        # args.eta = 0.1
+        pass
             
     in_feature_map = {
         "Cora":1433,
@@ -127,6 +111,94 @@ def get_parse():
         }
     }
     return final_args_dict
+
+
+def set_subargs(parser):
+    parser.add_argument('--logdir', type=str, default='tmp')
+    parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
+    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--weight_decay', type=float, default=0.)
+    parser.add_argument('--alpha', type=float, default=0.9, help='balance parameter')
+    parser.add_argument('--eta', type=float, default=0.7, help='Attribute penalty balance parameter')
+    parser.add_argument('--contrast_type', type=str, default='siamese')
+    parser.add_argument('--rate', type=float, default=0.2)
+    parser.add_argument('--margin', type=float, default=0.5)
+    parser.add_argument('--batch_size', type=int, default=0)
+    
+    
+def get_subargs(args):
+    if os.path.exists(args.logdir):
+        shutil.rmtree(args.logdir)
+      
+    if args.dataset == 'Cora': 
+        args.rate = 0.1
+        args.alpha = 0.85
+        args.eta = 0.8
+    elif args.dataset == 'Citeseer':
+        pass
+    elif args.dataset == 'Pubmed':
+        args.lr = 0.003
+        args.alpha = 0.95
+        args.eta = 0.01
+    elif args.dataset == 'BlogCatalog':
+        args.alpha = 0.2
+        args.eta = 0.2
+    elif args.dataset == 'Flickr':
+        pass
+    elif args.dataset == 'ACM':
+        args.lr = 0.003
+        args.alpha = 0.1
+        args.eta = 0.4 
+        args.contrast_type = 'triplet'
+    elif args.dataset == 'ogbn-arxiv':
+        args.batch_size = 1024
+        args.num_epoch = 30
+        args.eta = 0.1
+            
+    in_feature_map = {
+        "Cora":1433,
+        "Citeseer":3703,
+        "Pubmed":500,
+        "BlogCatalog":8189,
+        "Flickr":12047,
+        "ACM":8337,
+        "ogbn-arxiv":128,
+    }
+    num_nodes_map={
+        "Cora":2708,
+        "Citeseer":3327,
+        "Pubmed":19717,
+        "BlogCatalog":5196,
+        "Flickr":7575,
+        "ACM":16484,
+        "ogbn-arxiv":169343,
+    }
+    final_args_dict = {
+        "dataset": args.dataset,
+        "seed": args.seed,
+        "model":{
+            "feat_size": in_feature_map[args.dataset] if args.dataset in in_feature_map.keys() else None,
+        },
+        "fit":{
+            "lr": args.lr,
+            "weight_decay": args.weight_decay,
+            "logdir": args.logdir,
+            "num_epoch": args.num_epoch,
+            "device": args.device,
+            "eta": args.eta,
+            "alpha": args.alpha,
+            "rate": args.rate,
+            "contrast_type": args.contrast_type,
+            "margin": args.margin,
+            "batch_size": args.batch_size,
+        },
+        "predict":{
+            "device": args.device,
+            "alpha": args.alpha,
+            "batch_size": args.batch_size,
+        }
+    }
+    return final_args_dict, args
   
     
 def loss_func(a, a_hat, x, x_hat, alpha):
@@ -222,7 +294,7 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
     Parameters
     ----------
     model : class
-        CONAD model
+        CONAD base model
     optimizer : optim.Adam
         optimizer to adjust model
     criterion : torch.nn.Functions
@@ -263,8 +335,6 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
             
     epoch_loss = 0
     
-    # adj = g_orig.adj().to_dense()
-    
     for (input_nodes_orig, output_nodes_orig, blocks_orig), (input_nodes_aug, output_nodes_aug, blocks_aug) in zip(dataloader_orig, dataloader_aug):
         blocks_orig = [b.to(device) for b in blocks_orig] 
         blocks_aug = [b.to(device) for b in blocks_aug] 
@@ -276,10 +346,9 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
         # contrastive loss
         h_orig = model.embed(blocks_orig, input_feat_orig)
         h_aug = model.embed(blocks_aug, input_feat_aug)
-        adj_orig = dgl.node_subgraph(g_orig, output_nodes_orig).adj().to_dense().to(label.device)
-        # adj_orig = adj[output_nodes_orig, output_nodes_orig].to(label.device)
-        # print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)
         output_nodes_num = blocks_orig[-1].number_of_dst_nodes()
+        adj_orig = dgl.block_to_graph(blocks_orig[-1]).adj().to_dense().to(label.device)[:output_nodes_num, :output_nodes_num]
+        # print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)
         contrast_loss = criterion(h_orig[:output_nodes_num], h_aug[:output_nodes_num], label, adj_orig)
         # recontruct loss
         a_hat, x_hat = model(blocks_orig, input_feat_orig)

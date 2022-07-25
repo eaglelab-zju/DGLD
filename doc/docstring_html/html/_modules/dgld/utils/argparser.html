@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.utils.argparser &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/clipboard.min.js"></script>
+        <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>dgld.utils.argparser</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for dgld.utils.argparser</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Parse All Model Args&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">tab_printer</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+    
+<span class="c1"># DOMINANT</span>
+<span class="kn">from</span> <span class="nn">models.DOMINANT</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">dominant_set_args</span>
+<span class="kn">from</span> <span class="nn">models.DOMINANT</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">dominant_get_args</span>
+<span class="c1">#AnomalyDAE</span>
+<span class="kn">from</span> <span class="nn">models.AnomalyDAE</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">anomalydae_set_args</span>
+<span class="kn">from</span> <span class="nn">models.AnomalyDAE</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">anomalydae_get_args</span>
+<span class="c1"># ComGA</span>
+<span class="kn">from</span> <span class="nn">models.ComGA</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">comga_set_args</span>
+<span class="kn">from</span> <span class="nn">models.ComGA</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">comga_get_args</span>
+<span class="c1"># DONE</span>
+<span class="kn">from</span> <span class="nn">models.DONE</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">done_set_args</span>
+<span class="kn">from</span> <span class="nn">models.DONE</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">done_get_args</span>
+<span class="c1"># CONAD</span>
+<span class="kn">from</span> <span class="nn">models.CONAD</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">conad_set_args</span>
+<span class="kn">from</span> <span class="nn">models.CONAD</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">conad_get_args</span>
+
+
+<span class="c1"># set args </span>
+<span class="n">models_set_args_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DOMINANT&quot;</span><span class="p">:</span> <span class="n">dominant_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;AnomalyDAE&quot;</span><span class="p">:</span> <span class="n">anomalydae_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;ComGA&quot;</span><span class="p">:</span> <span class="n">comga_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;DONE&quot;</span><span class="p">:</span> <span class="n">done_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;CONAD&quot;</span><span class="p">:</span> <span class="n">conad_set_args</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="c1"># get args </span>
+<span class="n">models_get_args_map</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;DOMINANT&quot;</span><span class="p">:</span> <span class="n">dominant_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;AnomalyDAE&quot;</span><span class="p">:</span> <span class="n">anomalydae_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;ComGA&quot;</span><span class="p">:</span> <span class="n">comga_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;DONE&quot;</span><span class="p">:</span> <span class="n">done_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;CONAD&quot;</span><span class="p">:</span> <span class="n">conad_get_args</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="parse_all_args"><a class="viewcode-back" href="../../../dgld.utils.argparser.html#dgld.utils.argparser.parse_all_args">[docs]</a><span class="k">def</span> <span class="nf">parse_all_args</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">:</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">prog</span><span class="o">=</span><span class="s1">&#39;DGLD&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Parameters for DGLD&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Dataset used in the experiment&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;ID(s) of gpu used by cuda&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Random seed. Defaults to 4096.&#39;</span><span class="p">)</span>
+
+    <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;sub-command help&#39;</span><span class="p">)</span>
+    
+    <span class="c1"># set sub args</span>
+    <span class="k">for</span> <span class="n">_model</span><span class="p">,</span> <span class="n">set_arg_func</span> <span class="ow">in</span> <span class="n">models_set_args_map</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sub_parser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+            <span class="n">_model</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Run anomaly detection on </span><span class="si">{</span><span class="n">_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">set_arg_func</span><span class="p">(</span><span class="n">sub_parser</span><span class="p">)</span>
+        
+    <span class="c1"># get model args</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">args_dict</span><span class="p">,</span><span class="n">args</span> <span class="o">=</span> <span class="n">models_get_args_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">model</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="n">tab_printer</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">args_dict</span><span class="p">,</span><span class="n">args</span></div>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">parse_all_args</span><span class="p">()</span> 
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

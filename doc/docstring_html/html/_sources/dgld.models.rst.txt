@@ -5,14 +5,16 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 
+   :maxdepth: 4
 
    dgld.models.AAGNN
+   dgld.models.ALARM
    dgld.models.AnomalyDAE
    dgld.models.CONAD
    dgld.models.CoLA
    dgld.models.ComGA
    dgld.models.DOMINANT
+   dgld.models.DONE
    dgld.models.GAAN
    dgld.models.GUIDE
    dgld.models.OCGNN

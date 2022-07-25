@@ -111,7 +111,7 @@
 <span class="sd">        anomaly injection hyperparameter follow CoLA, for structural anomaly</span>
 <span class="sd">    k : int</span>
 <span class="sd">        anomaly injection hyperparameter follow CoLA, for contextual anomaly</span>
-<span class="sd">    cola_preprocess_features : bool </span>
+<span class="sd">    is_preprocess_features : bool </span>
 <span class="sd">        follow the same preprocess as CoLA, default by True</span>
 <span class="sd">    g_data : DGL.Graph</span>
 <span class="sd">        Specify custom data by g_data.</span>
@@ -125,14 +125,14 @@
 <span class="sd">    &gt;&gt;&gt; print(dataset[0])</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cora&quot;</span><span class="p">,</span><span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span> <span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">cola_preprocess_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;Cora&quot;</span><span class="p">,</span><span class="n">raw_dir</span><span class="o">=</span><span class="kc">None</span> <span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">is_preprocess_features</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">g_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">raw_dir</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">raw_dir</span> <span class="o">=</span> <span class="n">data_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dataset_name</span> <span class="o">=</span> <span class="n">name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cola_preprocess_features</span> <span class="o">=</span> <span class="n">cola_preprocess_features</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_preprocess_features</span> <span class="o">=</span> <span class="n">is_preprocess_features</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Flickr&#39;</span><span class="p">,</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">]:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cola_preprocess_features</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_preprocess_features</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">q_map</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
@@ -175,8 +175,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inject_contextual_anomalies</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inject_structural_anomalies</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cola_preprocess_features</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;preprocess_features as CoLA&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_preprocess_features</span><span class="p">:</span>
+            <span class="c1"># print(&#39;preprocess_features as CoLA&#39;)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">preprocess_features</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">])</span>
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">num_anomaly</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

@@ -5,8 +5,9 @@ Submodules
 ----------
 
 .. toctree::
-   :maxdepth: 
+   :maxdepth: 4
 
+   dgld.utils.argparser
    dgld.utils.common
    dgld.utils.dataset
    dgld.utils.evaluation

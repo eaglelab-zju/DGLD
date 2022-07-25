@@ -5,7 +5,7 @@ Subpackages
 -----------
 
 .. toctree::
-   :maxdepth: 
+   :maxdepth: 4
 
    dgld.modules.dglAug
 

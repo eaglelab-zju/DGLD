@@ -19,19 +19,29 @@ from models.AnomalyDAE import get_subargs as anomalydae_get_args
 # ComGA
 from models.ComGA import set_subargs as comga_set_args
 from models.ComGA import get_subargs as comga_get_args
+# DONE
+from models.DONE import set_subargs as done_set_args
+from models.DONE import get_subargs as done_get_args
+# CONAD
+from models.CONAD import set_subargs as conad_set_args
+from models.CONAD import get_subargs as conad_get_args
 
 
 # set args 
 models_set_args_map = {
     "DOMINANT": dominant_set_args,
     "AnomalyDAE": anomalydae_set_args,
-    "ComGA": comga_set_args
+    "ComGA": comga_set_args,
+    "DONE": done_set_args,
+    "CONAD": conad_set_args,
 }
 # get args 
 models_get_args_map = {
     "DOMINANT": dominant_get_args,
     "AnomalyDAE": anomalydae_get_args,
-    "ComGA": comga_get_args
+    "ComGA": comga_get_args,
+    "DONE": done_get_args,
+    "CONAD": conad_get_args,
 }
 
 

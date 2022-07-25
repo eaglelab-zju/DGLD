@@ -69,8 +69,74 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="dgld-models-cola-dataset">
-<h1>dgld.models.CoLA.dataset<a class="headerlink" href="#dgld-models-cola-dataset" title="Permalink to this heading"></a></h1>
+  <section id="module-dgld.models.CoLA.dataset">
+<span id="dgld-models-cola-dataset"></span><h1>dgld.models.CoLA.dataset<a class="headerlink" href="#module-dgld.models.CoLA.dataset" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.CoLADataSet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.CoLA.dataset.</span></span><span class="sig-name descname"><span class="pre">CoLADataSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subgraphsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#CoLADataSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.CoLADataSet" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DGLDataset</span></code></p>
+<p>CoLA Dataset to generate subgraph for train and inference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.graph</em>) – graph to generate subgraph</p></li>
+<li><p><strong>subgraphsize</strong> (<em>int</em>) – size of subgraph, default 4</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.CoLADataSet.graph_transform">
+<span class="sig-name descname"><span class="pre">graph_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#CoLADataSet.graph_transform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.CoLADataSet.graph_transform" title="Permalink to this definition"></a></dt>
+<dd><p>functions to transfrom graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>g</strong> (<em>DGL.Graph</em>) – the graph to transform</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>newg</strong> – the graph after transform</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DGL.Graph</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.CoLADataSet.normalize_feat">
+<span class="sig-name descname"><span class="pre">normalize_feat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#CoLADataSet.normalize_feat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.CoLADataSet.normalize_feat" title="Permalink to this definition"></a></dt>
+<dd><p>functions to normalize the features of nodes in graph</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.CoLADataSet.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#CoLADataSet.process"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.CoLADataSet.process" title="Permalink to this definition"></a></dt>
+<dd><p>nonsense</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.CoLADataSet.random_walk_sampling">
+<span class="sig-name descname"><span class="pre">random_walk_sampling</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#CoLADataSet.random_walk_sampling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.CoLADataSet.random_walk_sampling" title="Permalink to this definition"></a></dt>
+<dd><p>functions to get random walk from target nodes</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.CoLA.dataset.safe_add_self_loop">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.CoLA.dataset.</span></span><span class="sig-name descname"><span class="pre">safe_add_self_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/CoLA/dataset.html#safe_add_self_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.CoLA.dataset.safe_add_self_loop" title="Permalink to this definition"></a></dt>
+<dd><p>Add the self loop in g
+:param g: the graph to add self loop
+:type g: DGL.graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>newg</strong> – the graph has been added self loop</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DGL.Graph</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 

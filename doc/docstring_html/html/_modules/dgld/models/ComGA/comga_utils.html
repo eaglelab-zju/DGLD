@@ -80,12 +80,7 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 
-<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../../dgld.models.ComGA.comga_utils.html#dgld.models.ComGA.comga_utils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;ComGA: Community-Aware Attributed Graph Anomaly Detection&#39;</span><span class="p">)</span>
-    <span class="c1"># &quot;Cora&quot;, &quot;Pubmed&quot;, &quot;Citeseer&quot;,&quot;BlogCatalog&quot;,&quot;Flickr&quot;,&quot;ACM&quot;, &quot;ogbn-arxiv&quot;</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Cora&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.ComGA.comga_utils.html#dgld.models.ComGA.comga_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="c1"># max min avg  weighted_sum</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
@@ -103,13 +98,11 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--theta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;structure penalty balance parameter&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--no_cuda&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_enc_1&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2000</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of encode1 units&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_enc_2&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of encode2 units&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_enc_3&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of encode2 units&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_enc_3&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s1">&#39;number of encode2 units&#39;</span><span class="p">)</span></div>
 
-
-    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+<div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.ComGA.comga_utils.html#dgld.models.ComGA.comga_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
@@ -151,8 +144,6 @@
         <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
         <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">3.0</span>
         <span class="n">args</span><span class="o">.</span><span class="n">theta</span> <span class="o">=</span> <span class="mf">10.0</span>
-
-
 
 
     <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
@@ -200,7 +191,7 @@
             <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
         <span class="p">}</span>
     <span class="p">}</span>
-    <span class="k">return</span> <span class="n">final_args_dict</span></div>
+    <span class="k">return</span> <span class="n">final_args_dict</span><span class="p">,</span><span class="n">args</span></div>
 
 
 <div class="viewcode-block" id="loss_func"><a class="viewcode-back" href="../../../../dgld.models.ComGA.comga_utils.html#dgld.models.ComGA.comga_utils.loss_func">[docs]</a><span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="n">B</span><span class="p">,</span><span class="n">B_hat</span><span class="p">,</span><span class="n">z_mean</span><span class="p">,</span><span class="n">z_arg</span><span class="p">,</span><span class="n">adj</span><span class="p">,</span> <span class="n">A_hat</span><span class="p">,</span> <span class="n">attrs</span><span class="p">,</span> <span class="n">X_hat</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span><span class="n">device</span><span class="p">):</span>
