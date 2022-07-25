@@ -1,0 +1,97 @@
+from email.policy import default
+import numpy as np 
+import os
+import sys
+sys.path.append('../../')
+import argparse
+import shutil
+
+def set_subargs(parser):
+    parser.add_argument('--num_epoch', type=int, help='Training epoch')
+    parser.add_argument('--K', type=int, default=8,help='The embedding size of graph nodes')
+    parser.add_argument('--alpha', type=float, default=1,
+                        help='balance parameter')
+    parser.add_argument('--beta', type=float, default=1,
+                        help='balance parameter')
+    parser.add_argument('--gamma', type=float, default=1,
+                        help='balance parameter')
+def get_subargs(args):
+
+    if args.num_epoch is None:
+        args.num_epoch = 5
+
+    if args.dataset == 'Cora':
+        args.alpha,args.beta,args.gamma = 1,1,4
+        
+    elif args.dataset == 'Citeseer':
+        args.alpha,args.beta,args.gamma = 0,4,1
+
+    elif args.dataset == 'Pubmed':
+        args.alpha,args.beta,args.gamma = 2,4,1
+
+    elif args.dataset == 'BlogCatalog':
+        args.alpha,args.beta,args.gamma = 1,1,1
+
+    elif args.dataset == 'Flickr':
+        args.alpha,args.beta,args.gamma = 3,2,1
+
+    elif args.dataset == 'ACM':
+        args.alpha,args.beta,args.gamma = 4,0,1
+
+
+    in_feature_map = {
+        "Cora":1433,
+        "Citeseer":3703,
+        "Pubmed":500,
+        "BlogCatalog":8189,
+        "Flickr":12047,
+        "ACM":8337,
+        "ogbn-arxiv":128,
+    }
+    num_nodes_map={
+        "Cora":2708,
+        "Citeseer":3327,
+        "Pubmed":19717,
+        "BlogCatalog":5196,
+        "Flickr":7575,
+        "ACM":16484,
+        "ogbn-arxiv":169343,
+    }
+    final_args_dict = {
+        "dataset": args.dataset,
+        "seed": args.seed,
+        "model":{
+            "node_num":num_nodes_map[args.dataset],
+            "K":args.K
+        },
+        "fit":{
+            "num_epoch":args.num_epoch,
+        },
+        "predict":{
+            "alpha":args.alpha,
+            "beta":args.beta,
+            "gamma":args.gamma,
+        }
+    }
+    return final_args_dict,args
+
+
+def loss_func(A, C, G, H, U, V, W, outl1, outl2, outl3, alpha, beta, gamma):
+    eps = 1e-5
+    temp1 = A - np.matmul(G,H)
+    temp1 = np.multiply(temp1,temp1)
+    temp1 = np.multiply( np.log(np.reciprocal(outl1+eps)), np.sum(temp1, axis=1) )
+    temp1 = np.sum(temp1)
+                        
+    temp2 = C - np.matmul(U,V)
+    temp2 = np.multiply(temp2,temp2)
+    temp2 = np.multiply( np.log(np.reciprocal(outl2+eps)), np.sum(temp2, axis=1) )
+    temp2 = np.sum(temp2)    
+    
+    temp3 = G.T - np.matmul(W, U.T)
+    temp3 = np.multiply(temp3,temp3)
+    temp3 = np.multiply( np.log(np.reciprocal(outl3+eps)), np.sum(temp3, axis=0).T )
+    temp3 = np.sum(temp3)
+    
+    func_value = alpha * temp1 + beta * temp2 + gamma * temp3
+    return func_value

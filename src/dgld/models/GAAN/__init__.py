@@ -1,2 +1,2 @@
 from .model import GAAN
-from .ganna_utils import get_parse
+from .ganna_utils import set_subargs,get_subargs
