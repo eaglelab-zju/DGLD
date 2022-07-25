@@ -1,3 +1,4 @@
+from email.policy import default
 import torch 
 import dgl 
 import numpy as np
@@ -7,48 +8,61 @@ import os
 sys.path.append('../../')
 
 import argparse
-def get_parse():
-    """
-    get hyperparameter by parser from command line
 
-    Returns
-    -------
-    final_args_dict : dictionary
-        dict of args parser
-    """
-    parser = argparse.ArgumentParser(
-        description='Higher-order Structure Based Anomaly Detection on Attributed Networks')
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=2022)
-    parser.add_argument('--logdir', type=str, default='tmp')
+def set_subargs(parser):
     parser.add_argument('--attrb_hid', type=int, default=64,
                     help='dimension of hidden embedding for attribute encoder (default: 64)')
-    parser.add_argument('--struct_hid', type=int, default=8,
+    parser.add_argument('--struct_hid', type=int, default=32,
                     help='dimension of hidden embedding for structure encoder (default: 8)')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
-    parser.add_argument('--lr', type=float, help='learning rate')
+    parser.add_argument('--lr', type=float,default = 0.01, help='learning rate')
     parser.add_argument('--dropout', type=float,
-                        default=0.0, help='Dropout rate')
+                        default=0.5, help='Dropout rate')
     parser.add_argument('--alpha', type=float, default=0.99,
                         help='balance parameter')
-    parser.add_argument('--device', type=str, default='0')
+    parser.add_argument('--struct_dim', type=int, default=6,
+                        help='struct feature dim')
+    parser.add_argument('--num_layers', type=int, default=4,
+                        help='the number of layers')
+    parser.add_argument('--batch_size', type=int, default=0,help='batch_size, 0 for all data ')
 
-    args = parser.parse_args()
-
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
-
-    if args.lr is None:
-        args.lr = 1e-3
-
+def get_subargs(args):
     if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 200
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
+        if args.dataset in ['Cora', 'Citeseer']:
+            args.num_epoch = 100
+        elif args.dataset in [ 'Flickr', 'ACM']:
+            args.num_epoch = 50
         else:
             args.num_epoch = 10
-
+    if args.dataset == 'Cora':
+        args.alpha = 0.9987
+        args.lr = 0.001
+    if args.dataset == 'Citeseer':
+        args.alpha = 0.9997
+    if args.dataset == 'Pubmed':
+        args.alpha = 0.9996
+        args.lr = 0.001
+        args.attrb_hid = 256
+        args.num_epoch = 400
+    if args.dataset == 'BlogCatalog':
+        args.alpha = 0.9996
+        args.lr = 0.001
+        args.num_epoch = 200
+        args.batch_size = 2048
+    if args.dataset == 'Flickr':
+        args.alpha = 1
+    if args.dataset == 'ACM':
+        args.alpha = 0.81
+        args.lr = 0.001
+        args.attrb_hid = 256
+        args.struct_hid = 64
+        args.batch_size = 2048
+    if args.dataset == 'ogbn-arxiv':
+        args.alpha = 0.999
+        args.lr = 0.001
+        args.attrb_hid = 64
+        args.struct_hid = 16
+        args.batch_size = 2048
 
     in_feature_map = {
         "Cora":1433,
@@ -59,29 +73,40 @@ def get_parse():
         "ACM":8337,
         "ogbn-arxiv":128,
     }
+    num_nodes_map={
+        "Cora":2708,
+        "Citeseer":3327,
+        "Pubmed":19717,
+        "BlogCatalog":5196,
+        "Flickr":7575,
+        "ACM":16484,
+        "ogbn-arxiv":169343,
+    }
     final_args_dict = {
         "dataset": args.dataset,
-        "seed":args.seed,
+        "seed": args.seed,
         "model":{
-            "attrb_dim":in_feature_map[args.dataset],
-            "attrb_hid":args.attrb_hid,
-            "struct_dim":6,
-            "struct_hid":args.struct_hid,
-            "dropout":args.dropout
+            "attrb_dim": in_feature_map[args.dataset],
+            "struct_dim": args.struct_dim,
+            "num_layers": args.num_layers,
+            "attrb_hid": args.attrb_hid,
+            "struct_hid": args.struct_hid,
+            "dropout": args.dropout,
         },
         "fit":{
-            "lr":args.lr,
-            "logdir":args.logdir,
             "num_epoch":args.num_epoch,
+            "batch_size":args.batch_size,
+            "lr":args.lr,
             "alpha":args.alpha,
-            "device":args.device,
+            "device":args.device
         },
         "predict":{
             "alpha":args.alpha,
-            "device":args.device,
+            "batch_size":args.batch_size,
+            "device":args.device
         }
     }
-    return final_args_dict
+    return final_args_dict,args
 
 def cal_motifs(nx_g,x,idx):
     """
@@ -180,6 +205,7 @@ def get_struct_feat(graph:dgl.DGLGraph):
     -------
     the struct feature 
     """
+    print("generate struct feature")
     new_g = graph.to_simple()
     new_g = new_g.remove_self_loop()
     nx_g = new_g.to_networkx().to_undirected()
