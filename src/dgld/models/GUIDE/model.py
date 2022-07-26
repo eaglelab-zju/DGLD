@@ -53,6 +53,7 @@ class GUIDE():
     """
     def __init__(self,attrb_dim,attrb_hid,struct_dim,struct_hid,num_layers=4,dropout=0,act=F.relu):
         self.num_layers = num_layers
+        self.struct_feat = None
         self.model = GUIDEModel(attrb_dim,attrb_hid,struct_dim,struct_hid,num_layers,dropout=dropout,act=act)
         self.init_model()
     def init_model(self):
@@ -61,7 +62,7 @@ class GUIDE():
         """
         for weight in self.model.parameters():
             nn.init.xavier_normal_(weight.unsqueeze(0))
-    def fit(self,graph,attrb_feat=None,struct_feat = None,lr=5e-3,batch_size=0,logdir='tmp',num_epoch=100,alpha=None,
+    def fit(self,graph,attrb_feat=None,struct_feat = None,lr=5e-3,batch_size=0,num_epoch=100,alpha=None,
             device='cpu',verbose=False,y_true=None):
         """
         train the model
@@ -95,6 +96,7 @@ class GUIDE():
             attrb_feat = graph.ndata['feat']
         if struct_feat is None:
             struct_feat = get_struct_feat(graph)
+            self.struct_feat = struct_feat
         if alpha is None:
             alpha = torch.std(struct_feat).detach() / (torch.std(struct_feat).detach() + torch.std(attrb_feat).detach())
         if batch_size == 0:
@@ -116,7 +118,6 @@ class GUIDE():
         attrb_feat = attrb_feat.to(device)
         struct_feat = struct_feat.to(device)
 
-        writer = SummaryWriter(log_dir=logdir)
         
         sampler = dgl.dataloading.MultiLayerFullNeighborSampler(self.num_layers)
 
@@ -149,14 +150,7 @@ class GUIDE():
                 print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(epoch_loss))
                 if y_true is not None:
                     split_auc(y_true, score)
-                    # print(" | AUC {:.5f}".format(auc), end='')
-                # print()
-            writer.add_scalars(
-                "loss",
-                {"loss": loss},
-                epoch,
-            )
-            writer.flush()
+
     def predict(self,graph,attrb_feat=None,struct_feat = None,batch_size = 0,alpha=None,device='cpu'):
         """
         test the model
@@ -183,7 +177,11 @@ class GUIDE():
         if attrb_feat is None:
             attrb_feat = graph.ndata['feat']
         if struct_feat is None:
-            struct_feat = get_struct_feat(graph)
+            if self.struct_feat is not None:
+                struct_feat = self.struct_feat
+            else:
+                struct_feat = get_struct_feat(graph)
+                self.struct_feat = struct_feat
         if alpha is None:
             alpha = torch.std(struct_feat).detach() / (torch.std(struct_feat).detach() + torch.std(attrb_feat).detach())
         if batch_size == 0:

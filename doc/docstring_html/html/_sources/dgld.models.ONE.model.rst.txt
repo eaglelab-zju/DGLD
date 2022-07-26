@@ -1,0 +1,7 @@
+dgld.models.ONE.model 
+======================
+
+.. automodule:: dgld.models.ONE.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -386,55 +386,6 @@
     <span class="k">return</span> <span class="n">allclose</span><span class="p">(</span><span class="n">src1</span><span class="p">,</span> <span class="n">dst2</span><span class="p">)</span> <span class="ow">and</span> <span class="n">allclose</span><span class="p">(</span><span class="n">src2</span><span class="p">,</span> <span class="n">dst1</span><span class="p">)</span></div>
 
 
-<span class="c1"># def load_raw_pyg_dataset(data_name=&#39;&#39;, verbose=True):</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     Read raw data from pyg.</span>
-<span class="c1">#         If data not in pyg, read from .mat files.</span>
-<span class="c1">#     Parameters</span>
-<span class="c1">#     ----------</span>
-<span class="c1">#     data_name : str, optional</span>
-<span class="c1">#         name of dataset, by default &#39;&#39;</span>
-<span class="c1">#     returns</span>
-<span class="c1">#     -------</span>
-<span class="c1">#     data : dgl.graph</span>
-<span class="c1">#         the graph of dataset</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#     assert data_name in [&#39;Cora&#39;, &#39;Citeseer&#39;, &#39;Pubmed&#39;, &#39;BlogCatalog&#39;, &#39;Flickr&#39;, &#39;ogbn-arxiv&#39;], \</span>
-<span class="c1">#         &#39;datasets do not have this data!!!&#39;</span>
-<span class="c1">#     if data_name in [&#39;Cora&#39;, &#39;Citeseer&#39;, &#39;Pubmed&#39;, &#39;BlogCatalog&#39;]:</span>
-<span class="c1">#         data = AttributedGraphDataset(data_path + &#39;attr-graphs/&#39;, data_name, transform=T.NormalizeFeatures())[0]</span>
-<span class="c1">#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.</span>
-<span class="c1">#         data.edge_index = to_undirected(data.edge_index)</span>
-<span class="c1">#     elif data_name in [&#39;Flickr&#39;]:</span>
-<span class="c1">#         data = AttributedGraphDataset(data_path + &#39;attr-graphs/&#39;, data_name)[0]</span>
-<span class="c1">#         data.x = data.x.to_dense()</span>
-<span class="c1">#     elif data_name in [&#39;ogbn-arxiv&#39;]:</span>
-<span class="c1">#         data = PygNodePropPredDataset(name=&#39;ogbn-arxiv&#39;, root=data_path)[0]</span>
-<span class="c1">#         # generate to bidirectional,if has,not genreate. Maybe add self loop on isolated nodes.</span>
-<span class="c1">#         data.edge_index = to_undirected(data.edge_index)</span>
-
-<span class="c1">#     if verbose:</span>
-<span class="c1">#         print(&#39;  PyG dataset: {}&#39;.format(data_name))</span>
-<span class="c1">#         print(&#39;  NumNodes: {}&#39;.format(data.num_nodes))</span>
-<span class="c1">#         print(&#39;  NumEdges: {}&#39;.format(data.num_edges))</span>
-<span class="c1">#         print(&#39;  NumFeats: {}&#39;.format(data.x.shape[1]))</span>
-
-<span class="c1">#     # save to mat</span>
-<span class="c1">#     adj = to_scipy_sparse_matrix(data.edge_index).tocsr()</span>
-<span class="c1">#     feat = sp.csr_matrix(data.x)</span>
-
-<span class="c1">#     mat_dict = {}</span>
-<span class="c1">#     mat_dict[&#39;Network&#39;] = adj</span>
-<span class="c1">#     mat_dict[&#39;Attributes&#39;] = feat</span>
-
-<span class="c1">#     save_path = data_path + data_name + &#39;_pyg.mat&#39;</span>
-<span class="c1">#     sio.savemat(save_path, mat_dict)</span>
-<span class="c1">#     print(&#39;save mat data to:&#39;, save_path)</span>
-<span class="c1">#     print(&#39;-&#39; * 60, &#39;\n\n&#39;)</span>
-
-<span class="c1">#     return data</span>
-
-
 <div class="viewcode-block" id="load_mat_data2dgl"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.load_mat_data2dgl">[docs]</a><span class="k">def</span> <span class="nf">load_mat_data2dgl</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    load data from .mat file</span>
