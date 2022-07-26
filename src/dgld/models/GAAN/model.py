@@ -53,7 +53,7 @@ class GAAN():
         self.noise_dim = noise_dim
 
     def fit(self,graph,attrb_feat=None,batch_size=0,num_epoch=10,g_lr=0.001,d_lr=0.001,
-            weight_decay=0,num_neighbor = -1,logdir='tmp',device='cpu',verbose=False,y_true=None,alpha=0.3):
+            weight_decay=0,num_neighbor = -1,device='cpu',verbose=False,y_true=None,alpha=0.3):
         """
         Train the model.
 
@@ -75,8 +75,6 @@ class GAAN():
             Weight decay (L2 penalty), by default 0
         num_neighbor : int, optional
             The number of the simple number, -1 for all neighber, default -1
-        logdir : str, optional
-            tensorboard logdir, by default 'tmp'
         device : str, optional
             device, default 'cpu'
         verbose : bool, optional
@@ -97,7 +95,6 @@ class GAAN():
         else:
             device = torch.device("cpu")
             print('Using cpu!!!')  
-        writer = SummaryWriter(log_dir=logdir)
 
         self.model.to(device)
 
@@ -143,8 +140,6 @@ class GAAN():
                 opt_g.step()
                 epoch_loss_g += loss_g.item() * len(output_nodes)
 
-
-
                 if verbose and y_true is not None:
                     subgraph = graph.subgraph(input_nodes,relabel_nodes=True)
                     score[output_nodes] = self.cal_score(subgraph,x,x_,a,alpha,len(output_nodes)).detach().cpu()
@@ -155,14 +150,7 @@ class GAAN():
                     "discriminator_loss=", "{:.5f}".format(epoch_loss_d))
                 if y_true is not None:  
                     split_auc(y_true, score)
-            writer.add_scalars(
-                "loss",
-                {"generator_loss": epoch_loss_g,
-                "discriminator_loss":epoch_loss_d
-                },
-                epoch,
-            )
-            writer.flush()
+
     def predict(self,graph,attrb_feat=None,alpha = 0.3,batch_size = 0,device='cpu',num_neighbor = -1):
         """
         Test model

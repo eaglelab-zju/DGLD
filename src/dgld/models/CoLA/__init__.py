@@ -1,2 +1,2 @@
 from .model import CoLA
-from .colautils import get_parse
+from .colautils import set_subargs,get_subargs

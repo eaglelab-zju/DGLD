@@ -121,7 +121,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">noise_dim</span> <span class="o">=</span> <span class="n">noise_dim</span>
 
 <div class="viewcode-block" id="GAAN.fit"><a class="viewcode-back" href="../../../../dgld.models.GAAN.model.html#dgld.models.GAAN.model.GAAN.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">attrb_feat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">g_lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span><span class="n">d_lr</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
-            <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">num_neighbor</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+            <span class="n">weight_decay</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span><span class="n">num_neighbor</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">y_true</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Train the model.</span>
 
@@ -143,8 +143,6 @@
 <span class="sd">            Weight decay (L2 penalty), by default 0</span>
 <span class="sd">        num_neighbor : int, optional</span>
 <span class="sd">            The number of the simple number, -1 for all neighber, default -1</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            tensorboard logdir, by default &#39;tmp&#39;</span>
 <span class="sd">        device : str, optional</span>
 <span class="sd">            device, default &#39;cpu&#39;</span>
 <span class="sd">        verbose : bool, optional</span>
@@ -165,7 +163,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span>  
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
@@ -211,8 +208,6 @@
                 <span class="n">opt_g</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
                 <span class="n">epoch_loss_g</span> <span class="o">+=</span> <span class="n">loss_g</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">output_nodes</span><span class="p">)</span>
 
-
-
                 <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="n">y_true</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">subgraph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">input_nodes</span><span class="p">,</span><span class="n">relabel_nodes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="n">score</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cal_score</span><span class="p">(</span><span class="n">subgraph</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">x_</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">output_nodes</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
@@ -222,15 +217,8 @@
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;generator_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch_loss_g</span><span class="p">),</span>
                     <span class="s2">&quot;discriminator_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch_loss_d</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">y_true</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  
-                    <span class="n">split_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalars</span><span class="p">(</span>
-                <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
-                <span class="p">{</span><span class="s2">&quot;generator_loss&quot;</span><span class="p">:</span> <span class="n">epoch_loss_g</span><span class="p">,</span>
-                <span class="s2">&quot;discriminator_loss&quot;</span><span class="p">:</span><span class="n">epoch_loss_d</span>
-                <span class="p">},</span>
-                <span class="n">epoch</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+                    <span class="n">split_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="GAAN.predict"><a class="viewcode-back" href="../../../../dgld.models.GAAN.model.html#dgld.models.GAAN.model.GAAN.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">attrb_feat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">num_neighbor</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Test model</span>

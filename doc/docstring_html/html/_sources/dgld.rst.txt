@@ -96,6 +96,13 @@ dgld.models.OCGNN
 
    dgld.models.OCGNN
 
+dgld.models.ONE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.ONE
+
 dgld.models.SLGAD
 -----------
 .. toctree::

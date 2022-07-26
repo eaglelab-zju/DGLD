@@ -3,7 +3,6 @@ import sys
 import sys
 import os
 import argparse
-from typing import Dict
 from common import tab_printer
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
@@ -28,6 +27,21 @@ from models.AdONE import get_subargs as adone_get_args
 # CONAD
 from models.CONAD import set_subargs as conad_set_args
 from models.CONAD import get_subargs as conad_get_args
+# ALARM
+from models.ALARM import set_subargs as alarm_set_subargs
+from models.ALARM import get_subargs as alarm_get_subargs
+# ONE
+from models.ONE import set_subargs as one_set_args 
+from models.ONE import get_subargs as one_get_args
+# GAAN
+from models.GAAN import set_subargs as gaan_set_args
+from models.GAAN import get_subargs as gaan_get_args
+# GUIDE
+from models.GUIDE import set_subargs as guide_set_args
+from models.GUIDE import get_subargs as guide_get_args
+# CoLA
+from models.CoLA import set_subargs as cola_set_args
+from models.CoLA import get_subargs as cola_get_args
 
 
 # set args 
@@ -38,6 +52,11 @@ models_set_args_map = {
     "DONE": done_set_args,
     "AdONE": adone_set_args,
     "CONAD": conad_set_args,
+    "ALARM": alarm_set_subargs,
+    "ONE": one_set_args,
+    "GAAN": gaan_set_args,
+    "GUIDE": guide_set_args,
+    "CoLA": cola_set_args
 }
 # get args 
 models_get_args_map = {
@@ -47,6 +66,11 @@ models_get_args_map = {
     "DONE": done_get_args,
     "AdONE": adone_get_args,
     "CONAD": conad_get_args,
+    "ALARM": alarm_get_subargs,
+    "ONE": one_get_args,
+    "GAAN": gaan_get_args,
+    "GUIDE":guide_get_args,
+    "CoLA": cola_get_args
 }
 
 
