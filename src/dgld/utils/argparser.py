@@ -1,61 +1,115 @@
+"""Parse All Model Args"""
 import sys
-sys.path.append('./src')
+import sys
+import os
+import argparse
+from common import tab_printer
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+    
+# DOMINANT
+from models.DOMINANT import set_subargs as dominant_set_args
+from models.DOMINANT import get_subargs as dominant_get_args
+#AnomalyDAE
+from models.AnomalyDAE import set_subargs as anomalydae_set_args
+from models.AnomalyDAE import get_subargs as anomalydae_get_args
+# ComGA
+from models.ComGA import set_subargs as comga_set_args
+from models.ComGA import get_subargs as comga_get_args
+# DONE
+from models.DONE import set_subargs as done_set_args
+from models.DONE import get_subargs as done_get_args
+# CONAD
+from models.CONAD import set_subargs as conad_set_args
+from models.CONAD import get_subargs as conad_get_args
+# ALARM
+from models.ALARM import set_subargs as alarm_set_subargs
+from models.ALARM import get_subargs as alarm_get_subargs
+# ONE
+from models.ONE import set_subargs as one_set_args 
+from models.ONE import get_subargs as one_get_args
+# GAAN
+from models.GAAN import set_subargs as gaan_set_args
+from models.GAAN import get_subargs as gaan_get_args
+# GUIDE
+from models.GUIDE import set_subargs as guide_set_args
+from models.GUIDE import get_subargs as guide_get_args
+# CoLA
+from models.CoLA import set_subargs as cola_set_args
+from models.CoLA import get_subargs as cola_get_args
+# SL-GAD
+from models.SLGAD import set_subargs as slgad_set_args
+from models.SLGAD import get_subargs as slgad_get_args
+# AAGNN
+from models.AAGNN import set_subargs as aagnn_set_args
+from models.AAGNN import get_subargs as aagnn_get_args
 
-from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
-from dgld.utils.evaluation import split_auc
-from dgld.utils.common import seed_everything
-from dgld.utils.argparser import parse_all_args
-#from dgld.utils.load_data import load_data
+# set args
+models_set_args_map = {
+    "DOMINANT": dominant_set_args,
+    "AnomalyDAE": anomalydae_set_args,
+    "ComGA": comga_set_args,
+    "DONE": done_set_args,
+    "CONAD": conad_set_args,
+    "ALARM": alarm_set_subargs,
+    "ONE": one_set_args,
+    "GAAN": gaan_set_args,
+    "GUIDE": guide_set_args,
+    "CoLA": cola_set_args,
+    "SLGAD": slgad_set_args,
+    "AAGNN": aagnn_set_args
+}
+# get args
+models_get_args_map = {
+    "DOMINANT": dominant_get_args,
+    "AnomalyDAE": anomalydae_get_args,
+    "ComGA": comga_get_args,
+    "DONE": done_get_args,
+    "CONAD": conad_get_args,
+    "ALARM": alarm_get_subargs,
+    "ONE": one_get_args,
+    "GAAN": gaan_get_args,
+    "GUIDE":guide_get_args,
+    "CoLA": cola_get_args,
+    "SLGAD":slgad_get_args,
+    "AAGNN": aagnn_get_args
+}
 
-from dgld.models.DOMINANT import Dominant
-from dgld.models.AnomalyDAE import AnomalyDAE
-from dgld.models.ComGA import ComGA
-from dgld.models.DONE import DONE
-from dgld.models.CONAD import CONAD
-from dgld.models.ALARM import ALARM
-from dgld.models.ONE import ONE 
-from dgld.models.GAAN import GAAN
-from dgld.models.GUIDE import GUIDE
-from dgld.models.CoLA import CoLA
-from dgld.models.AAGNN import AAGNN_batch
-from dgld.models.SLGAD import SLGAD
 
+def parse_all_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        prog='DGLD',
+        description='Parameters for DGLD')
+    parser.add_argument('--dataset',
+                        type=str,
+                        default='Cora',
+                        help='Dataset used in the experiment')
+    parser.add_argument('--device',
+                        type=str,
+                        default='0',
+                        help='ID(s) of gpu used by cuda')
+    parser.add_argument('--seed',
+                        type=int,
+                        default=4096,
+                        help='Random seed. Defaults to 4096.')
+
+    subparsers = parser.add_subparsers(dest="model", help='sub-command help')
+    
+    # set sub args
+    for _model, set_arg_func in models_set_args_map.items():
+        sub_parser = subparsers.add_parser(
+            _model, help=f"Run anomaly detection on {_model}")
+        set_arg_func(sub_parser)
+        
+    # get model args
+    args = parser.parse_args()
+    args_dict,args = models_get_args_map[args.model](args)
+
+    tab_printer(args)
+    
+    return args_dict,args
 
 if __name__ == "__main__":
-    args_dict,args = parse_all_args()
-    seed_everything(args_dict['seed'])
-    gnd_dataset = GraphNodeAnomalyDectionDataset(args_dict['dataset'])
-    g = gnd_dataset[0]
-    label = gnd_dataset.anomaly_label
-
-    if args.model == 'DOMINANT':
-        model = Dominant(**args_dict["model"])
-    elif args.model == 'AnomalyDAE':
-        model = AnomalyDAE(**args_dict["model"])
-    elif args.model == 'ComGA':
-        model = ComGA(**args_dict["model"])
-    elif args.model == 'DONE':
-        model = DONE(**args_dict["model"])
-    elif args.model == 'CONAD':
-        model = CONAD(**args_dict["model"])
-    elif args.model == 'ALARM':
-        model = ALARM(**args_dict["model"])
-    elif args.model == 'ONE':
-        model = ONE(**args_dict["model"])
-    elif args.model == 'GAAN':
-        model = GAAN(**args_dict["model"])
-    elif args.model == 'GUIDE':
-        model = GUIDE(**args_dict["model"])
-    elif args.model == 'CoLA':
-        model = CoLA(**args_dict["model"])
-    elif args.model == 'AAGNN':
-        model = AAGNN_batch(**args_dict["model"])
-    elif args.model == 'SLGAD':
-        model = SLGAD(**args_dict["model"])
-    else:
-        raise ValueError(f"{args.model} is not implemented!")
-
-    model.fit(g, **args_dict["fit"])
-    result = model.predict(g, **args_dict["predict"])
-    split_auc(label, result)
-    print(args_dict)
+    parse_all_args()
