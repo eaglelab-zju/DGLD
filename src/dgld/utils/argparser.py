@@ -3,9 +3,6 @@ import sys
 import sys
 import os
 import argparse
-from typing import Dict
-
-from sympy import im
 from common import tab_printer
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
@@ -64,7 +61,7 @@ models_get_args_map = {
     "ComGA": comga_get_args,
     "DONE": done_get_args,
     "CONAD": conad_get_args,
-    "ALARM": alarm_get_subargs
+    "ALARM": alarm_get_subargs,
     "ONE": one_get_args,
     "GAAN": gaan_get_args,
     "GUIDE":guide_get_args,
