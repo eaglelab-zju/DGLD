@@ -17,7 +17,7 @@ ogb_datasets = ['ogbn-arxiv']
 other_datasets = ['BlogCatalog', 'Flickr']
 
 
-def load_data(dataset_name=None,raw_dir=data_path,add_self_loop=False):
+def load_data(dataset_name=None,raw_dir=data_path,feat_norm=True,add_self_loop=False):
     """
     load data
 
@@ -50,7 +50,7 @@ def load_data(dataset_name=None,raw_dir=data_path,add_self_loop=False):
     # init label
     graph.ndata['label'] = torch.zeros(graph.num_nodes())
 
-    if dataset_name in ['BlogCatalog','Flickr']:
+    if feat_norm:
         graph.ndata['feat'] = preprocess_features(graph.ndata['feat'])
 
     if add_self_loop:
@@ -206,8 +206,8 @@ if __name__ == "__main__":
     n_nodes_list, n_edges_list, n_attr_list, n_anom_list = [], [], [], []
     for data_name in dataset_list:
         print('-' * 10, data_name, '-' * 10)
-        graph = load_data(data_name,add_self_loop=True)
-        print(graph.ndata['feat'][0])
+        graph = load_data(data_name)
+        print(sum(graph.ndata['feat'][0]))
         graph = inject_contextual_anomalies(graph=graph,k=50,p=15,q=q_map[data_name])
         graph = inject_structural_anomalies(graph=graph,p=15,q=q_map[data_name])
         
