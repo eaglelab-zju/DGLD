@@ -5,13 +5,11 @@ import torch.nn as nn
 import torch.nn.functional as F 
 from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import roc_auc_score
-import sys
-sys.path.append('../../utils')
-import os
+import os,sys
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
-from evaluation import split_auc
+from utils.evaluation import split_auc
 class GAAN():
     """
     GAAN (Generative Adversarial Attributed Network Anomaly

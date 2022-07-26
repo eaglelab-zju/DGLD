@@ -3,12 +3,12 @@ import sys
 import sys
 import os
 import argparse
-from common import tab_printer
+
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-    
+from utils.common import tab_printer    
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
@@ -39,9 +39,14 @@ from models.GUIDE import get_subargs as guide_get_args
 # CoLA
 from models.CoLA import set_subargs as cola_set_args
 from models.CoLA import get_subargs as cola_get_args
+# SL-GAD
+from models.SLGAD import set_subargs as slgad_set_args
+from models.SLGAD import get_subargs as slgad_get_args
+# AAGNN
+from models.AAGNN import set_subargs as aagnn_set_args
+from models.AAGNN import get_subargs as aagnn_get_args
 
-
-# set args 
+# set args
 models_set_args_map = {
     "DOMINANT": dominant_set_args,
     "AnomalyDAE": anomalydae_set_args,
@@ -52,9 +57,11 @@ models_set_args_map = {
     "ONE": one_set_args,
     "GAAN": gaan_set_args,
     "GUIDE": guide_set_args,
-    "CoLA": cola_set_args
+    "CoLA": cola_set_args,
+    "SLGAD": slgad_set_args,
+    "AAGNN": aagnn_set_args
 }
-# get args 
+# get args
 models_get_args_map = {
     "DOMINANT": dominant_get_args,
     "AnomalyDAE": anomalydae_get_args,
@@ -65,7 +72,9 @@ models_get_args_map = {
     "ONE": one_get_args,
     "GAAN": gaan_get_args,
     "GUIDE":guide_get_args,
-    "CoLA": cola_get_args
+    "CoLA": cola_get_args,
+    "SLGAD":slgad_get_args,
+    "AAGNN": aagnn_get_args
 }
 
 
@@ -103,4 +112,4 @@ def parse_all_args() -> argparse.Namespace:
     return args_dict,args
 
 if __name__ == "__main__":
-    parse_all_args() 
+    parse_all_args()

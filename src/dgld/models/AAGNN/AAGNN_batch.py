@@ -29,10 +29,10 @@ class AAGNN_batch(nn.Module):
     >>> model = AAGNN_batch(in_feats=in_feats, out_feats=300)
     >>> model.fit(graph, num_epoch=30, device='cuda:0', subgraph_size=32)
     """
-    def __init__(self, feat_size, out_dim=300):
+    def __init__(self, feat_size, out_feats=300):
         super().__init__()
-        self.model = model_base(feat_size, out_dim)
-        self.out_feats = out_dim
+        self.model = model_base(feat_size, out_feats)
+        self.out_feats = out_feats
     
     def fit(self, graph, num_epoch=100, device='cpu', lr=0.0001, logdir='tmp', subgraph_size=4096):
         """
