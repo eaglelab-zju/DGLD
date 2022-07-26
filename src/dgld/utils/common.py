@@ -362,7 +362,6 @@ def load_mat_data2dgl(data_path, verbose=True):
     # add self-loop
     print(f"Total edges before adding self-loop {graph.number_of_edges()}")
     graph = graph.remove_self_loop().add_self_loop()
-
     print(f"Total edges after adding self-loop {graph.number_of_edges()}")
     assert is_bidirected(graph) == True
     return [graph]
@@ -519,3 +518,23 @@ def tab_printer(args: Dict, thead: List[str] = None) -> None:
     ] for k in keys])
     txt.add_rows(params)
     print(txt.draw())
+
+def preprocess_features(features):
+    """
+    Functions that process features, here norm in row
+    
+    Parameters
+    ----------
+    features : torch.Tensor
+        features to be processed
+    
+    Returns
+    -------
+    None
+    """
+    rowsum = np.array(features.sum(1))
+    r_inv = np.power(rowsum, -1).flatten()
+    r_inv[np.isinf(r_inv)] = 0.
+    r_mat_inv = sp.diags(r_inv)
+    features = r_mat_inv.dot(features)
+    return torch.Tensor(features).float()
