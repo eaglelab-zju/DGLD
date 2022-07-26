@@ -17,6 +17,7 @@ from dgld.models.ONE import ONE
 from dgld.models.GAAN import GAAN
 from dgld.models.GUIDE import GUIDE
 from dgld.models.CoLA import CoLA
+from dgld.models.SLGAD import SLGAD
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -45,7 +46,8 @@ if __name__ == "__main__":
         model = GUIDE(**args_dict["model"])
     elif args.model == 'CoLA':
         model = CoLA(**args_dict["model"])   
-
+    elif args.model == 'SLGAD':
+        model = SLGAD(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 
