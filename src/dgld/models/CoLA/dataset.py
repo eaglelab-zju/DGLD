@@ -3,22 +3,15 @@ import sys
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
-
-from os import path as osp
 import torch.nn.functional as F
-import joblib
 import numpy as np
-import pandas as pd
-from tqdm import tqdm
 
 import torch
 import dgl
 from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
-sys.path.append('../../')
-# print(sys.path)
-from sample import CoLASubGraphSampling, UniformNeighborSampling
+from utils.sample import CoLASubGraphSampling
 
 def safe_add_self_loop(g):
     """

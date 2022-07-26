@@ -3,12 +3,12 @@ import sys
 import sys
 import os
 import argparse
-from common import tab_printer
+
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-    
+from utils.common import tab_printer    
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
