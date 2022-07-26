@@ -34,6 +34,10 @@ from models.GAAN import get_subargs as gaan_get_args
 # GUIDE
 from models.GUIDE import set_subargs as guide_set_args
 from models.GUIDE import get_subargs as guide_get_args
+# CoLA
+from models.CoLA import set_subargs as cola_set_args
+from models.CoLA import get_subargs as cola_get_args
+
 
 # set args 
 models_set_args_map = {
@@ -45,6 +49,7 @@ models_set_args_map = {
     "ONE": one_set_args,
     "GAAN": gaan_set_args,
     "GUIDE": guide_set_args,
+    "CoLA": cola_set_args
 }
 # get args 
 models_get_args_map = {
@@ -56,6 +61,7 @@ models_get_args_map = {
     "ONE": one_get_args,
     "GAAN": gaan_get_args,
     "GUIDE":guide_get_args,
+    "CoLA": cola_get_args
 }
 
 

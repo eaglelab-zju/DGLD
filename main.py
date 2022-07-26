@@ -5,6 +5,7 @@ from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
 from dgld.utils.evaluation import split_auc
 from dgld.utils.common import seed_everything
 from dgld.utils.argparser import parse_all_args
+from dgld.utils.load_data import load_data
 
 from dgld.models.DOMINANT import Dominant
 from dgld.models.AnomalyDAE import AnomalyDAE
@@ -14,7 +15,7 @@ from dgld.models.CONAD import CONAD
 from dgld.models.ONE import ONE 
 from dgld.models.GAAN import GAAN
 from dgld.models.GUIDE import GUIDE
-
+from dgld.models.CoLA import CoLA
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -39,6 +40,8 @@ if __name__ == "__main__":
         model = GAAN(**args_dict["model"])
     elif args.model == 'GUIDE':
         model = GUIDE(**args_dict["model"])
+    elif args.model == 'CoLA':
+        model = CoLA(**args_dict["model"])   
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

@@ -71,7 +71,7 @@ def loss_fun_BCE(pos_scores, neg_scores, criterion, device):
 loss_fun = loss_fun_BCE
 
 
-def get_parse():
+def set_subargs(parser):
     """
     get hyperparameter by parser from command line
 
@@ -80,13 +80,13 @@ def get_parse():
     final_args_dict : dictionary
         dict of args parser
     """
-    parser = argparse.ArgumentParser(
-        description='CoLA: Self-Supervised Contrastive Learning for Anomaly Detection')
-    # "Cora", "Pubmed", "Citeseer"
-    parser.add_argument('--dataset', type=str, default='Cora')
+    # parser = argparse.ArgumentParser(
+    #     description='CoLA: Self-Supervised Contrastive Learning for Anomaly Detection')
+    # # "Cora", "Pubmed", "Citeseer"
+    # parser.add_argument('--dataset', type=str, default='Cora')
     parser.add_argument('--lr', type=float)
     parser.add_argument('--weight_decay', type=float, default=0.0)
-    parser.add_argument('--seed', type=int, default=1)
+    # parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--embedding_dim', type=int, default=64)
     parser.add_argument('--num_epoch', type=int)
     parser.add_argument('--drop_prob', type=float, default=0.0)
@@ -95,10 +95,11 @@ def get_parse():
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--device', type=str, default='cpu')
+    # parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--global_adg', type=bool, default=True)
-    args = parser.parse_args()
+
+def get_subargs(args):
 
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
@@ -139,6 +140,7 @@ def get_parse():
     }
     final_args_dict = {
         "dataset": args.dataset,
+        "seed": args.seed,
         "model":{
             "in_feats":in_feature_map[args.dataset],
             "out_feats":args.embedding_dim,
@@ -161,7 +163,7 @@ def get_parse():
             "logdir":args.logdir
         }
     }
-    return final_args_dict
+    return final_args_dict,args
 
 
 def train_epoch(epoch, loader, net, device, criterion, optimizer):
