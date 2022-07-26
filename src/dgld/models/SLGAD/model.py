@@ -915,7 +915,7 @@ from dgl.dataloading import GraphDataLoader
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-class SL_GAD():    
+class SLGAD():    
     def __init__(self, in_feats=1433, out_feats=64, global_adg=True, alpha = 1.0, beta = 0.6, args = None):
         """
         Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection
