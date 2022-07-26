@@ -12,6 +12,7 @@ from dgld.models.AnomalyDAE import AnomalyDAE
 from dgld.models.ComGA import ComGA
 from dgld.models.DONE import DONE
 from dgld.models.CONAD import CONAD
+from dgld.models.ALARM import ALARM
 from dgld.models.ONE import ONE 
 from dgld.models.GAAN import GAAN
 from dgld.models.GUIDE import GUIDE
@@ -34,6 +35,8 @@ if __name__ == "__main__":
         model = DONE(**args_dict["model"])
     elif args.model == 'CONAD':
         model = CONAD(**args_dict["model"])
+    elif args.model == 'ALARM':
+        model = ALARM(**args_dict["model"])
     elif args.model == 'ONE':
         model = ONE(**args_dict["model"])
     elif args.model == 'GAAN':
@@ -42,6 +45,7 @@ if __name__ == "__main__":
         model = GUIDE(**args_dict["model"])
     elif args.model == 'CoLA':
         model = CoLA(**args_dict["model"])   
+
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

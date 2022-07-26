@@ -4,6 +4,8 @@ import sys
 import os
 import argparse
 from typing import Dict
+
+from sympy import im
 from common import tab_printer
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
@@ -25,6 +27,9 @@ from models.DONE import get_subargs as done_get_args
 # CONAD
 from models.CONAD import set_subargs as conad_set_args
 from models.CONAD import get_subargs as conad_get_args
+# ALARM
+from models.ALARM import set_subargs as alarm_set_subargs
+from models.ALARM import get_subargs as alarm_get_subargs
 # ONE
 from models.ONE import set_subargs as one_set_args 
 from models.ONE import get_subargs as one_get_args
@@ -46,6 +51,7 @@ models_set_args_map = {
     "ComGA": comga_set_args,
     "DONE": done_set_args,
     "CONAD": conad_set_args,
+    "ALARM": alarm_set_subargs,
     "ONE": one_set_args,
     "GAAN": gaan_set_args,
     "GUIDE": guide_set_args,
@@ -58,6 +64,7 @@ models_get_args_map = {
     "ComGA": comga_get_args,
     "DONE": done_get_args,
     "CONAD": conad_get_args,
+    "ALARM": alarm_get_subargs
     "ONE": one_get_args,
     "GAAN": gaan_get_args,
     "GUIDE":guide_get_args,

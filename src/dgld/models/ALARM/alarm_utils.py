@@ -10,31 +10,28 @@ from tqdm import tqdm
 import numpy as np
 import torch
 
-
-def get_parse():
-    parser = argparse.ArgumentParser(
-        description='A Deep Multi-View Framework for Anomaly Detection on Attributed Networks')
+def set_subargs(parser):
+    # parser = argparse.ArgumentParser(
+    #     description='Deep Anomaly Detection on Attributed Networks')
     # "Cora", "Pubmed", "Citeseer"
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=1)
+    # parser.add_argument('--dataset', type=str, default='Cora')
+    # parser.add_argument('--seed', type=int, default=2022)
     # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--hidden_dim', type=int, default=64,
                         help='dimension of hidden embedding (default: 64)')
-    parser.add_argument('--num_epoch', type=int,
-                        default=100, help='Training epoch')
-    parser.add_argument('--lr', type=float, default=5e-3, help='learning rate')
+    parser.add_argument('--num_epoch', type=int, help='Training epoch')
+    parser.add_argument('--lr', type=float, help='learning rate')
     parser.add_argument('--dropout', type=float,
-                        default=0.3, help='Dropout rate')
-    parser.add_argument('--alpha', type=float, default=0.8,
+                        default=0.0, help='Dropout rate')
+    parser.add_argument('--alpha', type=float, default=0.6,
                         help='balance parameter')
-    parser.add_argument('--device', type=str, default='0')
-    parser.add_argument('--no_cuda', action='store_true')
     parser.add_argument('--view_num', type=int, default=3)
     parser.add_argument('--agg_type', type=int, default=0, help='Aggregator type (default: 0)')
     parser.add_argument('--agg_vec', type=list, default=[1,1,1], help=' Weighted aggregation vector (default: [1,1,1])')
+    # parser.add_argument('--device', type=str, default='0')
 
-    args = parser.parse_args()
+def get_subargs(args):
 
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
@@ -113,7 +110,7 @@ def get_parse():
             "device":args.device,
         }
     }
-    return final_args_dict
+    return final_args_dict, args
 
 
 
