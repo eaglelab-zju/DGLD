@@ -5,18 +5,10 @@ from torch.utils.tensorboard import SummaryWriter
 import dgl
 import dgl.function as fn
 
-from .done_utils import random_walk_with_restart, train_step, test_step
+from .adone_utils import random_walk_with_restart, train_step, test_step
 
-class DONE():
-    def __init__(self, 
-                 feat_size:int,
-                 num_nodes:int,
-                 embedding_dim=32,
-                 num_layers=2,
-                 activation=nn.LeakyReLU(negative_slope=0.2),
-                 dropout=0.,
-                 ):
-        """Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding
+class AdONE():
+    """Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding
 
         Parameters
         ----------
@@ -32,49 +24,31 @@ class DONE():
             activation function, by default nn.LeakyReLU(negative_slope=0.2)
         dropout : float, optional
             rate of dropout, by default 0.
-        """
-        self.model = DONE_Base(feat_size, num_nodes, embedding_dim, num_layers, activation, dropout)
+    """
+    def __init__(self, 
+                 feat_size:int,
+                 num_nodes:int,
+                 embedding_dim=32,
+                 dropout=0.,
+                 num_layers=2,
+                 activation=nn.LeakyReLU(negative_slope=0.2),
+                 ):
+        
+        self.model = AdONE_Base(feat_size, num_nodes, embedding_dim, num_layers, activation, dropout)
     
-    def fit(self, 
+    def fit(self,
             graph:dgl.DGLGraph,
             lr=1e-3,
             weight_decay=0.,
             num_epoch=1,
             num_neighbors=-1,
-            alphas=[0.2]*5,
+            betas=[0.2]*5,
             logdir='tmp',
             batch_size=0,
             max_len=0, 
             restart=0.5,
             device='cpu',
             ):
-        """Fitting model
-
-        Parameters
-        ----------
-        graph : dgl.DGLGraph
-            graph data
-        lr : _type_, optional
-            learning rate, by default 1e-3
-        weight_decay : _type_, optional
-            weight decay (L2 penalty), by default 0.
-        num_epoch : int, optional
-            number of training epochs, by default 1
-        num_neighbors : int, optional
-            number of sampling neighbors, by default -1
-        alphas : list, optional
-            balance parameters, by default [0.2]*5
-        logdir : str, optional
-            log dir, by default 'tmp'
-        batch_size : int, optional
-            the size of training batch, by default 0
-        max_len : int, optional
-            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0
-        restart : float, optional
-            probability of restart, by default 0.5
-        device : str, optional
-            device of computation, by default 'cpu'
-        """
         print('*'*20,'training','*'*20)
         
         if torch.cuda.is_available() and device != 'cpu':
@@ -93,53 +67,32 @@ class DONE():
         
         writer = SummaryWriter(log_dir=logdir)
         
+        # preprocessing
         if max_len > 0:
             adj = random_walk_with_restart(graph, k=max_len, r=1-restart)
         else:
             adj = graph.adj().to_dense()
-
+        
         # pretrain w/o the outlier scores
         for epoch in range(num_epoch):
-            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device, pretrain=True)
+            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, betas, num_neighbors, device, pretrain=True)
             print(f"Epoch: {epoch:04d}, pretrain/loss={loss:.5f}")
         
         # train with the outlier scores
         for epoch in range(num_epoch):
-            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device)
+            score, loss = train_step(self.model, optimizer, graph, adj, batch_size, betas, num_neighbors, device)
             print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
             writer.add_scalar('train/loss', loss, epoch)
             writer.flush()
     
-    def predict(self, 
-                graph:dgl.DGLGraph, 
-                batch_size=0, 
+    def predict(self,
+                graph:dgl.DGLGraph,
+                batch_size=0,
                 max_len=0, 
                 restart=0.5,
                 device='cpu',
-                alphas=[0.2]*5,
+                betas=[0.2]*5,
                 ):
-        """predict and return anomaly score of each node
-
-        Parameters
-        ----------
-        graph : dgl.DGLGraph
-            graph data
-        batch_size : int, optional
-            the size of training batch, by default 0
-        max_len : int, optional
-            the maximum length of the truncated random walk, if the value is zero, the adjacency matrix of the original graph is used, by default 0
-        restart : float, optional
-            probability of restart, by default 0.5
-        device : str, optional
-            device of computation, by default 'cpu'
-        alphas : list, optional
-            balance parameters, by default [0.2]*5
-
-        Returns
-        -------
-        predict_score : numpy.ndarray
-            predicted outlier score
-        """
         print('*'*20,'predict','*'*20)
         
         if torch.cuda.is_available() and device != 'cpu':
@@ -153,19 +106,20 @@ class DONE():
             
         if batch_size == 0:
             batch_size = graph.number_of_nodes()
-        
+            
+        # preprocessing   
         if max_len > 0:
             adj = random_walk_with_restart(graph, k=max_len, r=1-restart)
         else:
             adj = graph.adj().to_dense()
-            
-        predict_score = test_step(self.model, graph, adj, batch_size, alphas, device)
+        
+        predict_score = test_step(self.model, graph, adj, batch_size, betas, device) 
         
         return predict_score
-   
-    
-class DONE_Base(nn.Module):
-    """This is a basic structure model of DONE.
+        
+
+class AdONE_Base(nn.Module):
+    """This is a basic structure model of AdONE.
 
     Parameters
     ----------
@@ -183,8 +137,7 @@ class DONE_Base(nn.Module):
         probability of restart
     """
     def __init__(self, feat_size, num_nodes, hid_feats, num_layers, activation, dropout):
-        
-        super(DONE_Base, self).__init__()
+        super(AdONE_Base, self).__init__()
         
         self.attr_encoder = self._add_mlp(feat_size, hid_feats, hid_feats, num_layers, activation, dropout)
         
@@ -193,6 +146,8 @@ class DONE_Base(nn.Module):
         self.struct_encoder = self._add_mlp(num_nodes, hid_feats, hid_feats, num_layers, activation, dropout)
         
         self.struct_decoder = self._add_mlp(hid_feats, hid_feats, num_nodes, num_layers, activation, dropout)
+        
+        self.discriminator = self._add_mlp(hid_feats, int(hid_feats/2), 1, num_layers=2, activation=nn.Tanh(), dropout=dropout)
     
     def forward(self, g, x, c):
         """Forward Propagation
@@ -220,7 +175,10 @@ class DONE_Base(nn.Module):
             g.ndata['h'] = h_a
             g.update_all(self._homophily_loss_message_func, fn.mean('hh', 'h_attr'))
             
-            return h_s, x_hat, h_a, c_hat, g.ndata['h_str'], g.ndata['h_attr']
+            dis_a = torch.sigmoid(self.discriminator(h_a))
+            dis_s = torch.sigmoid(self.discriminator(h_s))
+            
+            return h_s, x_hat, h_a, c_hat, g.ndata['h_str'], g.ndata['h_attr'], dis_a, dis_s
     
     def _add_mlp(self, in_feats, hid_feats, out_feats, num_layers, activation, dropout):
         assert(num_layers >= 2)

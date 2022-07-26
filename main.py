@@ -10,6 +10,7 @@ from dgld.models.DOMINANT import Dominant
 from dgld.models.AnomalyDAE import AnomalyDAE
 from dgld.models.ComGA import ComGA
 from dgld.models.DONE import DONE
+from dgld.models.AdONE import AdONE
 from dgld.models.CONAD import CONAD
 
 if __name__ == "__main__":
@@ -27,6 +28,8 @@ if __name__ == "__main__":
         model = ComGA(**args_dict["model"])
     elif args.model == 'DONE':
         model = DONE(**args_dict["model"])
+    elif args.model == 'AdONE':
+        model = AdONE(**args_dict["model"])
     elif args.model == 'CONAD':
         model = CONAD(**args_dict["model"])
         
