@@ -1,22 +1,17 @@
 import shutil
-import sys
 import scipy.sparse as sp
-import os
-sys.path.append('../../')
-
-import argparse
-from tqdm import tqdm
 import numpy as np
 import torch
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP
 
 
 def set_subargs(parser):
-    # parser = argparse.ArgumentParser(
-    #     description='Deep Anomaly Detection on Attributed Networks')
-    # "Cora", "Pubmed", "Citeseer"
-    # parser.add_argument('--dataset', type=str, default='Cora')
-    # parser.add_argument('--seed', type=int, default=2022)
-    # max min avg  weighted_sum
+
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--hidden_dim', type=int, default=64,
                         help='dimension of hidden embedding (default: 64)')
@@ -26,7 +21,6 @@ def set_subargs(parser):
                         default=0.0, help='Dropout rate')
     parser.add_argument('--alpha', type=float, default=0.6,
                         help='balance parameter')
-    # parser.add_argument('--device', type=str, default='0')
 
 
 def get_subargs(args):
@@ -75,20 +69,11 @@ def get_subargs(args):
         args.num_epoch = 300
 
 
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "feat_size":in_feature_map[args.dataset],
+            "feat_size":IN_FEATURE_MAP[args.dataset],
             "hidden_size":args.hidden_dim,
             "dropout":args.dropout
         },

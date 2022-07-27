@@ -1,19 +1,14 @@
-import argparse
 from tqdm import tqdm
 import numpy as np
 import torch
-
 import shutil
-import sys
-sys.path.append('../../')
-import os
+import os,sys
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
-sys.path.append(current_dir)
-
-
-from common import cprint, lcprint
-
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP
+from utils.common import lcprint
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
     """
@@ -80,13 +75,8 @@ def set_subargs(parser):
     final_args_dict : dictionary
         dict of args parser
     """
-    # parser = argparse.ArgumentParser(
-    #     description='CoLA: Self-Supervised Contrastive Learning for Anomaly Detection')
-    # # "Cora", "Pubmed", "Citeseer"
-    # parser.add_argument('--dataset', type=str, default='Cora')
     parser.add_argument('--lr', type=float)
     parser.add_argument('--weight_decay', type=float, default=0.0)
-    # parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--embedding_dim', type=int, default=64)
     parser.add_argument('--num_epoch', type=int)
     parser.add_argument('--drop_prob', type=float, default=0.0)
@@ -95,7 +85,6 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    # parser.add_argument('--device', type=str, default='cpu')
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--global_adg', type=bool, default=True)
 
@@ -129,20 +118,12 @@ def get_subargs(args):
             args.auc_test_rounds = 256
         else:
             args.auc_test_rounds = 20
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
+    
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "in_feats":in_feature_map[args.dataset],
+            "in_feats":IN_FEATURE_MAP[args.dataset],
             "out_feats":args.embedding_dim,
             "global_adg":args.global_adg
         },
