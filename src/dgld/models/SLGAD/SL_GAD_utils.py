@@ -11,11 +11,8 @@ current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 sys.path.append(current_dir)
 
 sys.path.append('../../')
-from common import cprint, lcprint
+from utils.common import cprint, lcprint
 from datetime import datetime
-
-# torch.set_printoptions(precision=8)
-# torch.set_default_tensor_type(torch.DoubleTensor)
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
     """
@@ -170,7 +167,6 @@ def get_parse():
     final_args_dict : dictionary
         the dictionary of arg parser
     """
-    # parser = argparse.ArgumentParser(description='CoLA: Self-Supervised Contrastive Learning for Anomaly Detection')
     parser = argparse.ArgumentParser(description = 'Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection')
     parser.add_argument('--dataset', type=str, default='Cora')  # "Cora", "Pubmed", "Citeseer"
     parser.add_argument('--lr', type=float)
@@ -301,32 +297,11 @@ def train_epoch(epoch, args, loader, net, device, criterion, optimizer):
     generative_loss_accum = 0
     net.train()
     number_nodes = 0
-    # last_time = time.time()
-    # Time_Process.global_time.update_Time()
-    # print("done", time.time())
-    # print(Time_Process.global_time.last_time)
+
     start_time = datetime.now()
     end_time = datetime.now()
     for step, (pos_subgraph_1, pos_subgraph_2, neg_subgraph, idx) in enumerate(tqdm(loader, desc="Iteration")):
         end_time = datetime.now()
-        # print('sample time : ', end_time - start_time)
-        # exit()
-        # print(pos_subgraph_1)
-        # Time_Process.global_time.process_Time("before preprocess")
-        # new_time = time.time()
-        # print("before preprocess", time.time())
-        # print("enumerate", new_time - last_time)
-        # last_time = new_time
-        # print("pos_subgraph_1", pos_subgraph_1)
-        # print(pos_subgraph_1)
-        # print(pos_subgraph_1.nodes())
-        # exit()
-
-        # print(pos_subgraph_1[:20])
-        # print(pos_subgraph_2[:20])
-        # print(idx)
-        # exit()
-
         pos_subgraph_1 = pos_subgraph_1.to(device)
         pos_subgraph_2 = pos_subgraph_2.to(device)
         pos_subgraph = [pos_subgraph_1, pos_subgraph_2] # .to(device)
@@ -335,40 +310,14 @@ def train_epoch(epoch, args, loader, net, device, criterion, optimizer):
         posfeat_2 = pos_subgraph_2.ndata['feat'].to(device)
         raw_posfeat_1 = pos_subgraph_1.ndata['Raw_Feat']
         raw_posfeat_2 = pos_subgraph_2.ndata['Raw_Feat']
-        # print(torch.sum(raw_posfeat_1, dim = 1))
-        # print(posfeat_1.dtype)
-        # exit()
+
         posfeat = [posfeat_1, posfeat_2, raw_posfeat_1, raw_posfeat_2] # .to(device)
         negfeat = neg_subgraph.ndata['feat'].to(device)
         optimizer.zero_grad()
         
-        # pos_scores_1, pos_scores_2, neg_scores = net(pos_subgraph_1, pos_subgraph_2, posfeat_1, posfeat_2, neg_subgraph, negfeat)
-        # pos_scores, neg_scores = net(pos_subgraph, posfeat, neg_subgraph, negfeat)
-        
-        # loss = loss_fun(pos_scores_1, pos_scores_2, neg_scores, criterion, device)
-        # loss = loss_fun(pos_scores, neg_scores, criterion, device)
-        
-        # new_time = time.time()
-        # print("before net", time.time())
-        # print("before net", new_time - last_time)
-        # last_time = new_time
-        # Time_Process.global_time.process_Time("before net")
-
         loss, single_predict_scores, single_contrastive_loss, single_generative_loss = net(pos_subgraph, posfeat, neg_subgraph, negfeat, args)
-        # new_time = time.time()
-        # print("before backward", time.time())
-        # print("before backward", new_time - last_time)
-        # last_time = new_time
-        # Time_Process.global_time.process_Time("before backward")
         loss.backward()
         optimizer.step()
-        # loss_accum += loss.item()
-        # print("done", time.time())
-        # Time_Process.global_time.process_Time("done")
-        # print(loss.dtype)
-        # print(type(loss.item()))
-        # print(loss.item().dtype)
-        # exit()
         loss_accum += loss.cpu().detach().numpy() * pos_subgraph_1.number_of_nodes()
         contrastive_loss_accum += single_contrastive_loss.cpu().detach().numpy() * pos_subgraph_1.number_of_nodes()
         generative_loss_accum += single_generative_loss.cpu().detach().numpy() * pos_subgraph_1.number_of_nodes()
@@ -379,13 +328,9 @@ def train_epoch(epoch, args, loader, net, device, criterion, optimizer):
     loss_accum /= number_nodes
     contrastive_loss_accum /= number_nodes
     generative_loss_accum /= number_nodes
-    # print(type(loss_accum))
-    # print(loss_accum.dtype)
-    # exit()
     lcprint('TRAIN==>epoch', epoch, 'Average training loss: {:.8f}'.format(loss_accum), color='blue')
     print('contrastive loss : ', contrastive_loss_accum)
     print('generative loss : ', generative_loss_accum)
-    # exit()
     return loss_accum
 
 def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
@@ -416,7 +361,6 @@ def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
     contrastive_loss_accum = 0
     generative_loss_accum = 0
     net.eval()
-    # predict_scores = []
     number_nodes = 0
     predict_scores = torch.full([loader.dataset.dataset.number_of_nodes(), ], 0.0)
 
@@ -426,8 +370,6 @@ def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
         pos_subgraph = [pos_subgraph_1, pos_subgraph_2] # .to(device)
         neg_subgraph = neg_subgraph.to(device)
         posfeat_1 = pos_subgraph_1.ndata['feat'].to(device)
-        # print(posfeat_1[:20, :5])
-        # exit()
         posfeat_2 = pos_subgraph_2.ndata['feat'].to(device)
         raw_posfeat_1 = pos_subgraph_1.ndata['Raw_Feat']
         raw_posfeat_2 = pos_subgraph_2.ndata['Raw_Feat']
@@ -435,7 +377,6 @@ def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
         negfeat = neg_subgraph.ndata['feat'].to(device)
 
         loss, single_predict_scores, single_contrastive_loss, single_generative_loss = net(pos_subgraph, posfeat, neg_subgraph, negfeat, args)
-        # predict_scores.extend([idx.tolist(), single_predict_scores.tolist()])
         predict_scores[idx] = single_predict_scores.squeeze().to('cpu')
         loss_accum += loss.item() * pos_subgraph_1.number_of_nodes()
         contrastive_loss_accum += single_contrastive_loss.item() * pos_subgraph_1.number_of_nodes()
@@ -444,8 +385,6 @@ def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
         number_nodes = number_nodes + pos_subgraph_1.number_of_nodes()
 
     predict_scores = predict_scores.tolist()
-    # print(predict_scores)
-    # exit()
     loss_accum /= number_nodes
     contrastive_loss_accum /= number_nodes
     generative_loss_accum /= number_nodes
@@ -453,12 +392,6 @@ def test_epoch(epoch, args, loader, net, device, criterion, optimizer):
     lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.8f}'.format(loss_accum), color='blue')
     print('contrastive loss : ', contrastive_loss_accum)
     print('generative loss : ', generative_loss_accum)
-    # print(predict_scores[:10])
-    # exit()
-    # print(len(predict_scores))
-    # exit()
-    # print(torch.tensor(predict_scores)[:20])
-    # exit()
     return np.array(torch.tensor(predict_scores, device = 'cpu'))
 
     
