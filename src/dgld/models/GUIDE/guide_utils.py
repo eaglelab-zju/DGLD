@@ -1,13 +1,14 @@
-from email.policy import default
 import torch 
 import dgl 
 import numpy as np
-import shutil
-import sys
-import os
-sys.path.append('../../')
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP
 
-import argparse
+
 
 def set_subargs(parser):
     parser.add_argument('--attrb_hid', type=int, default=64,
@@ -63,30 +64,12 @@ def get_subargs(args):
         args.attrb_hid = 64
         args.struct_hid = 16
         args.batch_size = 2048
-
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
+    
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "attrb_dim": in_feature_map[args.dataset],
+            "attrb_dim": IN_FEATURE_MAP[args.dataset],
             "struct_dim": args.struct_dim,
             "num_layers": args.num_layers,
             "attrb_hid": args.attrb_hid,

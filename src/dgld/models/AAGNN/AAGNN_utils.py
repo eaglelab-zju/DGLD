@@ -1,15 +1,11 @@
-from ast import arg
 import shutil
-import sys
-import scipy.sparse as sp
-import os
-sys.path.append('../../')
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP
 
-import argparse
-from tqdm import tqdm
-import numpy as np
-import torch
-import random
 
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
@@ -30,7 +26,6 @@ def set_subargs(parser):
                         help='Attribute penalty balance parameter')
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
-    parser.add_argument('--device', type=str, default='cpu')
 
 def get_subargs(args):
 
@@ -78,21 +73,11 @@ def get_subargs(args):
         # args.lr = 1e-5
         args.num_epoch = 300
 
-
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "feat_size":in_feature_map[args.dataset],
+            "feat_size":IN_FEATURE_MAP[args.dataset],
             "out_feats":args.out_feats
         },
         "fit":{
