@@ -8,6 +8,7 @@ import torch
 from dgl.nn.pytorch import GraphConv
 from torch.utils.tensorboard import SummaryWriter
 from .alarm_utils import train_step, test_step, normalize_adj
+from .utils.early_stopping import EarlyStopping
 
 class Encoder(nn.Module):
     """Encoder of DominantModel
@@ -294,7 +295,7 @@ class ALARM(nn.Module):
             print('Using cpu!!!')      
         
         writer = SummaryWriter(log_dir=logdir)
-        
+        early_stop = EarlyStopping(early_stopping_rounds=10, patience=10)
         for epoch in range(num_epoch):
             
             loss, struct_loss, feat_loss = train_step(
@@ -307,6 +308,10 @@ class ALARM(nn.Module):
                 epoch,
             )
             writer.flush()
+            early_stop(loss, self.model)
+            if early_stop.isEarlyStopping():
+                print(f"Early stopping in round {epoch}")
+                break
 
 
     def predict(self, graph,alpha=0.8,device='cpu'):
