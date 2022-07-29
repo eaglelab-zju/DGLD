@@ -11,6 +11,7 @@ import scipy.sparse as spp
 from tqdm import tqdm
 from torch.autograd import Variable # torch 中 Variable 模块
 from torch.utils.tensorboard import SummaryWriter
+from utils.early_stopping import EarlyStopping
 
 class AAGNN_batch(nn.Module):
     """
@@ -68,7 +69,9 @@ class AAGNN_batch(nn.Module):
         features = graph.ndata['feat']
         if device != 'cpu':
             device = 'cuda:' + device
+
         print('device=',device)
+
         model = self.model.to(device)
         opt = torch.optim.Adam(model.parameters(), lr=lr)
         
@@ -83,10 +86,10 @@ class AAGNN_batch(nn.Module):
         node_ids = model.get_normal_nodes(features, 0.5, device)
         writer = SummaryWriter(log_dir=logdir)
         model.train()
-
+        early_stop = EarlyStopping(early_stopping_rounds=10, patience=10)
         for epoch in range(num_epoch):
             center = self.cal_center(graph, model, device, subgraph_size, edge_dic)
-
+            epoch_loss = 0
             for index in range(0, len(node_ids), subgraph_size):
                 L = index
                 R = index + subgraph_size
@@ -99,12 +102,16 @@ class AAGNN_batch(nn.Module):
                 opt.zero_grad()
                 loss.backward()
                 opt.step()
-
+                epoch_loss += loss.item()
                 print("Epoch:", '%04d' % (epoch), "%04d/%04d"%(index, len(node_ids))," train_loss=", "{:.10f}".format(loss.item(
                 )))
 
             
             writer.flush()
+            early_stop(epoch_loss, model)
+            if early_stop.isEarlyStopping():
+                print(f"Early stopping in round{epoch}")
+                break
 
     def predict(self, graph, device='cpu', subgraph_size=4096):
         """
