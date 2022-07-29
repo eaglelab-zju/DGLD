@@ -7,15 +7,17 @@ import dgl
 import networkx as nx 
 import numpy as np 
 from tqdm import tqdm 
-from torch.utils.tensorboard import SummaryWriter
 from networkx.generators.atlas import *
 import sys 
 import os
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
-sys.path.append(current_dir)
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
 from utils.evaluation import split_auc
 from .guide_utils import get_struct_feat
+
+from utils.early_stopping import EarlyStopping
 
 class GUIDE():
     """
@@ -125,8 +127,9 @@ class GUIDE():
         dataloader = dgl.dataloading.DataLoader(graph,nid, sampler,
         batch_size=batch_size, shuffle=True, drop_last=False)
 
-        self.model.train()
+        early_stop = EarlyStopping(early_stopping_rounds=10,patience=10)
         for epoch in range(num_epoch):
+            self.model.train()
             epoch_loss = 0
             score = torch.zeros(graph.num_nodes())
             for input_nodes, output_nodes, blocks in dataloader:
@@ -140,15 +143,18 @@ class GUIDE():
                 optimizer.zero_grad()
                 loss.backward()
                 optimizer.step()
+                epoch_loss += loss.item()
                 if verbose:
-                    epoch_loss += loss.item()
                     if  y_true is not None:
                         score[output_nodes] = self.model.get_all_score(attrb_feat_out.detach(),attrb_rb.detach(),struct_feat_out.detach(),struct_rb.detach(),alpha).cpu()
-
             if verbose:
                 print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(epoch_loss))
                 if y_true is not None:
                     split_auc(y_true, score)
+            early_stop(epoch_loss,self.model)
+            if early_stop.isEarlyStopping():
+                print(f"Early stopping in round {epoch}")
+                break
 
     def predict(self,graph,attrb_feat=None,struct_feat = None,batch_size = 0,alpha=None,device='cpu'):
         """
