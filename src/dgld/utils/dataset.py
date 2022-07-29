@@ -460,7 +460,7 @@ def test_custom_dataset():
 
 if __name__ == "__main__":
     test_custom_dataset()
-    well_test_dataset = ["Cora", "Pubmed", "Citeseer","BlogCatalog","Flickr","ACM", "ogbn-arxiv"]
+    well_test_dataset = ["Cora", "Citeseer", "Pubmed","BlogCatalog","Flickr", "ogbn-arxiv","ACM"]
     num_nodes_list = []
     num_edges_list = []
     num_anomaly_list = []

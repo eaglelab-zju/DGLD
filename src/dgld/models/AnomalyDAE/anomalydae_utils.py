@@ -1,24 +1,16 @@
-from ast import arg
 import shutil
-import sys
 import scipy.sparse as sp
-import os
-sys.path.append('../../')
-
-import argparse
-from tqdm import tqdm
 import numpy as np
 import torch
-import random
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
 
 def set_subargs(parser):
-    # parser = argparse.ArgumentParser(
-    #     description='AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks')
-    # # "Cora", "Pubmed", "Citeseer"
-    # parser.add_argument('--dataset', type=str, default='Cora')
-    # parser.add_argument('--seed', type=int, default=7)
-    # max min avg  weighted_sum
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--embed_dim', type=int, default=256,
                         help='dimension of hidden embedding (default: 256)')
@@ -36,7 +28,6 @@ def set_subargs(parser):
                         help='Attribute penalty balance parameter')
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
-    # parser.add_argument('--device', type=str, default='0')
     
     
 def get_subargs(args):
@@ -72,30 +63,12 @@ def get_subargs(args):
         args.eta = 3.0
         args.theta = 10.0
 
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "feat_size":in_feature_map[args.dataset],
-            "num_nodes":num_nodes_map[args.dataset],
+            "feat_size":IN_FEATURE_MAP[args.dataset],
+            "num_nodes":NUM_NODES_MAP[args.dataset],
             "embed_dim":args.embed_dim,
             "out_dim":args.out_dim,
             "dropout":args.dropout

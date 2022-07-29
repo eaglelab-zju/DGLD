@@ -1,92 +1,15 @@
 import shutil
-import sys
-import os
-sys.path.append('../../')
-
-import argparse
 from tqdm import tqdm
 from copy import deepcopy
-
 import torch
 import dgl
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
-def get_parse():
-    """
-    get hyperparameter by parser from command line
-
-    Returns
-    -------
-    final_args_dict : dictionary
-        dict of args parser
-    """
-    parser = argparse.ArgumentParser(
-        description='DONE: Outlier Resistant Unsupervised Deep Architectures for Attributed Network Embedding')
-
-    parser.add_argument('--dataset', type=str, default='Cora')
-    parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--logdir', type=str, default='tmp')
-    parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
-    parser.add_argument('--weight_decay', type=float, default=0.)
-    parser.add_argument('--dropout', type=float, default=0.)
-    parser.add_argument('--device', type=str, default='cpu')
-    parser.add_argument('--batch_size', type=int, default=0)
-    parser.add_argument('--max_len', type=int, default=0)
-    parser.add_argument('--restart', type=float, default=0.)
-    parser.add_argument('--num_neighbors', type=int, default=-1)
-    parser.add_argument('--embedding_dim', type=int, default=32)
-    
-    args = parser.parse_args()
-
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
-            
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
-    final_args_dict = {
-        "dataset": args.dataset,
-        "seed": args.seed,
-        "model":{
-            "feat_size": in_feature_map[args.dataset],
-            "num_nodes": num_nodes_map[args.dataset],
-            "embedding_dim": args.embedding_dim,
-            "dropout": args.dropout,
-        },
-        "fit":{
-            "lr": args.lr,
-            "weight_decay": args.weight_decay,
-            "logdir": args.logdir,
-            "num_epoch": args.num_epoch,
-            "device": args.device,
-            "batch_size": args.batch_size,
-            "num_neighbors": args.num_neighbors,
-            "max_len": args.max_len, 
-            "restart": args.restart,
-        },
-        "predict":{
-            "device": args.device,
-            "batch_size": args.batch_size,
-            "max_len": args.max_len, 
-            "restart": args.restart,
-        }
-    }
-    return final_args_dict
 
 
 def set_subargs(parser):
@@ -101,7 +24,6 @@ def set_subargs(parser):
     parser.add_argument('--num_neighbors', type=int, default=-1)
     parser.add_argument('--embedding_dim', type=int, default=32)
     
-
 def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
@@ -117,30 +39,12 @@ def get_subargs(args):
         args.batch_size = 1024
         args.num_epoch = 20
             
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "feat_size": in_feature_map[args.dataset],
-            "num_nodes": num_nodes_map[args.dataset],
+            "feat_size": IN_FEATURE_MAP[args.dataset],
+            "num_nodes": NUM_NODES_MAP[args.dataset],
             "embedding_dim": args.embedding_dim,
             "dropout": args.dropout,
         },

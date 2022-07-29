@@ -1,16 +1,13 @@
-from ast import arg
 import shutil
-import sys
 import scipy.sparse as sp
-import os
-sys.path.append('../../')
-
-import argparse
-from tqdm import tqdm
 import numpy as np
 import torch
-import random
-import torch.nn.functional as F
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
 def set_subargs(parser):
     # max min avg  weighted_sum
@@ -78,30 +75,13 @@ def get_subargs(args):
         args.theta = 10.0
 
 
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
+    
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "num_nodes":num_nodes_map[args.dataset],
-            "num_feats":in_feature_map[args.dataset],
+            "num_nodes":NUM_NODES_MAP[args.dataset],
+            "num_feats":IN_FEATURE_MAP[args.dataset],
             "n_enc_1":args.n_enc_1,
             "n_enc_2":args.n_enc_2,
             "n_enc_3":args.n_enc_3,

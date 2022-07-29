@@ -1,10 +1,10 @@
-from email.policy import default
 import numpy as np 
-import os
-import sys
-sys.path.append('../../')
-import argparse
-import shutil
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import NUM_NODES_MAP
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
@@ -38,30 +38,11 @@ def get_subargs(args):
     elif args.dataset == 'ACM':
         args.alpha,args.beta,args.gamma = 4,0,1
 
-
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "node_num":num_nodes_map[args.dataset],
+            "node_num":NUM_NODES_MAP[args.dataset],
             "K":args.K
         },
         "fit":{

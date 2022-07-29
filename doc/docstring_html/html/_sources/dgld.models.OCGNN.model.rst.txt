@@ -1,7 +1,0 @@
-dgld.models.OCGNN.model 
-========================
-
-.. automodule:: dgld.models.OCGNN.model
-   :members:
-   :undoc-members:
-   :show-inheritance:

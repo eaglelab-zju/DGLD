@@ -1,2 +1,2 @@
-from .model import SL_GAD
-from .SL_GAD_utils import get_parse
+from .model import SLGAD
+from .SL_GAD_utils import set_subargs, get_subargs
