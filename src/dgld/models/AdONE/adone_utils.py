@@ -1,3 +1,4 @@
+from email.policy import default
 import shutil
 import sys
 import os
@@ -7,13 +8,21 @@ import argparse
 from tqdm import tqdm
 from copy import deepcopy
 
+import random
 import torch
+from torch.nn.functional import binary_cross_entropy_with_logits as bce_wl
 import dgl
+
+from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--disc_update_times', type=int, default=5)
+    parser.add_argument('--gen_update_times', type=int, default=5)
+    parser.add_argument('--lr_all', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--lr_disc', type=float, default=0.001, help='learning rate')
+    parser.add_argument('--lr_gen', type=float, default=0.001, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.)
     parser.add_argument('--dropout', type=float, default=0.)
     parser.add_argument('--batch_size', type=int, default=0)
@@ -21,11 +30,17 @@ def set_subargs(parser):
     parser.add_argument('--restart', type=float, default=0.)
     parser.add_argument('--num_neighbors', type=int, default=-1)
     parser.add_argument('--embedding_dim', type=int, default=32)
+    parser.add_argument('--verbose', type=bool, default=False)
     
 
 def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
+
+    best_config = loadargs_from_json('src/dgld/config/AdONE.json')[args.dataset]
+    config = vars(args)
+    config.update(best_config)
+    args = argparse.Namespace(**config)
             
     in_feature_map = {
         "Cora":1433,
@@ -55,15 +70,20 @@ def get_subargs(args):
             "dropout": args.dropout,
         },
         "fit":{
-            "lr": args.lr,
+            "lr_all": args.lr_all,
+            "lr_disc": args.lr_disc,
+            "lr_gen": args.lr_gen,
             "weight_decay": args.weight_decay,
             "logdir": args.logdir,
             "num_epoch": args.num_epoch,
+            "disc_update_times": args.disc_update_times,
+            "gen_update_times": args.gen_update_times,
             "device": args.device,
             "batch_size": args.batch_size,
             "num_neighbors": args.num_neighbors,
             "max_len": args.max_len, 
             "restart": args.restart,
+            "verbose": args.verbose,
         },
         "predict":{
             "device": args.device,
@@ -113,7 +133,7 @@ def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
     return X
     
 
-def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=False):
+def loss_func(x, x_hat, c, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=False, train_disc=False, train_gen=False):
     """loss function
 
     Parameters
@@ -135,9 +155,9 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, bet
     hom_attr : torch.Tensor
         intermediate value of homogeneity loss of attribute autoencoder
     dis_a : torch.Tensor
-        discriminator attribute
+        discriminator output for attribute embeddings
     dis_s : torch.Tensor
-        discriminator structure
+        discriminator output for structure embeddings
     betas : list
         balance parameters
     scale_factor : float
@@ -161,9 +181,6 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, bet
     da = torch.norm(c-c_hat, dim=1)
     numerator = betas[2] * da + betas[3] * hom_attr
     oa = numerator / torch.sum(numerator) * scale_factor
-    # Eq.10 com score
-    dc = (- torch.log(1 - dis_a) - torch.log(dis_s)).squeeze()
-    oc = dc / torch.sum(dc) * scale_factor
     
     # using Adam
     if pretrain is True:
@@ -171,29 +188,41 @@ def loss_func(x, x_hat, c, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, bet
         loss_hom_str = torch.mean(hom_str)      # Eq.3
         loss_prox_attr = torch.mean(da)         # Eq.4
         loss_hom_attr = torch.mean(hom_attr)    # Eq.5
-        # loss_com = torch.mean(-torch.log(1 - dis_a) - torch.log(dis_s)) # Eq.6
         loss_com = 0.
     else:
-        loss_prox_str = torch.mean(torch.log(torch.pow(os, -1)) * ds)       # Eq.2
-        loss_hom_str = torch.mean(torch.log(torch.pow(os, -1)) * hom_str)   # Eq.3
-        loss_prox_attr = torch.mean(torch.log(torch.pow(oa, -1)) * da)      # Eq.4
+        loss_prox_str = torch.mean(torch.log(torch.pow(os, -1)) * ds) # Eq.2
+        loss_hom_str = torch.mean(torch.log(torch.pow(os, -1)) * hom_str) # Eq.3
+        loss_prox_attr = torch.mean(torch.log(torch.pow(oa, -1)) * da) # Eq.4
         loss_hom_attr = torch.mean(torch.log(torch.pow(oa, -1)) * hom_attr) # Eq.5
-        loss_com = torch.mean(torch.log(torch.pow(oc, -1)) * dc) # Eq.6
+        loss_com = 0.
+        
+    if pretrain is False and train_disc is True:
+        dc = (bce_wl(dis_a, torch.zeros_like(dis_a), reduction='none') + bce_wl(dis_s, torch.ones_like(dis_s), reduction='none')).squeeze()
+        loss_disc = torch.mean(dc)
+        return loss_disc
+    
+    dc = (bce_wl(dis_a, torch.ones_like(dis_a), reduction='none') + bce_wl(dis_s, torch.zeros_like(dis_s), reduction='none')).squeeze()
+    oc = dc / torch.sum(dc) * scale_factor
+    
+    if pretrain is False and train_gen is True:
+        loss_gen = torch.mean(torch.log(torch.pow(oc, -1)) * dc)
+        return loss_gen
         
     # Eq.7
-    loss = betas[0] * loss_prox_str + betas[1] * loss_hom_str + betas[2] * loss_prox_attr + betas[3] * loss_hom_attr + betas[4] * loss_com
+    loss_all = betas[0] * loss_prox_str + betas[1] * loss_hom_str \
+        + betas[2] * loss_prox_attr + betas[3] * loss_hom_attr 
     
     score = (oa + os + oc) / 3
-    return loss, score
+    return loss_all, score
   
     
-def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch.Tensor, batch_size:int, betas:list, num_neighbors:int, device, pretrain=False):
+def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch.Tensor, batch_size:int, betas:list, num_neighbors:int, disc_update_times:int, gen_update_times:int, device:str, pretrain=False, verbose=False):
     """train model in one epoch
 
     Parameters
     ----------
     model : class
-        DONE base model
+        AdONE base model
     optimizer : torch.optim.Optimizer
         optimizer to adjust model
     g : dgl.DGLGraph
@@ -206,6 +235,10 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
         balance parameters
     num_neighbors : int
         number of sampling neighbors
+    disc_update_times : int
+        number of rounds of discriminator updates in an epoch
+    gen_update_times : int
+        number of rounds of auto-encoder updates in an epoch
     device : str
         device of computation
     pretrain : bool, optional
@@ -218,7 +251,6 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
     epoch_loss : torch.Tensor
         loss value for epoch
     """
-    # g = deepcopy(g)
     model.train()
     sampler = SubgraphNeighborSampler(num_neighbors)
     dataloader = dgl.dataloading.DataLoader(
@@ -231,6 +263,8 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
     epoch_loss = 0
     predict_score = torch.zeros(g.num_nodes())
     
+    optim_all, optim_disc, optim_gen = optimizer
+    
     for sg in dataloader:
         feat = sg.ndata['feat']
         indices = sg.ndata['_ID']
@@ -241,12 +275,50 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
         sub_adj = sub_adj.to(device)
         feat = feat.to(device)
         
+        # disc
+        if pretrain is False:
+            for i in range(disc_update_times):
+                
+                h_s, x_hat, h_a, c_hat, hom_str, hom_attr, dis_a, dis_s = model(sg, sub_adj, feat)
+                loss_disc = loss_func(sub_adj, x_hat, feat, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=pretrain, train_disc=True)
+                
+                if verbose:
+                    print("training disc...")
+                    print('disc attr:\t', 'mean={:.4f}'.format(torch.mean(torch.sigmoid(dis_a)).item()), 
+                        ', max={:.4f}'.format(torch.max(torch.sigmoid(dis_a)).item()), 
+                        ', min={:.4f}'.format(torch.min(torch.sigmoid(dis_a)).item()))
+                    print('disc struct:\t', 'mean={:.4f}'.format(torch.mean(torch.sigmoid(dis_s)).item()), 
+                        ', max={:.4f}'.format(torch.max(torch.sigmoid(dis_s)).item()), 
+                        ', min={:.4f}'.format(torch.min(torch.sigmoid(dis_s)).item()))
+                                
+                optim_disc.zero_grad()
+                loss_disc.backward()
+                optim_disc.step()
+                
+            for i in range(gen_update_times):
+                
+                h_s, x_hat, h_a, c_hat, hom_str, hom_attr, dis_a, dis_s = model(sg, sub_adj, feat)
+                loss_gen = loss_func(sub_adj, x_hat, feat, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=pretrain, train_gen=True)
+                
+                if verbose:
+                    print("training gen...")
+                    print('gen attr:\t', 'mean={:.4f}'.format(torch.mean(torch.sigmoid(dis_a)).item()), 
+                        ', max={:.4f}'.format(torch.max(torch.sigmoid(dis_a)).item()), 
+                        ', min={:.4f}'.format(torch.min(torch.sigmoid(dis_a)).item()))
+                    print('gen struct:\t', 'mean={:.4f}'.format(torch.mean(torch.sigmoid(dis_s)).item()), 
+                        ', max={:.4f}'.format(torch.max(torch.sigmoid(dis_s)).item()), 
+                        ', min={:.4f}'.format(torch.min(torch.sigmoid(dis_s)).item()))
+                
+                optim_gen.zero_grad()
+                loss_gen.backward()
+                optim_gen.step()
+
         h_s, x_hat, h_a, c_hat, hom_str, hom_attr, dis_a, dis_s = model(sg, sub_adj, feat)
-        loss, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=pretrain)
+        loss, score = loss_func(sub_adj, x_hat, feat, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=pretrain)
         
-        optimizer.zero_grad()
+        optim_gen.zero_grad()
         loss.backward()
-        optimizer.step()
+        optim_gen.step()
         
         epoch_loss += loss.item() * sg.num_nodes()
         predict_score[indices] = score.detach().cpu()
@@ -262,7 +334,7 @@ def test_step(model, g, adj, batch_size, betas, device):
     Parameters
     ----------
     model : nn.Module
-        DONE base model 
+        AdONE base model 
     g : dgl.DGLGraph
         graph data
     adj : torch.Tensor
@@ -278,7 +350,6 @@ def test_step(model, g, adj, batch_size, betas, device):
     -------
     numpy.ndarray
     """
-    # g = deepcopy(g)
     model.eval()
     sampler = SubgraphNeighborSampler()
     dataloader = dgl.dataloading.DataLoader(
@@ -301,7 +372,7 @@ def test_step(model, g, adj, batch_size, betas, device):
         feat = feat.to(device)
         
         h_s, x_hat, h_a, c_hat, hom_str, hom_attr, dis_a, dis_s = model(sg, sub_adj, feat)
-        loss, score = loss_func(sub_adj, x_hat, feat, c_hat, h_a, h_s, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor)
+        _, score = loss_func(sub_adj, x_hat, feat, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor)
 
         predict_score[indices] = score.detach().cpu()
         

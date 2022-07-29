@@ -5,7 +5,7 @@ from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
 from dgld.utils.evaluation import split_auc
 from dgld.utils.common import seed_everything
 from dgld.utils.argparser import parse_all_args
-from dgld.utils.load_data import load_data
+# from dgld.utils.load_data import load_data
 
 from dgld.models.DOMINANT import Dominant
 from dgld.models.AnomalyDAE import AnomalyDAE

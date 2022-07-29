@@ -54,9 +54,9 @@ class DONE():
         ----------
         graph : dgl.DGLGraph
             graph data
-        lr : _type_, optional
+        lr : float, optional
             learning rate, by default 1e-3
-        weight_decay : _type_, optional
+        weight_decay : float, optional
             weight decay (L2 penalty), by default 0.
         num_epoch : int, optional
             number of training epochs, by default 1
