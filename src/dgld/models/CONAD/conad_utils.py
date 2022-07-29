@@ -1,117 +1,13 @@
 import shutil
-import sys
-import os
-sys.path.append('../../')
-
-import argparse
 import numpy as np
 import torch
 import dgl
-    
-def get_parse():
-    """
-    get hyperparameter by parser from command line
-
-    Returns
-    -------
-    final_args_dict : dictionary
-        dict of args parser
-    """
-    parser = argparse.ArgumentParser(
-        description='CONAD: Contrastive Attributed Network Anomaly Detection with Data Augmentation')
-
-    parser.add_argument('--dataset', type=str, default='Flickr')
-    parser.add_argument('--seed', type=int, default=42)
-    parser.add_argument('--logdir', type=str, default='tmp')
-    parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
-    parser.add_argument('--weight_decay', type=float, default=0.)
-    parser.add_argument('--alpha', type=float, default=0.9,
-                        help='balance parameter')
-    parser.add_argument('--eta', type=float, default=0.7,
-                        help='Attribute penalty balance parameter')
-    parser.add_argument('--device', type=str, default='cpu')
-    parser.add_argument('--contrast_type', type=str, default='siamese')
-    parser.add_argument('--rate', type=float, default=0.2)
-    parser.add_argument('--margin', type=float, default=0.5)
-    parser.add_argument('--batch_size', type=int, default=0)
-    
-    args = parser.parse_args()
-
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
-      
-    if args.dataset == 'Cora': 
-        args.rate = 0.1
-        args.alpha = 0.85
-        args.eta = 0.8
-    elif args.dataset == 'Citeseer':
-        pass
-    elif args.dataset == 'Pubmed':
-        args.lr = 0.003
-        args.alpha = 0.95
-        args.eta = 0.01
-    elif args.dataset == 'BlogCatalog':
-        args.alpha = 0.2
-        args.eta = 0.2
-    elif args.dataset == 'Flickr':
-        pass
-    elif args.dataset == 'ACM':
-        args.lr = 0.003
-        args.alpha = 0.1
-        args.eta = 0.4 
-        args.contrast_type = 'triplet'
-    elif args.dataset == 'ogbn-arxiv':
-        args.batch_size = 1024
-        args.num_epoch = 30
-        # args.eta = 0.1
-        pass
-            
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
-    final_args_dict = {
-        "dataset": args.dataset,
-        "seed": args.seed,
-        "model":{
-            "feat_size": in_feature_map[args.dataset] if args.dataset in in_feature_map.keys() else None,
-        },
-        "fit":{
-            "lr": args.lr,
-            "weight_decay": args.weight_decay,
-            "logdir": args.logdir,
-            "num_epoch": args.num_epoch,
-            "device": args.device,
-            "eta": args.eta,
-            "alpha": args.alpha,
-            "rate": args.rate,
-            "contrast_type": args.contrast_type,
-            "margin": args.margin,
-            "batch_size": args.batch_size,
-        },
-        "predict":{
-            "device": args.device,
-            "alpha": args.alpha,
-            "batch_size": args.batch_size,
-        }
-    }
-    return final_args_dict
-
+import os,sys
+current_file_name = __file__
+current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+if current_dir not in sys.path:
+    sys.path.append(current_dir)
+from utils.common_params import IN_FEATURE_MAP
 
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
@@ -124,7 +20,6 @@ def set_subargs(parser):
     parser.add_argument('--rate', type=float, default=0.2)
     parser.add_argument('--margin', type=float, default=0.5)
     parser.add_argument('--batch_size', type=int, default=0)
-    
     
 def get_subargs(args):
     if os.path.exists(args.logdir):
@@ -155,29 +50,11 @@ def get_subargs(args):
         args.num_epoch = 30
         args.eta = 0.1
             
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "feat_size": in_feature_map[args.dataset] if args.dataset in in_feature_map.keys() else None,
+            "feat_size": IN_FEATURE_MAP[args.dataset] if args.dataset in IN_FEATURE_MAP.keys() else None,
         },
         "fit":{
             "lr": args.lr,
