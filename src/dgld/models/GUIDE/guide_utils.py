@@ -46,10 +46,12 @@ def get_subargs(args):
         args.attrb_hid = 256
         args.num_epoch = 400
     if args.dataset == 'BlogCatalog':
-        args.alpha = 0.9996
-        args.lr = 0.001
-        args.num_epoch = 200
+        args.alpha = 1
+        args.lr = 0.01
+        args.num_epoch = 100
+        args.attrb_hid = 128
         args.batch_size = 2048
+        args.dropout=0.3
     if args.dataset == 'Flickr':
         args.alpha = 1
     if args.dataset == 'ACM':
