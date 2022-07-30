@@ -1,6 +1,9 @@
 import numpy as np 
 from sklearn.decomposition import NMF
 import networkx as nx 
+import torch.nn as nn
+from utils.early_stopping import EarlyStopping
+from .one_utils import loss_func
 
 class ONE():
     """
@@ -92,6 +95,7 @@ class ONE():
         beta = temp1/temp2
         gamma = min(2*beta, temp3)
 
+        early_stop = EarlyStopping(patience=1,check_finite=False)
         for epoch in range(num_epoch):          
                 
             # The Updation rule for G[i,k]    
@@ -167,7 +171,11 @@ class ONE():
             outl3_numer = outl3_numer * mu
             outl3 = outl3_numer / outl3_denom
             
-            
+            loss = loss_func(A, C, G, H, U, V, W, outl1, outl2, outl3, alpha, beta, gamma)
+            early_stop(loss,nn.Module())
+            if early_stop.isEarlyStopping():
+                print(f"Early stopping in round {epoch}")
+                break
             # print(loss_func(A, C, G, H, U, V, W, outl1, outl2, outl3, alpha, beta, gamma))
             # print ('Loop {} ended: \n'.format(epoch))
 
