@@ -9,6 +9,9 @@ if current_dir not in sys.path:
     sys.path.append(current_dir)
 from utils.common_params import IN_FEATURE_MAP
 
+import argparse
+from dgld.utils.common import loadargs_from_json
+
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
@@ -24,31 +27,11 @@ def set_subargs(parser):
 def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
-      
-    if args.dataset == 'Cora': 
-        args.rate = 0.1
-        args.alpha = 0.85
-        args.eta = 0.8
-    elif args.dataset == 'Citeseer':
-        pass
-    elif args.dataset == 'Pubmed':
-        args.lr = 0.003
-        args.alpha = 0.95
-        args.eta = 0.01
-    elif args.dataset == 'BlogCatalog':
-        args.alpha = 0.2
-        args.eta = 0.2
-    elif args.dataset == 'Flickr':
-        pass
-    elif args.dataset == 'ACM':
-        args.lr = 0.003
-        args.alpha = 0.1
-        args.eta = 0.4 
-        args.contrast_type = 'triplet'
-    elif args.dataset == 'ogbn-arxiv':
-        args.batch_size = 1024
-        args.num_epoch = 30
-        args.eta = 0.1
+    
+    best_config = loadargs_from_json('src/dgld/config/CONAD.json')[args.dataset]
+    config = vars(args)
+    config.update(best_config)
+    args = argparse.Namespace(**config)
             
     final_args_dict = {
         "dataset": args.dataset,
@@ -162,7 +145,7 @@ def train_step(model, optimizer, criterion, g_orig, g_aug, alpha, eta):
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
-    return contrast_loss, recon_loss, feat_loss, struct_loss
+    return loss
 
 
 def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, batch_size, device):

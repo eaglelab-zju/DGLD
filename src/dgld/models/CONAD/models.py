@@ -8,6 +8,10 @@ from dgl.nn import GATConv
 from copy import deepcopy
 from .conad_utils import train_step, test_step, train_step_batch, test_step_batch
 
+import sys
+sys.path.append('../../')
+from dgld.utils.early_stopping import EarlyStopping
+
 class CONAD(nn.Module):
     """Contrastive Attributed Network Anomaly Detection with Data Augmentation.[PAKDD 2022]
     ref:https://github.com/zhiming-xu/conad
@@ -99,6 +103,7 @@ class CONAD(nn.Module):
         self.model.to(device) 
         
         writer = SummaryWriter(log_dir=logdir)
+        early_stop = EarlyStopping(early_stopping_rounds=10, patience=20)
         
         if batch_size == 0:
             print("full graph training!!!")
@@ -106,19 +111,25 @@ class CONAD(nn.Module):
                 g_orig = g_orig.to(device)
                 g_aug = g_aug.to(device)
                 
-                contrast_loss, recon_loss, feat_loss, struct_loss = train_step(self.model, optimizer, criterion, g_orig, g_aug, alpha=alpha, eta=eta)
-                print("Epoch:", '%04d' % (epoch), "train/contrast_loss=", "{:.5f}".format(contrast_loss.item()), "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=", "{:.5f}".format(feat_loss.item()))
-                writer.add_scalar('train/contrast_loss', contrast_loss, epoch)
-                writer.add_scalar('train/struct_loss', struct_loss, epoch)
-                writer.add_scalar('train/feat_loss', feat_loss, epoch)
+                loss_epoch = train_step(self.model, optimizer, criterion, g_orig, g_aug, alpha=alpha, eta=eta)
+                print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss_epoch.item()))
                 writer.flush()
+                
+                early_stop(loss_epoch.cpu().detach(), self.model)
+                if early_stop.isEarlyStopping():
+                    print(f"Early stopping in round {epoch}")
+                    break
         else:
             print("batch graph training!!!")
-            
             for epoch in range(num_epoch):
                 loss = train_step_batch(self.model, optimizer, criterion, g_orig, g_aug, alpha, eta, batch_size, device)
                 print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss))   
-                writer.add_scalar('train/loss', loss, epoch)         
+                writer.add_scalar('train/loss', loss, epoch)    
+                
+                early_stop(loss, self.model)
+                if early_stop.isEarlyStopping():
+                    print(f"Early stopping in round {epoch}")
+                    break     
             
             
     def predict(self,

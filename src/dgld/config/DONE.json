@@ -1,0 +1,31 @@
+{
+    "Cora": {
+        "lr": 0.01  
+    },
+    "Citeseer": {
+        "lr": 0.01
+    },
+    "Pubmed": {
+        "lr": 0.005
+    },
+    "BlogCatalog": {
+        "num_epoch": 200,
+        "lr": 0.005,
+        "max_len": 3,
+        "restart": 0.5
+    }, 
+    "Flickr": {
+        "lr": 0.001,
+        "max_len": 1,
+        "restart": 0.7
+    },
+    "ACM": {
+        "lr": 0.1
+    },
+    "ogbn-arxiv": {
+        "lr": 0.01,
+        "batch_size": 1024, 
+        "num_epoch": 20
+    }
+
+}

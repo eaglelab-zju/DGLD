@@ -18,7 +18,7 @@ from dgld.utils.common import loadargs_from_json
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--disc_update_times', type=int, default=5)
+    parser.add_argument('--disc_update_times', type=int, default=1)
     parser.add_argument('--gen_update_times', type=int, default=5)
     parser.add_argument('--lr_all', type=float, default=0.001, help='learning rate')
     parser.add_argument('--lr_disc', type=float, default=0.001, help='learning rate')
@@ -30,7 +30,7 @@ def set_subargs(parser):
     parser.add_argument('--restart', type=float, default=0.)
     parser.add_argument('--num_neighbors', type=int, default=-1)
     parser.add_argument('--embedding_dim', type=int, default=32)
-    parser.add_argument('--verbose', type=bool, default=False)
+    parser.add_argument('--verbose', type=bool, default=True)
     
 
 def get_subargs(args):

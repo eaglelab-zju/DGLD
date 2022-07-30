@@ -119,6 +119,7 @@ class AdONE():
         writer = SummaryWriter(log_dir=logdir)
         
         # preprocessing
+        graph = graph.remove_self_loop().add_self_loop()
         if max_len > 0:
             adj = random_walk_with_restart(graph, k=max_len, r=1-restart)
         else:
