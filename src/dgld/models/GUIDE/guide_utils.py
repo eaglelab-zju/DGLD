@@ -54,6 +54,7 @@ def get_subargs(args):
         args.dropout=0.3
     if args.dataset == 'Flickr':
         args.alpha = 1
+        args.batch_size = 2048
     if args.dataset == 'ACM':
         args.alpha = 0.81
         args.lr = 0.001
@@ -65,7 +66,7 @@ def get_subargs(args):
         args.lr = 0.001
         args.attrb_hid = 64
         args.struct_hid = 16
-        args.batch_size = 2048
+        args.batch_size = 1024
     
     final_args_dict = {
         "dataset": args.dataset,
