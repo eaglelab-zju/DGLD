@@ -9,6 +9,8 @@ Subpackages
 
    dgld.models.AAGNN
    dgld.models.ALARM
+   dgld.models.ANEMONE
+   dgld.models.AdONE
    dgld.models.AnomalyDAE
    dgld.models.CONAD
    dgld.models.CoLA
@@ -17,7 +19,6 @@ Subpackages
    dgld.models.DONE
    dgld.models.GAAN
    dgld.models.GUIDE
-   dgld.models.OCGNN
    dgld.models.ONE
    dgld.models.SLGAD
 

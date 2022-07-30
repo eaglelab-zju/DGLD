@@ -1,3 +1,4 @@
+from tabnanny import verbose
 import torch
 import torch.nn as nn
 from torch.utils.tensorboard import SummaryWriter
@@ -6,6 +7,10 @@ import dgl
 import dgl.function as fn
 
 from .done_utils import random_walk_with_restart, train_step, test_step
+
+import sys
+sys.path.append('../../')
+from dgld.utils.early_stopping import EarlyStopping
 
 class DONE():
     def __init__(self, 
@@ -54,9 +59,9 @@ class DONE():
         ----------
         graph : dgl.DGLGraph
             graph data
-        lr : _type_, optional
+        lr : float, optional
             learning rate, by default 1e-3
-        weight_decay : _type_, optional
+        weight_decay : float, optional
             weight decay (L2 penalty), by default 0.
         num_epoch : int, optional
             number of training epochs, by default 1
@@ -93,10 +98,14 @@ class DONE():
         
         writer = SummaryWriter(log_dir=logdir)
         
+        # preprocessing
+        # graph = graph.remove_self_loop().add_self_loop()
         if max_len > 0:
             adj = random_walk_with_restart(graph, k=max_len, r=1-restart)
         else:
             adj = graph.adj().to_dense()
+
+        early_stop = EarlyStopping(early_stopping_rounds=10, patience=100)
 
         # pretrain w/o the outlier scores
         for epoch in range(num_epoch):
@@ -109,10 +118,16 @@ class DONE():
             print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
             writer.add_scalar('train/loss', loss, epoch)
             writer.flush()
+            
+            early_stop(loss, self.model)
+            if early_stop.isEarlyStopping():
+                print(f"Early stopping in round {epoch}")
+                break
+            
     
     def predict(self, 
                 graph:dgl.DGLGraph, 
-                batch_size:int, 
+                batch_size=0, 
                 max_len=0, 
                 restart=0.5,
                 device='cpu',

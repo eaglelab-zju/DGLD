@@ -67,119 +67,18 @@
              
   <h1>Source code for dgld.models.CONAD.conad_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
-
-<span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">dgl</span>
-    
-<div class="viewcode-block" id="get_parse"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.get_parse">[docs]</a><span class="k">def</span> <span class="nf">get_parse</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    get hyperparameter by parser from command line</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils.common_params</span> <span class="kn">import</span> <span class="n">IN_FEATURE_MAP</span>
 
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    final_args_dict : dictionary</span>
-<span class="sd">        dict of args parser</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
-        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;CONAD: Contrastive Attributed Network Anomaly Detection with Data Augmentation&#39;</span><span class="p">)</span>
-
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dataset&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;Flickr&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--seed&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;learning rate&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--alpha&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;balance parameter&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--eta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Attribute penalty balance parameter&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--device&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--contrast_type&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;siamese&#39;</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--rate&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--margin&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    
-    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
-
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
-      
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Cora&#39;</span><span class="p">:</span> 
-        <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="mf">0.1</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.85</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.8</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.95</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.01</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.2</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.4</span> 
-        <span class="n">args</span><span class="o">.</span><span class="n">contrast_type</span> <span class="o">=</span> <span class="s1">&#39;triplet&#39;</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1024</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">30</span>
-        <span class="c1"># args.eta = 0.1</span>
-        <span class="k">pass</span>
-            
-    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12047</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="n">num_nodes_map</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">2708</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3327</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">19717</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">5196</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">7575</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">16484</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">169343</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
-        <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
-        <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
-            <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span> <span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="n">in_feature_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
-            <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
-            <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
-            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
-            <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
-            <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-            <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
-            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="s2">&quot;rate&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span>
-            <span class="s2">&quot;contrast_type&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">contrast_type</span><span class="p">,</span>
-            <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">margin</span><span class="p">,</span>
-            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-        <span class="p">},</span>
-        <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
-            <span class="s2">&quot;device&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
-            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
-            <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">final_args_dict</span></div>
-
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">dgld.utils.common</span> <span class="kn">import</span> <span class="n">loadargs_from_json</span>
 
 <div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
@@ -193,59 +92,20 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--margin&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
     
-    
 <div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
-      
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Cora&#39;</span><span class="p">:</span> 
-        <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="mf">0.1</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.85</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.8</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.95</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.01</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;BlogCatalog&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.2</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.2</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">0.003</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.1</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.4</span> 
-        <span class="n">args</span><span class="o">.</span><span class="n">contrast_type</span> <span class="o">=</span> <span class="s1">&#39;triplet&#39;</span>
-    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ogbn-arxiv&#39;</span><span class="p">:</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1024</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span> <span class="o">=</span> <span class="mi">30</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="mf">0.1</span>
+    
+    <span class="n">best_config</span> <span class="o">=</span> <span class="n">loadargs_from_json</span><span class="p">(</span><span class="s1">&#39;src/dgld/config/CONAD.json&#39;</span><span class="p">)[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">best_config</span><span class="p">)</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">Namespace</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="p">)</span>
             
-    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12047</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="n">num_nodes_map</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">2708</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3327</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">19717</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">5196</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">7575</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">16484</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">169343</span><span class="p">,</span>
-    <span class="p">}</span>
     <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
         <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
-            <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span> <span class="n">in_feature_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="n">in_feature_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span> <span class="n">IN_FEATURE_MAP</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="n">IN_FEATURE_MAP</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>
             <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
@@ -353,7 +213,7 @@
     <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">contrast_loss</span><span class="p">,</span> <span class="n">recon_loss</span><span class="p">,</span> <span class="n">feat_loss</span><span class="p">,</span> <span class="n">struct_loss</span></div>
+    <span class="k">return</span> <span class="n">loss</span></div>
 
 
 <div class="viewcode-block" id="train_step_batch"><a class="viewcode-back" href="../../../../dgld.models.CONAD.conad_utils.html#dgld.models.CONAD.conad_utils.train_step_batch">[docs]</a><span class="k">def</span> <span class="nf">train_step_batch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">g_orig</span><span class="p">,</span> <span class="n">g_aug</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">):</span>

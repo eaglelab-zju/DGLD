@@ -66,13 +66,13 @@
            <div itemprop="articleBody">
              
   <h1>Source code for dgld.models.ONE.one_utils</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">email.policy</span> <span class="kn">import</span> <span class="n">default</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">argparse</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils.common_params</span> <span class="kn">import</span> <span class="n">NUM_NODES_MAP</span>
 
 <div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.ONE.one_utils.html#dgld.models.ONE.one_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
@@ -106,30 +106,11 @@
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;ACM&#39;</span><span class="p">:</span>
         <span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span><span class="n">args</span><span class="o">.</span><span class="n">beta</span><span class="p">,</span><span class="n">args</span><span class="o">.</span><span class="n">gamma</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span>
 
-
-    <span class="n">in_feature_map</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">1433</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3703</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">500</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">8189</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">12047</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">8337</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
-    <span class="p">}</span>
-    <span class="n">num_nodes_map</span><span class="o">=</span><span class="p">{</span>
-        <span class="s2">&quot;Cora&quot;</span><span class="p">:</span><span class="mi">2708</span><span class="p">,</span>
-        <span class="s2">&quot;Citeseer&quot;</span><span class="p">:</span><span class="mi">3327</span><span class="p">,</span>
-        <span class="s2">&quot;Pubmed&quot;</span><span class="p">:</span><span class="mi">19717</span><span class="p">,</span>
-        <span class="s2">&quot;BlogCatalog&quot;</span><span class="p">:</span><span class="mi">5196</span><span class="p">,</span>
-        <span class="s2">&quot;Flickr&quot;</span><span class="p">:</span><span class="mi">7575</span><span class="p">,</span>
-        <span class="s2">&quot;ACM&quot;</span><span class="p">:</span><span class="mi">16484</span><span class="p">,</span>
-        <span class="s2">&quot;ogbn-arxiv&quot;</span><span class="p">:</span><span class="mi">169343</span><span class="p">,</span>
-    <span class="p">}</span>
     <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
         <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
         <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
-            <span class="s2">&quot;node_num&quot;</span><span class="p">:</span><span class="n">num_nodes_map</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
+            <span class="s2">&quot;node_num&quot;</span><span class="p">:</span><span class="n">NUM_NODES_MAP</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
             <span class="s2">&quot;K&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">K</span>
         <span class="p">},</span>
         <span class="s2">&quot;fit&quot;</span><span class="p">:{</span>

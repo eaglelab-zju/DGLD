@@ -10,7 +10,8 @@ if current_dir not in sys.path:
     sys.path.append(current_dir)
 from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
-
+import argparse
+from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
@@ -27,17 +28,11 @@ def set_subargs(parser):
 def get_subargs(args):
     if os.path.exists(args.logdir):
         shutil.rmtree(args.logdir)
-        
-    if args.dataset in ['Cora', 'Citeseer', 'BlogCatalog', 'Flickr']:
-        args.lr = 0.01
-    elif args.dataset == 'Pubmed':
-        args.lf = 0.005
-    elif args.dataset == 'ACM':
-        args.lr = 0.1
-    elif args.dataset == 'obgn-arxiv':
-        args.lr = 0.01
-        args.batch_size = 1024
-        args.num_epoch = 20
+    
+    best_config = loadargs_from_json('src/dgld/config/DONE.json')[args.dataset]
+    config = vars(args)
+    config.update(best_config)
+    args = argparse.Namespace(**config)    
             
     final_args_dict = {
         "dataset": args.dataset,

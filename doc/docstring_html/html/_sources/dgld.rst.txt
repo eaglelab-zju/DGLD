@@ -5,8 +5,12 @@ dgld.utils
 
    dgld.utils.argparser
    dgld.utils.common
+   dgld.utils.common_params
    dgld.utils.dataset
+   dgld.utils.early_stopping
    dgld.utils.evaluation
+   dgld.utils.inject_anomalies
+   dgld.utils.load_data
    dgld.utils.sample
 
 dgld.modules
@@ -32,6 +36,20 @@ dgld.models.ALARM
    :maxdepth: 4
 
    dgld.models.ALARM
+
+dgld.models.ANEMONE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.ANEMONE
+
+dgld.models.AdONE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.AdONE
 
 dgld.models.AnomalyDAE
 -----------

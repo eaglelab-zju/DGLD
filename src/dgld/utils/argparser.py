@@ -21,6 +21,9 @@ from models.ComGA import get_subargs as comga_get_args
 # DONE
 from models.DONE import set_subargs as done_set_args
 from models.DONE import get_subargs as done_get_args
+# AdONE
+from models.AdONE import set_subargs as adone_set_args
+from models.AdONE import get_subargs as adone_get_args
 # CONAD
 from models.CONAD import set_subargs as conad_set_args
 from models.CONAD import get_subargs as conad_get_args
@@ -56,6 +59,7 @@ models_set_args_map = {
     "AnomalyDAE": anomalydae_set_args,
     "ComGA": comga_set_args,
     "DONE": done_set_args,
+    "AdONE": adone_set_args,
     "CONAD": conad_set_args,
     "ALARM": alarm_set_args,
     "ONE": one_set_args,
@@ -72,6 +76,7 @@ models_get_args_map = {
     "AnomalyDAE": anomalydae_get_args,
     "ComGA": comga_get_args,
     "DONE": done_get_args,
+    "AdONE": adone_get_args,
     "CONAD": conad_get_args,
     "ALARM": alarm_get_args,
     "ONE": one_get_args,

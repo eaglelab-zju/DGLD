@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dgld.models.AdONE.adone_utils &mdash; DGLD 0.0.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/clipboard.min.js"></script>
+        <script src="_static/copybutton.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> DGLD
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">dgld.models.AdONE.adone_utils</a></li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">DGLD</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>dgld.models.AdONE.adone_utils</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/dgld.models.AdONE.adone_utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-dgld.models.AdONE.adone_utils">
+<span id="dgld-models-adone-adone-utils"></span><h1>dgld.models.AdONE.adone_utils<a class="headerlink" href="#module-dgld.models.AdONE.adone_utils" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.SubgraphNeighborSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">SubgraphNeighborSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#SubgraphNeighborSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.SubgraphNeighborSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></p>
+<p>the neighbor sampler of the subgraph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num_neighbors</strong> (<em>int</em><em>, </em><em>optional</em>) – number of sampling neighbors, by default -1</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.SubgraphNeighborSampler.sample">
+<span class="sig-name descname"><span class="pre">sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#SubgraphNeighborSampler.sample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.SubgraphNeighborSampler.sample" title="Permalink to this definition"></a></dt>
+<dd><p>Abstract sample method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>DGLGraph</em>) – The graph.</p></li>
+<li><p><strong>indices</strong> (<em>object</em>) – Any object representing the indices selected in the current minibatch.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.get_subargs">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">get_subargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#get_subargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.get_subargs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.loss_func">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">loss_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c_hat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hom_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hom_attr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dis_a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dis_s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale_factor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_disc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_gen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#loss_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.loss_func" title="Permalink to this definition"></a></dt>
+<dd><p>loss function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>torch.Tensor</em>) – adjacency matrix of the original graph</p></li>
+<li><p><strong>x_hat</strong> (<em>torch.Tensor</em>) – adjacency matrix of the reconstructed graph</p></li>
+<li><p><strong>c</strong> (<em>torch.Tensor</em>) – attribute matrix of the original graph</p></li>
+<li><p><strong>c_hat</strong> (<em>torch.Tensor</em>) – attribute matrix of the reconstructed graph</p></li>
+<li><p><strong>h_a</strong> (<em>torch.Tensor</em>) – embedding of attribute autoencoders</p></li>
+<li><p><strong>h_s</strong> (<em>torch.Tensor</em>) – embedding of structure autoencoders</p></li>
+<li><p><strong>hom_str</strong> (<em>torch.Tensor</em>) – intermediate value of homogeneity loss of structure autoencoder</p></li>
+<li><p><strong>hom_attr</strong> (<em>torch.Tensor</em>) – intermediate value of homogeneity loss of attribute autoencoder</p></li>
+<li><p><strong>dis_a</strong> (<em>torch.Tensor</em>) – discriminator output for attribute embeddings</p></li>
+<li><p><strong>dis_s</strong> (<em>torch.Tensor</em>) – discriminator output for structure embeddings</p></li>
+<li><p><strong>betas</strong> (<em>list</em>) – balance parameters</p></li>
+<li><p><strong>scale_factor</strong> (<em>float</em>) – scale factor</p></li>
+<li><p><strong>pretrain</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to pre-train, by default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>loss</strong> (<em>torch.Tensor</em>) – loss value</p></li>
+<li><p><strong>score</strong> (<em>torch.Tensor</em>) – outlier score</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.random_walk_with_restart">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">random_walk_with_restart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DGLHeteroGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-05</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#random_walk_with_restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.random_walk_with_restart" title="Permalink to this definition"></a></dt>
+<dd><p>Consistent with the description of “Network Preprocessing” in Section 4.1 of the paper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – graph data</p></li>
+<li><p><strong>k</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum length of the truncated random walk, by default 3</p></li>
+<li><p><strong>r</strong> (<em>float</em><em>, </em><em>optional</em>) – Probability of restart, by default 0.3</p></li>
+<li><p><strong>eps</strong> (<em>float</em><em>, </em><em>optional</em>) – To avoid errors when the reciprocal of a node’s out-degree is inf, by default 0.1</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>torch.Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.set_subargs">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">set_subargs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#set_subargs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.set_subargs" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.test_step">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#test_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.test_step" title="Permalink to this definition"></a></dt>
+<dd><p>test model in one epoch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>nn.Module</em>) – AdONE base model</p></li>
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – graph data</p></li>
+<li><p><strong>adj</strong> (<em>torch.Tensor</em>) – adjacency matrix</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – the size of training batch</p></li>
+<li><p><strong>betas</strong> (<em>list</em>) – balance parameters</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – device of computation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="dgld.models.AdONE.adone_utils.train_step">
+<span class="sig-prename descclassname"><span class="pre">dgld.models.AdONE.adone_utils.</span></span><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">DGLHeteroGraph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">adj</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">betas</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_neighbors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">disc_update_times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen_update_times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretrain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AdONE/adone_utils.html#train_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AdONE.adone_utils.train_step" title="Permalink to this definition"></a></dt>
+<dd><p>train model in one epoch</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>class</em>) – AdONE base model</p></li>
+<li><p><strong>optimizer</strong> (<em>torch.optim.Optimizer</em>) – optimizer to adjust model</p></li>
+<li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – original graph</p></li>
+<li><p><strong>adj</strong> (<em>torch.Tensor</em>) – adjacency matrix</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – the size of training batch</p></li>
+<li><p><strong>betas</strong> (<em>list</em>) – balance parameters</p></li>
+<li><p><strong>num_neighbors</strong> (<em>int</em>) – number of sampling neighbors</p></li>
+<li><p><strong>disc_update_times</strong> (<em>int</em>) – number of rounds of discriminator updates in an epoch</p></li>
+<li><p><strong>gen_update_times</strong> (<em>int</em>) – number of rounds of auto-encoder updates in an epoch</p></li>
+<li><p><strong>device</strong> (<em>str</em>) – device of computation</p></li>
+<li><p><strong>pretrain</strong> (<em>bool</em><em>, </em><em>optional</em>) – whether to pre-train, by default False</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>predict_score</strong> (<em>numpy.ndarray</em>) – outlier score</p></li>
+<li><p><strong>epoch_loss</strong> (<em>torch.Tensor</em>) – loss value for epoch</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, EagleLab.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

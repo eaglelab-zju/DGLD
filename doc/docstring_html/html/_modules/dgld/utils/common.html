@@ -430,7 +430,6 @@
     <span class="c1"># add self-loop</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges before adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">remove_self_loop</span><span class="p">()</span><span class="o">.</span><span class="n">add_self_loop</span><span class="p">()</span>
-
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total edges after adding self-loop </span><span class="si">{</span><span class="n">graph</span><span class="o">.</span><span class="n">number_of_edges</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">assert</span> <span class="n">is_bidirected</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span> <span class="o">==</span> <span class="kc">True</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">graph</span><span class="p">]</span></div>
@@ -587,6 +586,26 @@
     <span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">])</span>
     <span class="n">txt</span><span class="o">.</span><span class="n">add_rows</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">txt</span><span class="o">.</span><span class="n">draw</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="preprocess_features"><a class="viewcode-back" href="../../../dgld.utils.common.html#dgld.utils.common.preprocess_features">[docs]</a><span class="k">def</span> <span class="nf">preprocess_features</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Functions that process features, here norm in row</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    features : torch.Tensor</span>
+<span class="sd">        features to be processed</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rowsum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="n">r_inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">rowsum</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+    <span class="n">r_inv</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">isinf</span><span class="p">(</span><span class="n">r_inv</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">r_mat_inv</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">diags</span><span class="p">(</span><span class="n">r_inv</span><span class="p">)</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">r_mat_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="n">features</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
