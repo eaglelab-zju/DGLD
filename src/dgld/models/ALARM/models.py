@@ -8,7 +8,7 @@ import torch
 from dgl.nn.pytorch import GraphConv
 from torch.utils.tensorboard import SummaryWriter
 from .alarm_utils import train_step, test_step, normalize_adj
-from .utils.early_stopping import EarlyStopping
+from utils.early_stopping import EarlyStopping
 
 class Encoder(nn.Module):
     """Encoder of DominantModel
