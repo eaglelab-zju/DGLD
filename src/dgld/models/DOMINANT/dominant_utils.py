@@ -15,12 +15,13 @@ def set_subargs(parser):
     parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--hidden_dim', type=int, default=64,
                         help='dimension of hidden embedding (default: 64)')
-    parser.add_argument('--num_epoch', type=int, help='Training epoch')
+    parser.add_argument('--num_epoch', type=int, help='Training epoch',default=1000)
     parser.add_argument('--lr', type=float, help='learning rate')
     parser.add_argument('--dropout', type=float,
                         default=0.0, help='Dropout rate')
     parser.add_argument('--alpha', type=float, default=0.6,
                         help='balance parameter')
+    parser.add_argument('--patience', type=int, help='early stop patience',default=10)
 
 
 def get_subargs(args):
@@ -83,6 +84,7 @@ def get_subargs(args):
             "num_epoch":args.num_epoch,
             "alpha":args.alpha,
             "device":args.device,
+            "patience":args.patience
         },
         "predict":{
             "alpha":args.alpha,
@@ -106,7 +108,6 @@ def loss_func(adj, A_hat, attrs, X_hat, alpha):
         (1-alpha) * structure_reconstruction_errors
 
     return cost, structure_cost, attribute_cost
-
 
 def train_step( model, optimizer, graph, features, adj_label,alpha):
 
