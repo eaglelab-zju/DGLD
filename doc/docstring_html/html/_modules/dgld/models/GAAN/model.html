@@ -73,13 +73,11 @@
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span> 
 <span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../utils&#39;</span><span class="p">)</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
 <span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">evaluation</span> <span class="kn">import</span> <span class="n">split_auc</span>
+<span class="kn">from</span> <span class="nn">utils.evaluation</span> <span class="kn">import</span> <span class="n">split_auc</span>
 <div class="viewcode-block" id="GAAN"><a class="viewcode-back" href="../../../../dgld.models.GAAN.model.html#dgld.models.GAAN.model.GAAN">[docs]</a><span class="k">class</span> <span class="nc">GAAN</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    GAAN (Generative Adversarial Attributed Network Anomaly</span>

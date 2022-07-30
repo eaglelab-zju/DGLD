@@ -75,16 +75,17 @@
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span> 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span> 
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span> 
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 <span class="kn">from</span> <span class="nn">networkx.generators.atlas</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sys</span> 
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../utils&#39;</span><span class="p">)</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
-<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">evaluation</span> <span class="kn">import</span> <span class="n">split_auc</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">utils.evaluation</span> <span class="kn">import</span> <span class="n">split_auc</span>
 <span class="kn">from</span> <span class="nn">.guide_utils</span> <span class="kn">import</span> <span class="n">get_struct_feat</span>
+
+<span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="GUIDE"><a class="viewcode-back" href="../../../../dgld.models.GUIDE.model.html#dgld.models.GUIDE.model.GUIDE">[docs]</a><span class="k">class</span> <span class="nc">GUIDE</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -194,8 +195,9 @@
         <span class="n">dataloader</span> <span class="o">=</span> <span class="n">dgl</span><span class="o">.</span><span class="n">dataloading</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span><span class="n">nid</span><span class="p">,</span> <span class="n">sampler</span><span class="p">,</span>
         <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
             <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">score</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">input_nodes</span><span class="p">,</span> <span class="n">output_nodes</span><span class="p">,</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
@@ -209,15 +211,18 @@
                 <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
                 <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
                 <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+                <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                    <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
                     <span class="k">if</span>  <span class="n">y_true</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">score</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">get_all_score</span><span class="p">(</span><span class="n">attrb_feat_out</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span><span class="n">attrb_rb</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span><span class="n">struct_feat_out</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span><span class="n">struct_rb</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
-
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">y_true</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">split_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span></div>
+                    <span class="n">split_auc</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+            <span class="n">early_stop</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span></div>
 
 <div class="viewcode-block" id="GUIDE.predict"><a class="viewcode-back" href="../../../../dgld.models.GUIDE.model.html#dgld.models.GUIDE.model.GUIDE.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">attrb_feat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">struct_feat</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

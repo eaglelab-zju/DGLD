@@ -79,6 +79,7 @@
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span> <span class="c1"># torch 中 Variable 模块</span>
 <span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+<span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="AAGNN_batch"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch">[docs]</a><span class="k">class</span> <span class="nc">AAGNN_batch</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -97,10 +98,10 @@
 <span class="sd">    &gt;&gt;&gt; model = AAGNN_batch(in_feats=in_feats, out_feats=300)</span>
 <span class="sd">    &gt;&gt;&gt; model.fit(graph, num_epoch=30, device=&#39;cuda:0&#39;, subgraph_size=32)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">out_dim</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">out_feats</span><span class="o">=</span><span class="mi">300</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model_base</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">out_feats</span> <span class="o">=</span> <span class="n">out_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model_base</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_feats</span> <span class="o">=</span> <span class="n">out_feats</span>
     
 <div class="viewcode-block" id="AAGNN_batch.fit"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -136,7 +137,9 @@
         <span class="n">features</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">ndata</span><span class="p">[</span><span class="s1">&#39;feat&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
             <span class="n">device</span> <span class="o">=</span> <span class="s1">&#39;cuda:&#39;</span> <span class="o">+</span> <span class="n">device</span>
+
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;device=&#39;</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
+
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
         
@@ -151,10 +154,10 @@
         <span class="n">node_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_normal_nodes</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
-
+        <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
             <span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cal_center</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="p">,</span> <span class="n">edge_dic</span><span class="p">)</span>
-
+            <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_ids</span><span class="p">),</span> <span class="n">subgraph_size</span><span class="p">):</span>
                 <span class="n">L</span> <span class="o">=</span> <span class="n">index</span>
                 <span class="n">R</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="n">subgraph_size</span>
@@ -167,12 +170,16 @@
                 <span class="n">opt</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
                 <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
                 <span class="n">opt</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-
+                <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;</span><span class="si">%04d</span><span class="s2">/</span><span class="si">%04d</span><span class="s2">&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">node_ids</span><span class="p">)),</span><span class="s2">&quot; train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.10f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(</span>
                 <span class="p">)))</span>
 
             
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            <span class="n">early_stop</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span></div>
 
 <div class="viewcode-block" id="AAGNN_batch.predict"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

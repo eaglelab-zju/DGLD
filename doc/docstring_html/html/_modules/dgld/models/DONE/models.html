@@ -66,7 +66,8 @@
            <div itemprop="articleBody">
              
   <h1>Source code for dgld.models.DONE.models</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span></span><span class="kn">from</span> <span class="nn">tabnanny</span> <span class="kn">import</span> <span class="n">verbose</span>
+<span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 
@@ -74,6 +75,10 @@
 <span class="kn">import</span> <span class="nn">dgl.function</span> <span class="k">as</span> <span class="nn">fn</span>
 
 <span class="kn">from</span> <span class="nn">.done_utils</span> <span class="kn">import</span> <span class="n">random_walk_with_restart</span><span class="p">,</span> <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">dgld.utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="DONE"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE">[docs]</a><span class="k">class</span> <span class="nc">DONE</span><span class="p">():</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
@@ -122,9 +127,9 @@
 <span class="sd">        ----------</span>
 <span class="sd">        graph : dgl.DGLGraph</span>
 <span class="sd">            graph data</span>
-<span class="sd">        lr : _type_, optional</span>
+<span class="sd">        lr : float, optional</span>
 <span class="sd">            learning rate, by default 1e-3</span>
-<span class="sd">        weight_decay : _type_, optional</span>
+<span class="sd">        weight_decay : float, optional</span>
 <span class="sd">            weight decay (L2 penalty), by default 0.</span>
 <span class="sd">        num_epoch : int, optional</span>
 <span class="sd">            number of training epochs, by default 1</span>
@@ -161,10 +166,14 @@
         
         <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         
+        <span class="c1"># preprocessing</span>
+        <span class="c1"># graph = graph.remove_self_loop().add_self_loop()</span>
         <span class="k">if</span> <span class="n">max_len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">adj</span> <span class="o">=</span> <span class="n">random_walk_with_restart</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">max_len</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="o">-</span><span class="n">restart</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">adj</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">adj</span><span class="p">()</span><span class="o">.</span><span class="n">to_dense</span><span class="p">()</span>
+
+        <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 
         <span class="c1"># pretrain w/o the outlier scores</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
@@ -176,11 +185,17 @@
             <span class="n">score</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">, train/loss=</span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;train/loss&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+            
+            <span class="n">early_stop</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span></div>
+            
     
 <div class="viewcode-block" id="DONE.predict"><a class="viewcode-back" href="../../../../dgld.models.DONE.models.html#dgld.models.DONE.models.DONE.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                 <span class="n">graph</span><span class="p">:</span><span class="n">dgl</span><span class="o">.</span><span class="n">DGLGraph</span><span class="p">,</span> 
-                <span class="n">batch_size</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> 
+                <span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
                 <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
                 <span class="n">restart</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span>

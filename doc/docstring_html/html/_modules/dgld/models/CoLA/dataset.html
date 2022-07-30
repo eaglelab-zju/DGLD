@@ -71,22 +71,15 @@
 <span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
 <span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span> <span class="o">+</span> <span class="s1">&#39;/utils/&#39;</span>
 <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
-
-<span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">path</span> <span class="k">as</span> <span class="n">osp</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
-<span class="kn">import</span> <span class="nn">joblib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">dgl</span>
 <span class="kn">from</span> <span class="nn">dgl.data</span> <span class="kn">import</span> <span class="n">DGLDataset</span>
 <span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">EdgeWeightNorm</span>
 
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
-<span class="c1"># print(sys.path)</span>
-<span class="kn">from</span> <span class="nn">sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span><span class="p">,</span> <span class="n">UniformNeighborSampling</span>
+<span class="kn">from</span> <span class="nn">utils.sample</span> <span class="kn">import</span> <span class="n">CoLASubGraphSampling</span>
 
 <div class="viewcode-block" id="safe_add_self_loop"><a class="viewcode-back" href="../../../../dgld.models.CoLA.dataset.html#dgld.models.CoLA.dataset.safe_add_self_loop">[docs]</a><span class="k">def</span> <span class="nf">safe_add_self_loop</span><span class="p">(</span><span class="n">g</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
