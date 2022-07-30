@@ -68,7 +68,7 @@ class EarlyStopping:
     def isEarlyStopping(self):
         return self.early_stop
 
-    def __call__(self, loss, model):
+    def __call__(self, loss, model=None):
         """
         The function to judge early stopping
 
@@ -79,6 +79,8 @@ class EarlyStopping:
         model : torch.nn.modules
             The model
         """
+        if isinstance(loss,torch.Tensor):
+            loss = loss.cpu().item()
         if self.check_finite and not np.isfinite(loss):
             self.__early_stop = True
             if self.verbose:
@@ -97,7 +99,8 @@ class EarlyStopping:
                     print(f'Rounds : {self.rounds} Validation loss decreased ({self.loss_min:.6f} --> {loss:.6f}).')
                 self.loss_min =loss
                 self.counter = 0
-                self.save_best_parameters(model)
+                if model is not None:
+                    self.save_best_parameters(model)
 
         if self.__early_stop and self.verbose:
             print(f"Previous best loss was {self.loss_min:.6f}. Signaling Trainer to stop")
