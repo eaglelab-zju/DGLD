@@ -30,6 +30,8 @@ def set_subargs(parser):
     parser.add_argument('--n_enc_1', type=int, default=2000,help='number of encode1 units')
     parser.add_argument('--n_enc_2', type=int, default=500,help='number of encode2 units')
     parser.add_argument('--n_enc_3', type=int, default=128,help='number of encode2 units')
+    parser.add_argument('--patience', type=int, help='early stop patience',default=10)
+
 
 def get_subargs(args):
 
@@ -95,6 +97,7 @@ def get_subargs(args):
             "eta":args.eta,
             "theta":args.theta,
             "device":args.device,
+            "patience":args.patience
         },
         "predict":{
             "alpha":args.alpha,

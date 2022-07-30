@@ -28,7 +28,7 @@ def set_subargs(parser):
                         help='Attribute penalty balance parameter')
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
-    
+    parser.add_argument('--patience', type=int, help='early stop patience',default=10)
     
 def get_subargs(args):
     if os.path.exists(args.logdir):
@@ -81,6 +81,7 @@ def get_subargs(args):
             "eta":args.eta,
             "theta":args.theta,
             "device":args.device,
+            "patience":args.patience
         },
         "predict":{
             "alpha":args.alpha,
