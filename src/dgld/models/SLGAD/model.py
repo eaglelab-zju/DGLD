@@ -12,6 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 import scipy.sparse as sp
 import numpy as np
+from utils.early_stopping import EarlyStopping
 
 seed = 1
 torch.manual_seed(seed)
@@ -595,6 +596,7 @@ class SLGAD():
             self.model.parameters(), lr=lr, weight_decay=weight_decay
         )
         writer = SummaryWriter(log_dir=logdir)
+        early_stop = EarlyStopping(patience = 100, check_finite = True)
 
         for epoch in range(num_epoch):
             train_loader.dataset.random_walk_sampling()
@@ -602,6 +604,10 @@ class SLGAD():
                 epoch = epoch, loader = train_loader, net = self.model, device = device, criterion = self.criterion, optimizer = optimizer, args = self.args
             )
             writer.add_scalar("loss", float(loss_accum), epoch)
+            early_stop(loss_accum, self.model)
+            if early_stop.isEarlyStopping:
+                print(f"Early stopping in round {epoch}")
+                break
         return self
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, logdir='tmp'):
