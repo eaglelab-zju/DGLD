@@ -20,6 +20,8 @@ from dgld.models.CoLA import CoLA
 from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
+from dgld.models.GCNAE import GCNAE
+
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -60,6 +62,8 @@ if __name__ == "__main__":
         model = SLGAD(**args_dict["model"])
     elif args.model == 'ANEMONE':
         model = ANEMONE(**args_dict["model"])
+    elif args.model == 'GCNAE':
+        model = GCNAE(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

@@ -51,7 +51,9 @@ from models.AAGNN import get_subargs as aagnn_get_args
 # ANEMONE
 from models.ANEMONE import set_subargs as anemone_set_args
 from models.ANEMONE import get_subargs as anemone_get_args
-
+# GCNAE
+from models.GCNAE import set_subargs as gcnae_set_args
+from models.GCNAE import get_subargs as gcnae_get_args
 
 # set args
 models_set_args_map = {
@@ -68,7 +70,8 @@ models_set_args_map = {
     "CoLA": cola_set_args,
     "SLGAD": slgad_set_args,
     "AAGNN": aagnn_set_args,
-    "ANEMONE": anemone_set_args
+    "ANEMONE": anemone_set_args,
+    "GCNAE": gcnae_set_args
 }
 # get args
 models_get_args_map = {
@@ -85,7 +88,8 @@ models_get_args_map = {
     "CoLA": cola_get_args,
     "SLGAD":slgad_get_args,
     "AAGNN": aagnn_get_args,
-    "ANEMONE": anemone_get_args
+    "ANEMONE": anemone_get_args,
+    "GCNAE": gcnae_get_args
 }
 
 

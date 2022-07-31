@@ -1,0 +1,8 @@
+dgld.models.GCNAE
+==============
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.GCNAE.gcnae_utils
+   dgld.models.GCNAE.model
+

@@ -100,19 +100,19 @@ dgld.models.GAAN
 
    dgld.models.GAAN
 
+dgld.models.GCNAE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.GCNAE
+
 dgld.models.GUIDE
 -----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.GUIDE
-
-dgld.models.OCGNN
------------
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.OCGNN
 
 dgld.models.ONE
 -----------

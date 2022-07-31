@@ -69,22 +69,16 @@
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">ComGA: Community-Aware Attributed Graph Anomaly Detection</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">turtle</span> <span class="kn">import</span> <span class="n">forward</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">GraphConv</span>
 <span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
-<span class="kn">import</span> <span class="nn">dgl</span>
-<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">sp</span>
-<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
-<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">roc_auc_score</span>
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
-<span class="kn">from</span> <span class="nn">.comga_utils</span> <span class="kn">import</span> <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span><span class="p">,</span><span class="n">normalize_adj</span>
-
+<span class="kn">from</span> <span class="nn">.comga_utils</span> <span class="kn">import</span> <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span>
+<span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="ComGA"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA">[docs]</a><span class="k">class</span> <span class="nc">ComGA</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;ComGA: Community-Aware Attributed Graph Anomaly Detection</span>
@@ -111,7 +105,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">ComGAModel</span><span class="p">(</span><span class="n">num_nodes</span><span class="o">=</span><span class="n">num_nodes</span><span class="p">,</span><span class="n">num_feats</span><span class="o">=</span><span class="n">num_feats</span><span class="p">,</span>
                         <span class="n">n_enc_1</span><span class="o">=</span><span class="n">n_enc_1</span><span class="p">,</span><span class="n">n_enc_2</span><span class="o">=</span><span class="n">n_enc_2</span><span class="p">,</span><span class="n">n_enc_3</span><span class="o">=</span><span class="n">n_enc_3</span><span class="p">,</span><span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
     
-<div class="viewcode-block" id="ComGA.fit"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span><span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">eta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="ComGA.fit"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span><span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">eta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fitting model</span>
 
 <span class="sd">        Parameters</span>
@@ -132,6 +126,8 @@
 <span class="sd">            structure penalty balance parameter, by default 40.0</span>
 <span class="sd">        device : str, optional</span>
 <span class="sd">            cuda id, by default &#39;cpu&#39;</span>
+<span class="sd">        patience : int, optional</span>
+<span class="sd">            early stop patience , by default 10</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">,</span><span class="s1">&#39;training&#39;</span><span class="p">,</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">20</span><span class="p">)</span>
 
@@ -176,7 +172,8 @@
         <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
     
         <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
-        
+        <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="n">patience</span><span class="p">,</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
             <span class="n">loss</span><span class="p">,</span><span class="n">struct_loss</span><span class="p">,</span> <span class="n">feat_loss</span><span class="p">,</span><span class="n">kl_loss</span><span class="p">,</span><span class="n">re_loss</span><span class="p">,</span><span class="n">_</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">,</span><span class="n">eta</span><span class="p">,</span><span class="n">theta</span><span class="p">,</span><span class="n">device</span><span class="p">)</span>
@@ -189,7 +186,13 @@
                 <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;struct_loss&quot;</span><span class="p">:</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="s2">&quot;feat_loss&quot;</span><span class="p">:</span> <span class="n">feat_loss</span><span class="p">},</span>
                 <span class="n">epoch</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+            <span class="n">early_stop</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+ 
+            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">break</span></div>
 
 
 <div class="viewcode-block" id="ComGA.predict"><a class="viewcode-back" href="../../../../dgld.models.ComGA.models.html#dgld.models.ComGA.models.ComGA.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span><span class="n">eta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span><span class="n">theta</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>

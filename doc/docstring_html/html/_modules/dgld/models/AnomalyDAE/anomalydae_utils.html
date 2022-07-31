@@ -95,8 +95,8 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--eta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Attribute penalty balance parameter&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--theta&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">40.0</span><span class="p">,</span>
-                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;structure penalty balance parameter&#39;</span><span class="p">)</span></div>
-    
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;structure penalty balance parameter&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--patience&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;early stop patience&#39;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.AnomalyDAE.anomalydae_utils.html#dgld.models.AnomalyDAE.anomalydae_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
@@ -149,6 +149,7 @@
             <span class="s2">&quot;eta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">eta</span><span class="p">,</span>
             <span class="s2">&quot;theta&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">theta</span><span class="p">,</span>
             <span class="s2">&quot;device&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+            <span class="s2">&quot;patience&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">patience</span>
         <span class="p">},</span>
         <span class="s2">&quot;predict&quot;</span><span class="p">:{</span>
             <span class="s2">&quot;alpha&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">alpha</span><span class="p">,</span>
