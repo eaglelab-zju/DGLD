@@ -81,7 +81,7 @@
 
 <span class="kn">from</span> <span class="nn">.dataset</span> <span class="kn">import</span> <span class="n">CoLADataSet</span>
 <span class="kn">from</span> <span class="nn">.colautils</span> <span class="kn">import</span> <span class="n">train_epoch</span><span class="p">,</span> <span class="n">test_epoch</span>
-
+<span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <div class="viewcode-block" id="Discriminator"><a class="viewcode-back" href="../../../../dgld.models.CoLA.model.html#dgld.models.CoLA.model.Discriminator">[docs]</a><span class="k">class</span> <span class="nc">Discriminator</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -409,13 +409,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span>
         <span class="p">)</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
-
+        <span class="n">early_stopper</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
             <span class="n">train_loader</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">random_walk_sampling</span><span class="p">()</span>
             <span class="n">loss_accum</span> <span class="o">=</span> <span class="n">train_epoch</span><span class="p">(</span>
                 <span class="n">epoch</span><span class="p">,</span> <span class="n">train_loader</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span>
             <span class="p">)</span>
             <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">),</span> <span class="n">epoch</span><span class="p">)</span>
+            <span class="n">early_stopper</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">early_stopper</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;early_stopp....@&quot;</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
+                <span class="k">break</span>
+
         <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="CoLA.predict"><a class="viewcode-back" href="../../../../dgld.models.CoLA.model.html#dgld.models.CoLA.model.CoLA.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auc_test_rounds</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">):</span>
