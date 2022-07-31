@@ -159,7 +159,7 @@ def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
         optimizer.zero_grad()
         pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec = net(pos_subgraph, posfeat, neg_subgraph,
                                                                              negfeat)
-        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device,alpha)
+        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, alpha)
         # print('loss::::::',loss)
         loss.backward()
         optimizer.step()
@@ -168,7 +168,7 @@ def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
     return loss_accum
 
 
-def test_epoch(epoch, alpha, loader, net, device, criterion, optimizer):
+def test_epoch(epoch, alpha, loader, net, device, criterion):
     """test_epoch, test model in one epoch
     Parameters
     ----------
@@ -203,7 +203,7 @@ def test_epoch(epoch, alpha, loader, net, device, criterion, optimizer):
             alpha * (torch.sigmoid(neg_scores_rdt) - torch.sigmoid(pos_scores_rdt)).detach().cpu().numpy() + (
                         1 - alpha) * (
                         torch.sigmoid(neg_scores_rec) - torch.sigmoid(pos_scores_rec)).detach().cpu().numpy()))
-        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, args)
+        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, alpha)
         loss_accum += loss.item()
     loss_accum /= (step + 1)
     # lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.2f}'.format(loss_accum), color='blue')
