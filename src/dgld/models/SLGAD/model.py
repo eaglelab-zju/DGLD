@@ -603,7 +603,7 @@ class SLGAD():
             )
 
             early_stop(loss_accum, self.model)
-            if early_stop.isEarlyStopping:
+            if early_stop.isEarlyStopping():
                 print(f"Early stopping in round {epoch}")
                 break
         return self
