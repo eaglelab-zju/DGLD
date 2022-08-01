@@ -21,6 +21,7 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
+from dgld.models.Radar import Radar
 import time
 import os 
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
         log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.txt'
         if not os.path.exists('result'):
             os.makedirs('result')
-    sys.stdout = open(log_dir, mode = 'w',encoding='utf-8')
+    # sys.stdout = open(log_dir, mode = 'w',encoding='utf-8')
 
     graph = load_data(data_name)
 
@@ -72,6 +73,8 @@ if __name__ == "__main__":
         model = ANEMONE(**args_dict["model"])
     elif args.model == 'GCNAE':
         model = GCNAE(**args_dict["model"])
+    elif args.model == 'Radar':
+        model = Radar(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 
