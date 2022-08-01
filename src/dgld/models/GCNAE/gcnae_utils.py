@@ -12,7 +12,6 @@ from utils.common_params import IN_FEATURE_MAP
 
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
     parser.add_argument('--lr', type=float, default=0.005, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.)
@@ -23,8 +22,6 @@ def set_subargs(parser):
 
 
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
         
     if args.dataset == 'Citeseer':
         args.n_layers = 3
@@ -42,7 +39,6 @@ def get_subargs(args):
             "lr": args.lr,
             "batch_size": args.batch_size,
             "num_epoch": args.num_epoch,
-            "log_dir": args.logdir,
             "weight_decay": args.weight_decay,
             "device": args.device
         },

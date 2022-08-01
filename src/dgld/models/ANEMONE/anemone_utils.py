@@ -31,15 +31,10 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--global_adg', type=bool, default=True)
 
 
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
-    else:
-        os.makedirs(args.logdir)
 
     if args.lr is None:
         if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
@@ -78,7 +73,6 @@ def get_subargs(args):
             "batch_size": args.batch_size,
             "num_epoch": args.num_epoch,
             "lr": args.lr,
-            "logdir": args.logdir,
             "weight_decay": args.weight_decay,
             "seed": args.seed,
         },
@@ -87,7 +81,6 @@ def get_subargs(args):
             "batch_size": args.batch_size,
             "num_workers": args.num_workers,
             "auc_test_rounds": args.auc_test_rounds,
-            "logdir": args.logdir
         }
     }
     return final_args_dict, args

@@ -3,7 +3,6 @@ import numpy as np
 import dgl 
 import torch.nn as nn 
 import torch.nn.functional as F 
-from torch.utils.tensorboard import SummaryWriter
 from sklearn.metrics import roc_auc_score
 import os,sys
 current_file_name = __file__

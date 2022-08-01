@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 
 import dgl
 import dgl.function as fn
@@ -51,7 +50,6 @@ class AdONE():
             gen_update_times=5,
             num_neighbors=-1,
             betas=[0.2]*5,
-            logdir='tmp',
             batch_size=0,
             max_len=0, 
             restart=0.5,
@@ -82,8 +80,6 @@ class AdONE():
             number of sampling neighbors, by default -1
         betas : list, optional
             balance parameters, by default [0.2]*5
-        logdir : str, optional
-            log dir, by default 'tmp'
         batch_size : int, optional
             the size of training batch, by default 0
         max_len : int, optional
@@ -116,7 +112,6 @@ class AdONE():
         ], lr=lr_gen, weight_decay=weight_decay)
         optimizer = (optim_all, optim_disc, optim_gen)
         
-        writer = SummaryWriter(log_dir=logdir)
         
         # preprocessing
         graph = graph.remove_self_loop().add_self_loop()
@@ -136,8 +131,6 @@ class AdONE():
             score, loss = train_step(self.model, optimizer, graph, adj, batch_size, betas, num_neighbors, disc_update_times, gen_update_times, device)
             if verbose:
                 print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
-            writer.add_scalar('train/loss', loss, epoch)
-            writer.flush()
     
     def predict(self,
                 graph:dgl.DGLGraph,
