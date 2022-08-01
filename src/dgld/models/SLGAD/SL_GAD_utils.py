@@ -1,3 +1,4 @@
+from email.policy import default
 from tqdm import tqdm
 import numpy as np 
 import torch
@@ -67,7 +68,6 @@ loss_fun = loss_fun_BCE
 
 def set_subargs(parser):
 
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
     parser.add_argument('--lr', type=float, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.0)
@@ -75,7 +75,7 @@ def set_subargs(parser):
     parser.add_argument('--drop_prob', type=float, default=0.0)
     parser.add_argument('--batch_size', type=int, default=300)
     parser.add_argument('--subgraph_size', type=int, default=4)
-    parser.add_argument('--auc_test_rounds', type=int)
+    parser.add_argument('--auc_test_rounds', type=int, default=256)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
     parser.add_argument('--global_adg', type=bool, default=True)  
@@ -91,8 +91,6 @@ def set_subargs(parser):
     parser.add_argument('--expid', type=int)
 
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
 
     if args.lr is None:
         if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
@@ -128,7 +126,6 @@ def get_subargs(args):
             "batch_size":args.batch_size,
             "num_epoch":args.num_epoch,
             "lr":args.lr,
-            "logdir":args.logdir,
             "weight_decay":args.weight_decay,
         },
         "predict":{
@@ -136,7 +133,6 @@ def get_subargs(args):
             "batch_size":args.batch_size,
             "num_workers":args.num_workers,
             "auc_test_rounds":args.auc_test_rounds,
-            "logdir":args.logdir
         }
     }
     return final_args_dict, args

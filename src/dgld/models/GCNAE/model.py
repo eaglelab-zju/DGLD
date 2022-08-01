@@ -4,7 +4,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch
 from dgl.nn.pytorch import GraphConv
-from torch.utils.tensorboard import SummaryWriter
 
 import dgl
 from dgl.nn import GraphConv
@@ -161,7 +160,6 @@ class GCNAE(nn.Module):
             lr=0.005,
             batch_size=0,
             num_epoch=100,
-            log_dir='tmp',
             weight_decay=0.,
             device=0
             ):
@@ -177,8 +175,6 @@ class GCNAE(nn.Module):
             the size of training batch. Defaults: 0 for full graph train.
         num_epoch : int, optional
             number of training epochs. Defaults: 1.
-        log_dir : str, optional
-            log dir. Defaults: 'tmp'.
         weight_decay : float, optional
             weight decay (L2 penalty). Defaults: 0.
         device : str, optional
@@ -202,7 +198,6 @@ class GCNAE(nn.Module):
         g = g.to(device)
         features = features.to(device)
 
-        writer = SummaryWriter(log_dir=log_dir)
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
@@ -223,12 +218,6 @@ class GCNAE(nn.Module):
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(train_loss.item()))
 
-                writer.add_scalars(
-                    "loss",
-                    {"loss": train_loss.item()},
-                    epoch,
-                )
-                writer.flush()
 
                 early_stop(train_loss.cpu().detach(), self.model)
                 if early_stop.isEarlyStopping():
@@ -270,12 +259,6 @@ class GCNAE(nn.Module):
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(epoch_loss))
 
-                writer.add_scalars(
-                    "loss",
-                    {"loss": epoch_loss},
-                    epoch,
-                )
-                writer.flush()
 
                 early_stop(epoch_loss, self.model)
                 if early_stop.isEarlyStopping():

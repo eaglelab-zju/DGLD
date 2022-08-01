@@ -109,7 +109,10 @@ def parse_all_args() -> argparse.Namespace:
                         type=int,
                         default=4096,
                         help='Random seed. Defaults to 4096.')
-
+    parser.add_argument('--logdir',
+                        type=str,
+                        default=None,
+                        help='The path of stored results.')
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
     # set sub args

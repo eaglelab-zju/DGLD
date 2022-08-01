@@ -21,13 +21,21 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
-
+import time
+import os 
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
     seed_everything(args_dict['seed'])
 
     data_name = args_dict['dataset']
+    log_dir = args.logdir
+    if log_dir is None:
+        log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.txt'
+        if not os.path.exists('result'):
+            os.makedirs('result')
+    sys.stdout = open(log_dir, mode = 'w',encoding='utf-8')
+
     graph = load_data(data_name)
 
     graph = inject_contextual_anomalies(graph=graph,k=K,p=P,q=Q_MAP[data_name])

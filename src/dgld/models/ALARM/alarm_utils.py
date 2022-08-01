@@ -11,7 +11,6 @@ from utils.common_params import IN_FEATURE_MAP
 
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--hidden_dim', type=int, default=64,
                         help='dimension of hidden embedding (default: 64)')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
@@ -27,8 +26,6 @@ def set_subargs(parser):
 
 def get_subargs(args):
 
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
 
     if args.lr is None:
         if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
@@ -84,7 +81,6 @@ def get_subargs(args):
         },
         "fit":{
             "lr":args.lr,
-            "logdir":args.logdir,
             "num_epoch":args.num_epoch,
             "alpha":args.alpha,
             "device":args.device,

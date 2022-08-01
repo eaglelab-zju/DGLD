@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 
 import dgl
 from dgl.nn import GATConv
@@ -38,7 +37,6 @@ class CONAD(nn.Module):
             graph,
             lr=1e-3,
             weight_decay=0.,
-            logdir='tmp',
             num_epoch=1,
             margin=0.5,
             alpha=0.9,
@@ -58,8 +56,6 @@ class CONAD(nn.Module):
             learning rate, by default 1e-3
         weight_decay : float, optional
             weight decay (L2 penalty), by default 0.
-        logdir : str, optional
-            log dir, by default 'tmp'
         num_epoch : int, optional
             number of training epochs, by default 1
         margin : float, optional 
@@ -102,7 +98,6 @@ class CONAD(nn.Module):
         
         self.model.to(device) 
         
-        writer = SummaryWriter(log_dir=logdir)
         early_stop = EarlyStopping(early_stopping_rounds=10, patience=20)
         
         if batch_size == 0:
@@ -113,7 +108,6 @@ class CONAD(nn.Module):
                 
                 loss_epoch = train_step(self.model, optimizer, criterion, g_orig, g_aug, alpha=alpha, eta=eta)
                 print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss_epoch.item()))
-                writer.flush()
                 
                 early_stop(loss_epoch.cpu().detach(), self.model)
                 if early_stop.isEarlyStopping():
@@ -123,8 +117,7 @@ class CONAD(nn.Module):
             print("batch graph training!!!")
             for epoch in range(num_epoch):
                 loss = train_step_batch(self.model, optimizer, criterion, g_orig, g_aug, alpha, eta, batch_size, device)
-                print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss))   
-                writer.add_scalar('train/loss', loss, epoch)    
+                print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss))    
                 
                 early_stop(loss, self.model)
                 if early_stop.isEarlyStopping():

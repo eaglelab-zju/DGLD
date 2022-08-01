@@ -8,7 +8,6 @@ from utils.common_params import IN_FEATURE_MAP
 
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--out_feats', type=int, default=256,
                         help='dimension of hidden embedding (default: 64)')
     parser.add_argument('--out_dim', type=int, default=128,
@@ -29,8 +28,6 @@ def set_subargs(parser):
 
 def get_subargs(args):
 
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
 
     if args.lr is None:
         if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
@@ -82,7 +79,6 @@ def get_subargs(args):
         },
         "fit":{
             "lr":args.lr,
-            "logdir":args.logdir,
             "num_epoch":args.num_epoch,
             "subgraph_size":args.subgraph_size,
             "device":args.device,

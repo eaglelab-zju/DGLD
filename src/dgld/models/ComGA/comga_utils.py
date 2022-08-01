@@ -11,7 +11,6 @@ from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
 def set_subargs(parser):
     # max min avg  weighted_sum
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
     parser.add_argument('--m', type=int,
                         default=171743, help='num of edges')
@@ -34,9 +33,6 @@ def set_subargs(parser):
 
 
 def get_subargs(args):
-
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
 
     if args.lr is None:
         args.lr = 1e-5
@@ -91,7 +87,6 @@ def get_subargs(args):
         },
         "fit":{
             "lr":args.lr,
-            "logdir":args.logdir,
             "num_epoch":args.num_epoch,
             "alpha":args.alpha,
             "eta":args.eta,
