@@ -1,0 +1,8 @@
+dgld.models.MLPAE
+==============
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.MLPAE.mlpae_utils
+   dgld.models.MLPAE.model
+

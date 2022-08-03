@@ -570,7 +570,7 @@
 <span class="kn">from</span> <span class="nn">.SL_GAD_utils</span> <span class="kn">import</span> <span class="n">train_epoch</span><span class="p">,</span> <span class="n">test_epoch</span>
 <span class="kn">from</span> <span class="nn">dgl.dataloading</span> <span class="kn">import</span> <span class="n">GraphDataLoader</span>
 <span class="kn">import</span> <span class="nn">torch.optim</span> <span class="k">as</span> <span class="nn">optim</span>
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
+
 
 <div class="viewcode-block" id="SLGAD"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.model.html#dgld.models.SLGAD.model.SLGAD">[docs]</a><span class="k">class</span> <span class="nc">SLGAD</span><span class="p">():</span>    
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_feats</span><span class="o">=</span><span class="mi">1433</span><span class="p">,</span> <span class="n">out_feats</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">global_adg</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
@@ -613,7 +613,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">SL_GAD_Model</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">,</span> <span class="n">global_adg</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">BCEWithLogitsLoss</span><span class="p">()</span>
 
-<div class="viewcode-block" id="SLGAD.fit"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.model.html#dgld.models.SLGAD.model.SLGAD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.003</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
+<div class="viewcode-block" id="SLGAD.fit"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.model.html#dgld.models.SLGAD.model.SLGAD.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.003</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        train the model</span>
 
@@ -633,8 +633,6 @@
 <span class="sd">            num_workers using in `pytorch DataLoader`, default 4</span>
 <span class="sd">        num_epoch : int, optional</span>
 <span class="sd">            number of epoch for training, default 100</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            tensorboard logdir, default &#39;tmp&#39;</span>
 <span class="sd">        seed : int, optional</span>
 <span class="sd">            random seed, default 42</span>
 <span class="sd">            </span>
@@ -663,7 +661,7 @@
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span>
         <span class="p">)</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
+
         <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">patience</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">check_finite</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
@@ -671,14 +669,14 @@
             <span class="n">loss_accum</span> <span class="o">=</span> <span class="n">train_epoch</span><span class="p">(</span>
                 <span class="n">epoch</span> <span class="o">=</span> <span class="n">epoch</span><span class="p">,</span> <span class="n">loader</span> <span class="o">=</span> <span class="n">train_loader</span><span class="p">,</span> <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">device</span> <span class="o">=</span> <span class="n">device</span><span class="p">,</span> <span class="n">criterion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">criterion</span><span class="p">,</span> <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span>
             <span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">),</span> <span class="n">epoch</span><span class="p">)</span>
+
             <span class="n">early_stop</span><span class="p">(</span><span class="n">loss_accum</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">break</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
-<div class="viewcode-block" id="SLGAD.predict"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.model.html#dgld.models.SLGAD.model.SLGAD.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auc_test_rounds</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="SLGAD.predict"><a class="viewcode-back" href="../../../../dgld.models.SLGAD.model.html#dgld.models.SLGAD.model.SLGAD.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">auc_test_rounds</span><span class="o">=</span><span class="mi">256</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        test the model</span>
 <span class="sd">        </span>
@@ -694,8 +692,6 @@
 <span class="sd">            num_workers using in pytorch DataLoader, default 4</span>
 <span class="sd">        auc_test_rounds : int, optional</span>
 <span class="sd">            number of epoch for predciting, default 256</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            tensorboard logdir, default &#39;tmp&#39;</span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        predict_score_arr : Torch.tensor</span>
@@ -717,6 +713,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
         <span class="n">predict_score_arr</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">auc_test_rounds</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">rnd</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">auc_test_rounds</span><span class="p">):</span>
             <span class="n">test_loader</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">random_walk_sampling</span><span class="p">()</span>
             <span class="n">predict_score</span> <span class="o">=</span> <span class="n">test_epoch</span><span class="p">(</span>

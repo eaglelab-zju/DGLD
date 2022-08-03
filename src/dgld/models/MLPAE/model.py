@@ -1,19 +1,18 @@
-""" Graph Convolutional Network Autoencoder
+""" Multilayer Perceptron Autoencoder
 """
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
-from dgl.nn.pytorch import GraphConv
+from torch.utils.data import DataLoader
 
 import dgl
-from dgl.nn import GraphConv
 from dgl.dataloading import MultiLayerFullNeighborSampler, NodeDataLoader
 from dgld.utils.early_stopping import EarlyStopping
 
 
-class GCN(nn.Module):
+class MLP(nn.Module):
     """
-        Base GCN model
+        Base MLP model
     """
 
     def __init__(self,
@@ -24,37 +23,30 @@ class GCN(nn.Module):
                  dropout,
                  activation
                  ):
-        super(GCN, self).__init__()
+        super(MLP, self).__init__()
         self.layers = nn.ModuleList()
         # input layer
-        self.layers.append(GraphConv(in_feats, n_hidden, bias=False, activation=activation))
+        self.layers.append(nn.Linear(in_feats, n_hidden))
         # hidden layers
         for i in range(1, n_layers - 1):
-            self.layers.append(GraphConv(n_hidden, n_hidden, bias=False, activation=activation))
-        self.layers.append(GraphConv(n_hidden, out_feats, bias=False, activation=None))
+            self.layers.append(nn.Linear(n_hidden, n_hidden))
+        self.layers.append(nn.Linear(n_hidden, out_feats))
         self.dropout = nn.Dropout(p=dropout)
         self.act = activation
 
-    def forward(self, g, features):
+    def forward(self, features):
         h = features
-        if isinstance(g, list):
-            # mini batch forward compute
-            assert len(g) == len(self.layers)
-            for i, layer in enumerate(self.layers):
-                if i != 0:
-                    h = self.dropout(h)
-                h = layer(g[i], h)
-        else:
-            for i, layer in enumerate(self.layers):
-                if i != 0:
-                    h = self.dropout(h)
-                h = layer(g, h)
+        for i, layer in enumerate(self.layers):
+            if i != 0:
+                h = self.act(h)
+                h = self.dropout(h)
+            h = layer(h)
 
         return h
 
 
-class GCNAEModel(nn.Module):
-    """This is a basic model of GCNAE.
+class MLPAEModel(nn.Module):
+    """This is a basic model of MLPAE.
 
         Parameters
         ----------
@@ -70,22 +62,21 @@ class GCNAEModel(nn.Module):
             Activation function. Default: torch.nn.functional.relu.
 
         """
+
     def __init__(self,
                  feat_size,
                  hidden_dim=64,
                  n_layers=2,
                  dropout=0.3,
                  act=F.relu):
-        super(GCNAEModel, self).__init__()
-        self.net = GCN(feat_size, hidden_dim, feat_size, n_layers, dropout, act)
+        super(MLPAEModel, self).__init__()
+        self.net = MLP(feat_size, hidden_dim, feat_size, n_layers, dropout, act)
 
-    def forward(self, g, features):
+    def forward(self, features):
         """Forward Propagation
 
         Parameters
         ----------
-        g : dgl.DGLGraph
-            graph dataset
         features : torch.tensor
             features of nodes
 
@@ -95,45 +86,45 @@ class GCNAEModel(nn.Module):
             Reconstructed node matrix
 
         """
-        x = self.net(g, features)
+        x = self.net(features)
 
         return x
 
 
-class GCNAE(nn.Module):
-    """ Graph Convolutional Networks Autoencoder
-    
+class MLPAE(nn.Module):
+    """ Multilayer Perceptron Autoencoder
+
     Parameters
     ----------
     feat_size : int
         dimension of input node feature.
     hidden_dim : int, optional
-        dimension of hidden layers' feature. Defaults: 64.
+        dimension of hidden layers' feature. Defaults: 128.
     n_layers : int, optional
         number of network layers. Defaults: 2.
     dropout : float, optional
         dropout probability. Defaults: 0.3.
     act : callable activation function, optional
         Activation function. Default: torch.nn.functional.relu.
-        
+
     Examples
     -------
-    >>> from dgld.models.GCNAE import GCNAE
-    >>> model = GCNAE(feat_size=1433)
+    >>> from  dgld.models.MLPAE import MLPAE
+    >>> model = MLPAE(feat_size=1433)
     >>> model.fit(g, num_epoch=1)
     >>> result = model.predict(g)
     """
 
     def __init__(self,
                  feat_size,
-                 hidden_dim=64,
+                 hidden_dim=128,
                  n_layers=2,
                  dropout=0.3,
                  act=F.relu
                  ):
-        super(GCNAE, self).__init__()
+        super(MLPAE, self).__init__()
         self.n_layers = n_layers
-        self.model = GCNAEModel(feat_size, hidden_dim, n_layers, dropout, act=act)
+        self.model = MLPAEModel(feat_size, hidden_dim, n_layers, dropout, act=act)
 
     def loss_func(self, x, x_hat):
         """
@@ -161,7 +152,7 @@ class GCNAE(nn.Module):
             batch_size=0,
             num_epoch=100,
             weight_decay=0.,
-            device='cpu'
+            device=0
             ):
         """Fitting model
 
@@ -170,11 +161,11 @@ class GCNAE(nn.Module):
         g : dgl.DGLGraph
             graph dataset.
         lr : float, optional
-            learning rate. Defaults: 5e-3.
+            learning rate. Defaults: 1e-3.
         batch_size : int, optional
             the size of training batch. Defaults: 0 for full graph train.
         num_epoch : int, optional
-            number of training epochs. Defaults: 100.
+            number of training epochs. Defaults: 1.
         weight_decay : float, optional
             weight decay (L2 penalty). Defaults: 0.
         device : str, optional
@@ -198,7 +189,6 @@ class GCNAE(nn.Module):
         g = g.to(device)
         features = features.to(device)
 
-
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
         early_stop = EarlyStopping(early_stopping_rounds=10, patience=20)
@@ -208,7 +198,7 @@ class GCNAE(nn.Module):
 
             self.model.train()
             for epoch in range(num_epoch):
-                x_hat = self.model(g, features)
+                x_hat = self.model(features)
 
                 train_loss = torch.mean(self.loss_func(features, x_hat))
 
@@ -217,7 +207,6 @@ class GCNAE(nn.Module):
                 optimizer.step()
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(train_loss.item()))
-
 
                 early_stop(train_loss.cpu().detach(), self.model)
                 if early_stop.isEarlyStopping():
@@ -243,9 +232,8 @@ class GCNAE(nn.Module):
                 epoch_loss = 0.0
 
                 for i, (input_nodes, output_nodes, blocks) in enumerate(dataloader):
-                    blocks = [b.to(device) for b in blocks]
                     bfeatures = features[input_nodes]
-                    x_hat = self.model(blocks, bfeatures)
+                    x_hat = self.model(bfeatures)
 
                     train_loss = torch.mean(self.loss_func(features[output_nodes], x_hat))
                     epoch_loss += train_loss.item()
@@ -258,7 +246,6 @@ class GCNAE(nn.Module):
                           "{:.5f}".format(train_loss.item()))
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(epoch_loss))
-
 
                 early_stop(epoch_loss, self.model)
                 if early_stop.isEarlyStopping():
@@ -304,7 +291,7 @@ class GCNAE(nn.Module):
 
         if batch_size == 0:
             with torch.no_grad():
-                x_hat = self.model(g, features)
+                x_hat = self.model(features)
 
             predict_score = self.loss_func(features, x_hat)
 
@@ -320,9 +307,8 @@ class GCNAE(nn.Module):
             with torch.no_grad():
                 predict_score = torch.zeros(g.num_nodes()).to(device)
                 for input_nodes, output_nodes, blocks in dataloader:
-                    blocks = [b.to(device) for b in blocks]
                     feat = features[input_nodes]
-                    x_hat = self.model(blocks, feat)
+                    x_hat = self.model(feat)
                     bscore = self.loss_func(features[output_nodes], x_hat)
                     predict_score[output_nodes] = bscore
 
