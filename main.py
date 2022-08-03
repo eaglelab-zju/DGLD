@@ -21,6 +21,7 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
+from dgld.models.MLPAE import MLPAE
 import time
 import os 
 
@@ -71,6 +72,8 @@ if __name__ == "__main__":
     elif args.model == 'ANEMONE':
         model = ANEMONE(**args_dict["model"])
     elif args.model == 'GCNAE':
+        model = GCNAE(**args_dict["model"])
+    elif args.model == 'MLPAE':
         model = GCNAE(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")

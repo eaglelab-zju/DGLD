@@ -68,7 +68,6 @@
   <h1>Source code for dgld.models.CONAD.models</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 
 <span class="kn">import</span> <span class="nn">dgl</span>
 <span class="kn">from</span> <span class="nn">dgl.nn</span> <span class="kn">import</span> <span class="n">GATConv</span>
@@ -106,7 +105,6 @@
             <span class="n">graph</span><span class="p">,</span>
             <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
             <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-            <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span>
             <span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">margin</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
@@ -126,8 +124,6 @@
 <span class="sd">            learning rate, by default 1e-3</span>
 <span class="sd">        weight_decay : float, optional</span>
 <span class="sd">            weight decay (L2 penalty), by default 0.</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            log dir, by default &#39;tmp&#39;</span>
 <span class="sd">        num_epoch : int, optional</span>
 <span class="sd">            number of training epochs, by default 1</span>
 <span class="sd">        margin : float, optional </span>
@@ -170,7 +166,6 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> 
         
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -181,7 +176,6 @@
                 
                 <span class="n">loss_epoch</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">g_orig</span><span class="p">,</span> <span class="n">g_aug</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="o">=</span><span class="n">eta</span><span class="p">)</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train/loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss_epoch</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-                <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
                 
                 <span class="n">early_stop</span><span class="p">(</span><span class="n">loss_epoch</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
@@ -191,8 +185,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;batch graph training!!!&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
                 <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step_batch</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">g_orig</span><span class="p">,</span> <span class="n">g_aug</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">eta</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train/loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">))</span>   
-                <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;train/loss&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>    
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train/loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="p">))</span>    
                 
                 <span class="n">early_stop</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>

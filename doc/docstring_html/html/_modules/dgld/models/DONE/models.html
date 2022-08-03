@@ -69,7 +69,6 @@
 <span></span><span class="kn">from</span> <span class="nn">tabnanny</span> <span class="kn">import</span> <span class="n">verbose</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 
 <span class="kn">import</span> <span class="nn">dgl</span>
 <span class="kn">import</span> <span class="nn">dgl.function</span> <span class="k">as</span> <span class="nn">fn</span>
@@ -115,7 +114,6 @@
             <span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">num_neighbors</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
             <span class="n">alphas</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">,</span>
-            <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">max_len</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> 
             <span class="n">restart</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -137,8 +135,6 @@
 <span class="sd">            number of sampling neighbors, by default -1</span>
 <span class="sd">        alphas : list, optional</span>
 <span class="sd">            balance parameters, by default [0.2]*5</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            log dir, by default &#39;tmp&#39;</span>
 <span class="sd">        batch_size : int, optional</span>
 <span class="sd">            the size of training batch, by default 0</span>
 <span class="sd">        max_len : int, optional</span>
@@ -164,7 +160,6 @@
             
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
         
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         
         <span class="c1"># preprocessing</span>
         <span class="c1"># graph = graph.remove_self_loop().add_self_loop()</span>
@@ -184,8 +179,6 @@
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
             <span class="n">score</span><span class="p">,</span> <span class="n">loss</span> <span class="o">=</span> <span class="n">train_step</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">adj</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">alphas</span><span class="p">,</span> <span class="n">num_neighbors</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="si">:</span><span class="s2">04d</span><span class="si">}</span><span class="s2">, train/loss=</span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalar</span><span class="p">(</span><span class="s1">&#39;train/loss&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="p">,</span> <span class="n">epoch</span><span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             
             <span class="n">early_stop</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
