@@ -7,9 +7,6 @@ from dgl.nn import GATConv
 
 from copy import deepcopy
 from .conad_utils import train_step, test_step, train_step_batch, test_step_batch
-
-import sys
-sys.path.append('../../')
 from dgld.utils.early_stopping import EarlyStopping
 
 class CONAD(nn.Module):
