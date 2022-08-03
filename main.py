@@ -24,6 +24,17 @@ from dgld.models.GCNAE import GCNAE
 from dgld.models.MLPAE import MLPAE
 import time
 import os 
+class Logger(object):
+    def __init__(self, filename="Default.log"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -35,8 +46,8 @@ if __name__ == "__main__":
         log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.txt'
         if not os.path.exists('result'):
             os.makedirs('result')
-    sys.stdout = open(log_dir, mode = 'w',encoding='utf-8')
-
+    sys.stdout = Logger(log_dir)
+    
     graph = load_data(data_name)
 
     graph = inject_contextual_anomalies(graph=graph,k=K,p=P,q=Q_MAP[data_name])
