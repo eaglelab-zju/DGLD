@@ -10,7 +10,6 @@ from scipy.spatial.distance import euclidean
 import scipy.sparse as spp
 from tqdm import tqdm
 from torch.autograd import Variable # torch 中 Variable 模块
-from torch.utils.tensorboard import SummaryWriter
 from utils.early_stopping import EarlyStopping
 
 class AAGNN_batch(nn.Module):
@@ -35,7 +34,7 @@ class AAGNN_batch(nn.Module):
         self.model = model_base(feat_size, out_feats)
         self.out_feats = out_feats
     
-    def fit(self, graph, num_epoch=100, device='cpu', lr=0.0001, logdir='tmp', subgraph_size=4096):
+    def fit(self, graph, num_epoch=100, device='cpu', lr=0.0001,  subgraph_size=4096):
         """
         This is a function used to train the model.
 
@@ -53,8 +52,6 @@ class AAGNN_batch(nn.Module):
         lr : float
             Learning rate for model training.
         
-        logdir: str
-            The storage address of the training log.
 
         subgraph_size : int
             The size of training subgraph.
@@ -84,7 +81,6 @@ class AAGNN_batch(nn.Module):
             edge_dic[v].append(u)
         
         node_ids = model.get_normal_nodes(features, 0.5, device)
-        writer = SummaryWriter(log_dir=logdir)
         model.train()
         early_stop = EarlyStopping(early_stopping_rounds=10, patience=10)
         for epoch in range(num_epoch):
@@ -107,7 +103,6 @@ class AAGNN_batch(nn.Module):
                 )))
 
             
-            writer.flush()
             early_stop(epoch_loss, model)
             if early_stop.isEarlyStopping():
                 print(f"Early stopping in round{epoch}")

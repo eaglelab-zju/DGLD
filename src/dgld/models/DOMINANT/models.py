@@ -7,7 +7,6 @@ import torch
 import numpy as np
 from dgl.nn.pytorch import GraphConv
 from .dominant_utils import  train_step, test_step,normalize_adj
-from torch.utils.tensorboard import SummaryWriter
 from utils.early_stopping import EarlyStopping
 
 class Dominant(nn.Module):
@@ -28,7 +27,7 @@ class Dominant(nn.Module):
         super(Dominant, self).__init__()
         self.model = DominantModel(feat_size, hidden_size, dropout)
     
-    def fit(self,graph,lr=5e-3,logdir='tmp',num_epoch=1,alpha=0.8,device='cpu',patience=10):
+    def fit(self,graph,lr=5e-3,num_epoch=1,alpha=0.8,device='cpu',patience=10):
         """Fitting model
 
         Parameters
@@ -37,8 +36,6 @@ class Dominant(nn.Module):
             graph dataset
         lr : float, optional
             learning rate, by default 5e-3
-        logdir : str, optional
-            log dir, by default 'tmp'
         num_epoch : int, optional
             number of training epochs , by default 1
         alpha : float, optional
@@ -78,7 +75,6 @@ class Dominant(nn.Module):
             device = torch.device("cpu")
             print('Using cpu!!!')      
         
-        writer = SummaryWriter(log_dir=logdir)
         
         early_stop = EarlyStopping(early_stopping_rounds=patience,patience = patience)
 
@@ -88,12 +84,6 @@ class Dominant(nn.Module):
                 self.model, optimizer, graph, features,adj_label,alpha)
             print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(loss.item(
             )), "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=", "{:.5f}".format(feat_loss.item()))
-            writer.add_scalars(
-                "loss",
-                {"loss": loss, "struct_loss": struct_loss, "feat_loss": feat_loss},
-                epoch,
-            )
-            writer.flush()
             
             early_stop(loss, self.model)
  

@@ -2,7 +2,7 @@ import os
 import sys
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
-print(current_dir)
+# print(current_dir)
 sys.path.append(current_dir)
 import torch.nn.functional as F
 import numpy as np

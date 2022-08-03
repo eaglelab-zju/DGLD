@@ -22,7 +22,7 @@ from dgl.nn.pytorch import EdgeWeightNorm
 
 sys.path.append('../../')
 from dataset import GraphNodeAnomalyDectionDataset
-from sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
+from utils.sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
 from datetime import datetime
 
 # torch.set_default_tensor_type(torch.DoubleTensor)

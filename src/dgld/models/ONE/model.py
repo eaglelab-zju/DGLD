@@ -172,7 +172,7 @@ class ONE():
             outl3 = outl3_numer / outl3_denom
             
             loss = loss_func(A, C, G, H, U, V, W, outl1, outl2, outl3, alpha, beta, gamma)
-            early_stop(loss,nn.Module())
+            early_stop(loss)
             if early_stop.isEarlyStopping():
                 print(f"Early stopping in round {epoch}")
                 break

@@ -54,6 +54,9 @@ from models.ANEMONE import get_subargs as anemone_get_args
 # GCNAE
 from models.GCNAE import set_subargs as gcnae_set_args
 from models.GCNAE import get_subargs as gcnae_get_args
+# Radar
+from models.Radar import set_subargs as radar_set_args
+from models.Radar import get_subargs as radar_get_args
 
 # set args
 models_set_args_map = {
@@ -71,7 +74,8 @@ models_set_args_map = {
     "SLGAD": slgad_set_args,
     "AAGNN": aagnn_set_args,
     "ANEMONE": anemone_set_args,
-    "GCNAE": gcnae_set_args
+    "GCNAE": gcnae_set_args,
+    "Radar": radar_set_args
 }
 # get args
 models_get_args_map = {
@@ -89,7 +93,8 @@ models_get_args_map = {
     "SLGAD":slgad_get_args,
     "AAGNN": aagnn_get_args,
     "ANEMONE": anemone_get_args,
-    "GCNAE": gcnae_get_args
+    "GCNAE": gcnae_get_args,
+    "Radar": radar_get_args
 }
 
 
@@ -109,7 +114,10 @@ def parse_all_args() -> argparse.Namespace:
                         type=int,
                         default=4096,
                         help='Random seed. Defaults to 4096.')
-
+    parser.add_argument('--logdir',
+                        type=str,
+                        default=None,
+                        help='The path of stored results.')
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
     # set sub args
