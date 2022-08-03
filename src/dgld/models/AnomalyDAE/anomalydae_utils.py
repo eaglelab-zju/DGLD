@@ -11,7 +11,6 @@ from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--embed_dim', type=int, default=256,
                         help='dimension of hidden embedding (default: 256)')
     parser.add_argument('--out_dim', type=int, default=128,
@@ -31,8 +30,6 @@ def set_subargs(parser):
     parser.add_argument('--patience', type=int, help='early stop patience',default=10)
     
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
 
     if args.lr is None:
         args.lr = 1e-3
@@ -75,7 +72,6 @@ def get_subargs(args):
         },
         "fit":{
             "lr":args.lr,
-            "logdir":args.logdir,
             "num_epoch":args.num_epoch,
             "alpha":args.alpha,
             "eta":args.eta,

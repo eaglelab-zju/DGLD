@@ -16,7 +16,6 @@ import dgl
 from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
     parser.add_argument('--disc_update_times', type=int, default=1)
     parser.add_argument('--gen_update_times', type=int, default=5)
@@ -34,8 +33,7 @@ def set_subargs(parser):
     
 
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
+
 
     best_config = loadargs_from_json('src/dgld/config/AdONE.json')[args.dataset]
     config = vars(args)
@@ -74,7 +72,6 @@ def get_subargs(args):
             "lr_disc": args.lr_disc,
             "lr_gen": args.lr_gen,
             "weight_decay": args.weight_decay,
-            "logdir": args.logdir,
             "num_epoch": args.num_epoch,
             "disc_update_times": args.disc_update_times,
             "gen_update_times": args.gen_update_times,

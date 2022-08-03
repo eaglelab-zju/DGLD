@@ -18,6 +18,7 @@ Subpackages
    dgld.models.DOMINANT
    dgld.models.DONE
    dgld.models.GAAN
+   dgld.models.GCNAE
    dgld.models.GUIDE
    dgld.models.ONE
    dgld.models.SLGAD

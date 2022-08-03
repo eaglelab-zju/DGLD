@@ -1,0 +1,7 @@
+dgld.models.GCNAE.gcnae\_utils 
+===============================
+
+.. automodule:: dgld.models.GCNAE.gcnae_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

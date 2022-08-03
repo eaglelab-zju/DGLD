@@ -20,12 +20,33 @@ from dgld.models.CoLA import CoLA
 from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
+from dgld.models.GCNAE import GCNAE
+import time
+import os 
+class Logger(object):
+    def __init__(self, filename="Default.log"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
     seed_everything(args_dict['seed'])
 
     data_name = args_dict['dataset']
+    log_dir = args.logdir
+    if log_dir is None:
+        log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.txt'
+        if not os.path.exists('result'):
+            os.makedirs('result')
+    sys.stdout = Logger(log_dir)
+    
     graph = load_data(data_name)
 
     graph = inject_contextual_anomalies(graph=graph,k=K,p=P,q=Q_MAP[data_name])
@@ -60,6 +81,8 @@ if __name__ == "__main__":
         model = SLGAD(**args_dict["model"])
     elif args.model == 'ANEMONE':
         model = ANEMONE(**args_dict["model"])
+    elif args.model == 'GCNAE':
+        model = GCNAE(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

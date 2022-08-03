@@ -4,7 +4,7 @@ import torch
 import dgl
 import os,sys
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
+current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 from utils.common_params import IN_FEATURE_MAP
@@ -13,7 +13,6 @@ import argparse
 from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
     parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.)
@@ -25,8 +24,6 @@ def set_subargs(parser):
     parser.add_argument('--batch_size', type=int, default=0)
     
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
     
     best_config = loadargs_from_json('src/dgld/config/CONAD.json')[args.dataset]
     config = vars(args)
@@ -42,7 +39,6 @@ def get_subargs(args):
         "fit":{
             "lr": args.lr,
             "weight_decay": args.weight_decay,
-            "logdir": args.logdir,
             "num_epoch": args.num_epoch,
             "device": args.device,
             "eta": args.eta,

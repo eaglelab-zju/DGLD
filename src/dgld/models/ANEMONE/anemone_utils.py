@@ -31,15 +31,10 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--logdir', type=str, default='tmp')
     parser.add_argument('--global_adg', type=bool, default=True)
 
 
 def get_subargs(args):
-    if os.path.exists(args.logdir):
-        shutil.rmtree(args.logdir)
-    else:
-        os.makedirs(args.logdir)
 
     if args.lr is None:
         if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
@@ -78,7 +73,6 @@ def get_subargs(args):
             "batch_size": args.batch_size,
             "num_epoch": args.num_epoch,
             "lr": args.lr,
-            "logdir": args.logdir,
             "weight_decay": args.weight_decay,
             "seed": args.seed,
         },
@@ -87,7 +81,6 @@ def get_subargs(args):
             "batch_size": args.batch_size,
             "num_workers": args.num_workers,
             "auc_test_rounds": args.auc_test_rounds,
-            "logdir": args.logdir
         }
     }
     return final_args_dict, args
@@ -159,7 +152,7 @@ def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
         optimizer.zero_grad()
         pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec = net(pos_subgraph, posfeat, neg_subgraph,
                                                                              negfeat)
-        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device,alpha)
+        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, alpha)
         # print('loss::::::',loss)
         loss.backward()
         optimizer.step()
@@ -168,7 +161,7 @@ def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
     return loss_accum
 
 
-def test_epoch(epoch, alpha, loader, net, device, criterion, optimizer):
+def test_epoch(epoch, alpha, loader, net, device, criterion):
     """test_epoch, test model in one epoch
     Parameters
     ----------
@@ -203,7 +196,7 @@ def test_epoch(epoch, alpha, loader, net, device, criterion, optimizer):
             alpha * (torch.sigmoid(neg_scores_rdt) - torch.sigmoid(pos_scores_rdt)).detach().cpu().numpy() + (
                         1 - alpha) * (
                         torch.sigmoid(neg_scores_rec) - torch.sigmoid(pos_scores_rec)).detach().cpu().numpy()))
-        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, args)
+        loss, acc = loss_fun(pos_scores_rdt, pos_scores_rec, neg_scores_rdt, neg_scores_rec, criterion, device, alpha)
         loss_accum += loss.item()
     loss_accum /= (step + 1)
     # lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.2f}'.format(loss_accum), color='blue')

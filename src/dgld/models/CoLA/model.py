@@ -5,7 +5,6 @@ import torch.optim as optim
 from torch.nn import init
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
 
 from dgl.dataloading import GraphDataLoader
 from dgl.nn.pytorch import EdgeWeightNorm, GraphConv, GATConv
@@ -13,7 +12,7 @@ from dgl.nn.pytorch import SumPooling, AvgPooling, MaxPooling, GlobalAttentionPo
 
 from .dataset import CoLADataSet
 from .colautils import train_epoch, test_epoch
-
+from utils.early_stopping import EarlyStopping
 import numpy as np
 
 class Discriminator(nn.Module):
@@ -295,7 +294,7 @@ class CoLA():
         self.model = CoLAModel(in_feats, out_feats, global_adg)
         self.criterion = torch.nn.BCEWithLogitsLoss()
 
-    def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, logdir='tmp', seed=42):
+    def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, seed=42):
         """train the model
 
         Parameters
@@ -314,8 +313,6 @@ class CoLA():
             num_workers using in `pytorch DataLoader`, by default 4
         num_epoch : int, optional
             number of epoch for training, by default 100
-        logdir : str, optional
-            tensorboard logdir, by default 'tmp'
 
         Returns
         -------
@@ -340,17 +337,20 @@ class CoLA():
         optimizer = optim.Adam(
             self.model.parameters(), lr=lr, weight_decay=weight_decay
         )
-        writer = SummaryWriter(log_dir=logdir)
-
+        early_stopper = EarlyStopping(early_stopping_rounds=300, patience=10)
         for epoch in range(num_epoch):
             train_loader.dataset.random_walk_sampling()
             loss_accum = train_epoch(
                 epoch, train_loader, self.model, device, self.criterion, optimizer
             )
-            writer.add_scalar("loss", float(loss_accum), epoch)
+            early_stopper(loss_accum, self.model)
+            if early_stopper.isEarlyStopping():
+                print("early_stopp....@", epoch)
+                break
+
         return self
 
-    def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, logdir='tmp'):
+    def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256):
         """test model
 
         Parameters
@@ -365,9 +365,6 @@ class CoLA():
             description, by default 4
         auc_test_rounds : int, optional
             description, by default 256
-        logdir : str, optional
-            description, by default 'tmp'
-
         Returns
         -------
         predict_score_arr : numpy.ndarray

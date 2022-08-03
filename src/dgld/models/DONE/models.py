@@ -1,7 +1,6 @@
 from tabnanny import verbose
 import torch
 import torch.nn as nn
-from torch.utils.tensorboard import SummaryWriter
 
 import dgl
 import dgl.function as fn
@@ -47,7 +46,6 @@ class DONE():
             num_epoch=1,
             num_neighbors=-1,
             alphas=[0.2]*5,
-            logdir='tmp',
             batch_size=0,
             max_len=0, 
             restart=0.5,
@@ -69,8 +67,6 @@ class DONE():
             number of sampling neighbors, by default -1
         alphas : list, optional
             balance parameters, by default [0.2]*5
-        logdir : str, optional
-            log dir, by default 'tmp'
         batch_size : int, optional
             the size of training batch, by default 0
         max_len : int, optional
@@ -96,7 +92,6 @@ class DONE():
             
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
         
-        writer = SummaryWriter(log_dir=logdir)
         
         # preprocessing
         # graph = graph.remove_self_loop().add_self_loop()
@@ -116,8 +111,6 @@ class DONE():
         for epoch in range(num_epoch):
             score, loss = train_step(self.model, optimizer, graph, adj, batch_size, alphas, num_neighbors, device)
             print(f"Epoch: {epoch:04d}, train/loss={loss:.5f}")
-            writer.add_scalar('train/loss', loss, epoch)
-            writer.flush()
             
             early_stop(loss, self.model)
             if early_stop.isEarlyStopping():

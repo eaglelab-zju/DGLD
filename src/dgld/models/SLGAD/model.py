@@ -502,7 +502,7 @@ from .dataset import SL_GAD_DataSet
 from .SL_GAD_utils import train_epoch, test_epoch
 from dgl.dataloading import GraphDataLoader
 import torch.optim as optim
-from torch.utils.tensorboard import SummaryWriter
+
 
 class SLGAD():    
     def __init__(self, in_feats=1433, out_feats=64, global_adg=True, alpha = 1.0, beta = 0.6, args = None):
@@ -545,7 +545,7 @@ class SLGAD():
         self.model = SL_GAD_Model(in_feats, out_feats, global_adg, args = args)
         self.criterion = torch.nn.BCEWithLogitsLoss()
 
-    def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, logdir='tmp', seed=42):
+    def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, seed=42):
         """
         train the model
 
@@ -565,8 +565,6 @@ class SLGAD():
             num_workers using in `pytorch DataLoader`, default 4
         num_epoch : int, optional
             number of epoch for training, default 100
-        logdir : str, optional
-            tensorboard logdir, default 'tmp'
         seed : int, optional
             random seed, default 42
             
@@ -595,7 +593,7 @@ class SLGAD():
         optimizer = optim.Adam(
             self.model.parameters(), lr=lr, weight_decay=weight_decay
         )
-        writer = SummaryWriter(log_dir=logdir)
+
         early_stop = EarlyStopping(patience = 100, check_finite = True)
 
         for epoch in range(num_epoch):
@@ -603,14 +601,14 @@ class SLGAD():
             loss_accum = train_epoch(
                 epoch = epoch, loader = train_loader, net = self.model, device = device, criterion = self.criterion, optimizer = optimizer, args = self.args
             )
-            writer.add_scalar("loss", float(loss_accum), epoch)
+
             early_stop(loss_accum, self.model)
-            if early_stop.isEarlyStopping:
+            if early_stop.isEarlyStopping():
                 print(f"Early stopping in round {epoch}")
                 break
         return self
 
-    def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, logdir='tmp'):
+    def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256):
         """
         test the model
         
@@ -626,8 +624,6 @@ class SLGAD():
             num_workers using in pytorch DataLoader, default 4
         auc_test_rounds : int, optional
             number of epoch for predciting, default 256
-        logdir : str, optional
-            tensorboard logdir, default 'tmp'
         Returns
         -------
         predict_score_arr : Torch.tensor
@@ -649,6 +645,7 @@ class SLGAD():
         self.model.to(device)
 
         predict_score_arr = []
+        print(auc_test_rounds)
         for rnd in range(auc_test_rounds):
             test_loader.dataset.random_walk_sampling()
             predict_score = test_epoch(
