@@ -1,0 +1,27 @@
+{
+    "Cora": {
+        "alpha": 0.7,
+        "beta": 0.2,
+        "gamma": 0.001
+    },
+    "Citeseer": {
+        "alpha": 2.0,
+        "beta": 5.0,
+        "gamma": 0.001
+    },
+    "Pubmed": {
+        "alpha": 0.5,
+        "beta": 0.2,
+        "gamma": 0.001
+    },
+    "BlogCatalog": {
+        "alpha": 5.0,
+        "beta": 0.5,
+        "gamma": 0.001
+    },
+    "Flickr": {
+        "alpha": 0.5,
+        "beta": 0.2,
+        "gamma": 0.001
+    }
+}
