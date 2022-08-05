@@ -21,6 +21,7 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
+from dgld.models.ANOMALOUS import ANOMALOUS
 import time
 import os 
 class Logger(object):
@@ -83,6 +84,8 @@ if __name__ == "__main__":
         model = ANEMONE(**args_dict["model"])
     elif args.model == 'GCNAE':
         model = GCNAE(**args_dict["model"])
+    elif args.model == 'ANOMALOUS':
+        model = ANOMALOUS(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

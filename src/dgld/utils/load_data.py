@@ -6,7 +6,7 @@ import scipy.io as sio
 import os,wget,ssl,sys
 import pandas as pd
 from typing import *
-from common import is_bidirected,preprocess_features
+from .common import is_bidirected,preprocess_features
 
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
@@ -189,7 +189,7 @@ other_datasets_map = {
 if __name__ == "__main__":
     import pandas as pd
     import scipy.sparse as sp
-    from inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
+    from .inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
     torch.set_printoptions(precision=10,profile='full')
     dataset_list = [
         'Cora', 'Citeseer', 'Pubmed', 'BlogCatalog', 'Flickr', 'ogbn-arxiv'
