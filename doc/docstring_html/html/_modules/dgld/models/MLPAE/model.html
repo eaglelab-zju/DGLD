@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dgld.models.GCNAE.model &mdash; DGLD 0.0.1 documentation</title>
+  <title>dgld.models.MLPAE.model &mdash; DGLD 0.0.1 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
@@ -56,7 +56,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>dgld.models.GCNAE.model</li>
+      <li>dgld.models.MLPAE.model</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -65,23 +65,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for dgld.models.GCNAE.model</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot; Graph Convolutional Network Autoencoder</span>
+  <h1>Source code for dgld.models.MLPAE.model</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot; Multilayer Perceptron Autoencoder</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 <span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
 <span class="kn">import</span> <span class="nn">torch</span>
-<span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">GraphConv</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
 
 <span class="kn">import</span> <span class="nn">dgl</span>
-<span class="kn">from</span> <span class="nn">dgl.nn</span> <span class="kn">import</span> <span class="n">GraphConv</span>
 <span class="kn">from</span> <span class="nn">dgl.dataloading</span> <span class="kn">import</span> <span class="n">MultiLayerFullNeighborSampler</span><span class="p">,</span> <span class="n">NodeDataLoader</span>
 <span class="kn">from</span> <span class="nn">dgld.utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 
-<div class="viewcode-block" id="GCN"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCN">[docs]</a><span class="k">class</span> <span class="nc">GCN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="MLP"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLP">[docs]</a><span class="k">class</span> <span class="nc">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Base GCN model</span>
+<span class="sd">        Base MLP model</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -92,37 +91,30 @@
                  <span class="n">dropout</span><span class="p">,</span>
                  <span class="n">activation</span>
                  <span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GCN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MLP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
         <span class="c1"># input layer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_feats</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">))</span>
         <span class="c1"># hidden layers</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_layers</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="n">activation</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GraphConv</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">activation</span><span class="o">=</span><span class="kc">None</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span> <span class="n">n_hidden</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_hidden</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">dropout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">act</span> <span class="o">=</span> <span class="n">activation</span>
 
-<div class="viewcode-block" id="GCN.forward"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+<div class="viewcode-block" id="MLP.forward"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLP.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
         <span class="n">h</span> <span class="o">=</span> <span class="n">features</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="c1"># mini batch forward compute</span>
-            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-                <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">h</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
-                <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+                <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">h</span></div></div>
 
 
-<div class="viewcode-block" id="GCNAEModel"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAEModel">[docs]</a><span class="k">class</span> <span class="nc">GCNAEModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;This is a basic model of GCNAE.</span>
+<div class="viewcode-block" id="MLPAEModel"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAEModel">[docs]</a><span class="k">class</span> <span class="nc">MLPAEModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is a basic model of MLPAE.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -138,22 +130,21 @@
 <span class="sd">            Activation function. Default: torch.nn.functional.relu.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">feat_size</span><span class="p">,</span>
                  <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
                  <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                  <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
                  <span class="n">act</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GCNAEModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">GCN</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">act</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MLPAEModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">net</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">feat_size</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">act</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GCNAEModel.forward"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAEModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
+<div class="viewcode-block" id="MLPAEModel.forward"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAEModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward Propagation</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        g : dgl.DGLGraph</span>
-<span class="sd">            graph dataset</span>
 <span class="sd">        features : torch.tensor</span>
 <span class="sd">            features of nodes</span>
 
@@ -163,47 +154,47 @@
 <span class="sd">            Reconstructed node matrix</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">net</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="GCNAE"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAE">[docs]</a><span class="k">class</span> <span class="nc">GCNAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Graph Convolutional Networks Autoencoder</span>
-<span class="sd">    </span>
+<div class="viewcode-block" id="MLPAE"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAE">[docs]</a><span class="k">class</span> <span class="nc">MLPAE</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Multilayer Perceptron Autoencoder</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    feat_size : int</span>
 <span class="sd">        dimension of input node feature.</span>
 <span class="sd">    hidden_dim : int, optional</span>
-<span class="sd">        dimension of hidden layers&#39; feature. Defaults: 64.</span>
+<span class="sd">        dimension of hidden layers&#39; feature. Defaults: 128.</span>
 <span class="sd">    n_layers : int, optional</span>
 <span class="sd">        number of network layers. Defaults: 2.</span>
 <span class="sd">    dropout : float, optional</span>
 <span class="sd">        dropout probability. Defaults: 0.3.</span>
 <span class="sd">    act : callable activation function, optional</span>
 <span class="sd">        Activation function. Default: torch.nn.functional.relu.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    -------</span>
-<span class="sd">    &gt;&gt;&gt; from dgld.models.GCNAE import GCNAE</span>
-<span class="sd">    &gt;&gt;&gt; model = GCNAE(feat_size=1433)</span>
+<span class="sd">    &gt;&gt;&gt; from  dgld.models.MLPAE import MLPAE</span>
+<span class="sd">    &gt;&gt;&gt; model = MLPAE(feat_size=1433)</span>
 <span class="sd">    &gt;&gt;&gt; model.fit(g, num_epoch=1)</span>
 <span class="sd">    &gt;&gt;&gt; result = model.predict(g)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">feat_size</span><span class="p">,</span>
-                 <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span>
+                 <span class="n">hidden_dim</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
                  <span class="n">n_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                  <span class="n">dropout</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
                  <span class="n">act</span><span class="o">=</span><span class="n">F</span><span class="o">.</span><span class="n">relu</span>
                  <span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">GCNAE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MLPAE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">GCNAEModel</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">act</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">MLPAEModel</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="p">,</span> <span class="n">act</span><span class="o">=</span><span class="n">act</span><span class="p">)</span>
 
-<div class="viewcode-block" id="GCNAE.loss_func"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAE.loss_func">[docs]</a>    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">):</span>
+<div class="viewcode-block" id="MLPAE.loss_func"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAE.loss_func">[docs]</a>    <span class="k">def</span> <span class="nf">loss_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Calculate the loss</span>
 
@@ -223,13 +214,13 @@
         <span class="n">loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_hat</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">loss</span></div>
 
-<div class="viewcode-block" id="GCNAE.fit"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAE.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="MLPAE.fit"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAE.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
             <span class="n">g</span><span class="p">,</span>
             <span class="n">lr</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span>
             <span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
             <span class="n">weight_decay</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-            <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span>
+            <span class="n">device</span><span class="o">=</span><span class="mi">0</span>
             <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fitting model</span>
 
@@ -238,11 +229,11 @@
 <span class="sd">        g : dgl.DGLGraph</span>
 <span class="sd">            graph dataset.</span>
 <span class="sd">        lr : float, optional</span>
-<span class="sd">            learning rate. Defaults: 5e-3.</span>
+<span class="sd">            learning rate. Defaults: 1e-3.</span>
 <span class="sd">        batch_size : int, optional</span>
 <span class="sd">            the size of training batch. Defaults: 0 for full graph train.</span>
 <span class="sd">        num_epoch : int, optional</span>
-<span class="sd">            number of training epochs. Defaults: 100.</span>
+<span class="sd">            number of training epochs. Defaults: 1.</span>
 <span class="sd">        weight_decay : float, optional</span>
 <span class="sd">            weight decay (L2 penalty). Defaults: 0.</span>
 <span class="sd">        device : str, optional</span>
@@ -266,7 +257,6 @@
         <span class="n">g</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
         <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 
-
         <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">weight_decay</span><span class="p">)</span>
 
         <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -276,7 +266,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
-                <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+                <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
                 <span class="n">train_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_func</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">))</span>
 
@@ -285,7 +275,6 @@
                 <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
 
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">,</span> <span class="s2">&quot;train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">train_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-
 
                 <span class="n">early_stop</span><span class="p">(</span><span class="n">train_loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
@@ -311,9 +300,8 @@
                 <span class="n">epoch_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
 
                 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">input_nodes</span><span class="p">,</span> <span class="n">output_nodes</span><span class="p">,</span> <span class="n">blocks</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataloader</span><span class="p">):</span>
-                    <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]</span>
                     <span class="n">bfeatures</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">input_nodes</span><span class="p">]</span>
-                    <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">bfeatures</span><span class="p">)</span>
+                    <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">bfeatures</span><span class="p">)</span>
 
                     <span class="n">train_loss</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_func</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">],</span> <span class="n">x_hat</span><span class="p">))</span>
                     <span class="n">epoch_loss</span> <span class="o">+=</span> <span class="n">train_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
@@ -327,13 +315,12 @@
 
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">epoch</span><span class="p">,</span> <span class="s2">&quot;train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">))</span>
 
-
                 <span class="n">early_stop</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                     <span class="k">break</span></div>
 
-<div class="viewcode-block" id="GCNAE.predict"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.model.html#dgld.models.GCNAE.model.GCNAE.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="MLPAE.predict"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.model.html#dgld.models.MLPAE.model.MLPAE.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                 <span class="n">g</span><span class="p">,</span>
                 <span class="n">batch_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
                 <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span>
@@ -372,7 +359,7 @@
 
         <span class="k">if</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-                <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">features</span><span class="p">)</span>
+                <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
             <span class="n">predict_score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_func</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">x_hat</span><span class="p">)</span>
 
@@ -388,9 +375,8 @@
             <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
                 <span class="n">predict_score</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">num_nodes</span><span class="p">())</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">input_nodes</span><span class="p">,</span> <span class="n">output_nodes</span><span class="p">,</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
-                    <span class="n">blocks</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">]</span>
                     <span class="n">feat</span> <span class="o">=</span> <span class="n">features</span><span class="p">[</span><span class="n">input_nodes</span><span class="p">]</span>
-                    <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">blocks</span><span class="p">,</span> <span class="n">feat</span><span class="p">)</span>
+                    <span class="n">x_hat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">feat</span><span class="p">)</span>
                     <span class="n">bscore</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss_func</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">],</span> <span class="n">x_hat</span><span class="p">)</span>
                     <span class="n">predict_score</span><span class="p">[</span><span class="n">output_nodes</span><span class="p">]</span> <span class="o">=</span> <span class="n">bscore</span>
 

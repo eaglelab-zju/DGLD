@@ -78,7 +78,6 @@
 <span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="nn">spp</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span> <span class="c1"># torch 中 Variable 模块</span>
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 <span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="AAGNN_batch"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch">[docs]</a><span class="k">class</span> <span class="nc">AAGNN_batch</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -103,7 +102,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model_base</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">out_feats</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_feats</span> <span class="o">=</span> <span class="n">out_feats</span>
     
-<div class="viewcode-block" id="AAGNN_batch.fit"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span> <span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span> <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
+<div class="viewcode-block" id="AAGNN_batch.fit"><a class="viewcode-back" href="../../../../dgld.models.AAGNN.AAGNN_batch.html#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">num_epoch</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">,</span>  <span class="n">subgraph_size</span><span class="o">=</span><span class="mi">4096</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        This is a function used to train the model.</span>
 
@@ -121,8 +120,6 @@
 <span class="sd">        lr : float</span>
 <span class="sd">            Learning rate for model training.</span>
 <span class="sd">        </span>
-<span class="sd">        logdir: str</span>
-<span class="sd">            The storage address of the training log.</span>
 
 <span class="sd">        subgraph_size : int</span>
 <span class="sd">            The size of training subgraph.</span>
@@ -152,7 +149,6 @@
             <span class="n">edge_dic</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
         
         <span class="n">node_ids</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_normal_nodes</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
         <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epoch</span><span class="p">):</span>
@@ -175,7 +171,6 @@
                 <span class="p">)))</span>
 
             
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             <span class="n">early_stop</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">early_stop</span><span class="o">.</span><span class="n">isEarlyStopping</span><span class="p">():</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Early stopping in round</span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>

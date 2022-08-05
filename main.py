@@ -22,6 +22,7 @@ from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
 from dgld.models.ANOMALOUS import ANOMALOUS
+from dgld.models.MLPAE import MLPAE
 import time
 import os 
 class Logger(object):
@@ -86,6 +87,8 @@ if __name__ == "__main__":
         model = GCNAE(**args_dict["model"])
     elif args.model == 'ANOMALOUS':
         model = ANOMALOUS(**args_dict["model"])
+    elif args.model == 'MLPAE':
+        model = GCNAE(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

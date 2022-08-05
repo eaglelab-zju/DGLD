@@ -57,6 +57,9 @@ from models.GCNAE import get_subargs as gcnae_get_args
 # ANOMALOUS
 from models.ANOMALOUS import set_subargs as anomalous_set_args
 from models.ANOMALOUS import get_subargs as anomalous_get_args
+#MLPAE
+from models.MLPAE import set_subargs as mlpae_set_args
+from models.MLPAE import get_subargs as mlpae_get_args
 
 # set args
 models_set_args_map = {
@@ -76,6 +79,7 @@ models_set_args_map = {
     "ANEMONE": anemone_set_args,
     "GCNAE": gcnae_set_args,
     "ANOMALOUS":anomalous_set_args,
+    "MLPAE": mlpae_set_args
 }
 # get args
 models_get_args_map = {
@@ -93,8 +97,8 @@ models_get_args_map = {
     "SLGAD":slgad_get_args,
     "AAGNN": aagnn_get_args,
     "ANEMONE": anemone_get_args,
-    "GCNAE": gcnae_get_args,
     "ANOMALOUS": anomalous_get_args,
+    "MLPAE": mlpae_get_args
 }
 
 

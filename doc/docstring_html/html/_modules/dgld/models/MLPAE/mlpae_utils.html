@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dgld.models.GCNAE.gcnae_utils &mdash; DGLD 0.0.1 documentation</title>
+  <title>dgld.models.MLPAE.mlpae_utils &mdash; DGLD 0.0.1 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
@@ -56,7 +56,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
           <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>dgld.models.GCNAE.gcnae_utils</li>
+      <li>dgld.models.MLPAE.mlpae_utils</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -65,39 +65,41 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <h1>Source code for dgld.models.GCNAE.gcnae_utils</h1><div class="highlight"><pre>
+  <h1>Source code for dgld.models.MLPAE.mlpae_utils</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">dgl</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
 <span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
-<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">))))</span>
+<span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">))))</span>
 <span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">utils.common_params</span> <span class="kn">import</span> <span class="n">IN_FEATURE_MAP</span>
 
 
-<div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.gcnae_utils.html#dgld.models.GCNAE.gcnae_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
+<div class="viewcode-block" id="set_subargs"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.mlpae_utils.html#dgld.models.MLPAE.mlpae_utils.set_subargs">[docs]</a><span class="k">def</span> <span class="nf">set_subargs</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_epoch&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Training epoch&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--lr&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.005</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;learning rate&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--weight_decay&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dropout&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--batch_size&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--hidden_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--hidden_dim&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--n_layers&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.GCNAE.gcnae_utils.html#dgld.models.GCNAE.gcnae_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-        
+<div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.MLPAE.mlpae_utils.html#dgld.models.MLPAE.mlpae_utils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">:</span>
         <span class="n">args</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="mi">3</span>
-            
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="o">==</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">:</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="mi">256</span>
+
     <span class="n">final_args_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;dataset&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">,</span>
         <span class="s2">&quot;seed&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
-        <span class="s2">&quot;model&quot;</span><span class="p">:{</span>
+        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="p">{</span>
             <span class="s2">&quot;feat_size&quot;</span><span class="p">:</span> <span class="n">IN_FEATURE_MAP</span><span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">dataset</span><span class="p">],</span>
             <span class="s2">&quot;hidden_dim&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">,</span>
             <span class="s2">&quot;n_layers&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span>
