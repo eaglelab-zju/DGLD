@@ -18,9 +18,15 @@ def set_subargs(parser):
                         help='balance parameter')
     parser.add_argument('--lr', type=float,default = 0.01, help='learning rate')
 def get_subargs(args):
-
     if args.num_epoch is None:
-        args.num_epoch = 100
+        args.num_epoch = 2000
+    if args.dataset in ['Cora','Citeseer','BlogCatalog']:
+        args.gamma = 0.001
+    if args.dataset == 'Pubmed':
+        args.gamma = 0.1
+    if args.dataset == 'Flickr':
+        args.lr = 0.05
+        args.gamma = 0.0001
 
     final_args_dict = {
         "dataset": args.dataset,

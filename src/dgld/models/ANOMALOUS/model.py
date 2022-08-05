@@ -5,8 +5,7 @@ import torch.nn.functional as F
 from .anomalous_utils import Laplacian
 from utils.early_stopping import EarlyStopping
 import numpy as np 
-from sklearn.metrics import roc_auc_score
-import gc 
+
 
 class ANOMALOUS_model(nn.Module):
     def __init__(self,w,r):
@@ -40,9 +39,8 @@ class ANOMALOUS(nn.Module):
         
         optimizer = torch.optim.Adam(self.model.parameters(),lr=lr,weight_decay=weight_decay)
 
-        label = [min(1,i) for i in graph.ndata['label']]
         
-        early_stop = EarlyStopping(early_stopping_rounds=100,patience=5,check_finite=False,verbose=True)
+        early_stop = EarlyStopping(early_stopping_rounds=100,patience=5,check_finite=False)
         for epoch in range(num_epoch):
             x_, r = self.model(x)
             loss =  torch.norm(x - x_ - r, 2) + gamma * torch.trace(r.T @ L @ r)
@@ -50,9 +48,6 @@ class ANOMALOUS(nn.Module):
             loss.backward()
             optimizer.step()
 
-            score = self.predict(graph)
-            auc = roc_auc_score(label,score)
-            print("Epoch:", '%04d' % (epoch), "train/loss=", "{:.5f}".format(loss.item()), "auc=","{:.5f}".format(auc))  
             early_stop(loss)
             if early_stop.isEarlyStopping():
                 print(f'early stop in round {epoch}')
