@@ -96,6 +96,7 @@ models_get_args_map = {
     "CoLA": cola_get_args,
     "SLGAD":slgad_get_args,
     "AAGNN": aagnn_get_args,
+    "GCNAE": gcnae_get_args,
     "ANEMONE": anemone_get_args,
     "ANOMALOUS": anomalous_get_args,
     "MLPAE": mlpae_get_args
