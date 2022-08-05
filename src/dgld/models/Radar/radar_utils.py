@@ -14,17 +14,17 @@ import argparse
 from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
-    parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
+    parser.add_argument('--num_epoch', type=int, default=50, help='Training epoch')
     parser.add_argument('--alpha', type=float, default=0.5)
     parser.add_argument('--beta', type=float, default=0.2)
     parser.add_argument('--gamma', type=float, default=0.2)
     
 def get_subargs(args):
     
-    # best_config = loadargs_from_json('src/dgld/config/Radar.json')[args.dataset]
-    # config = vars(args)
-    # config.update(best_config)
-    # args = argparse.Namespace(**config)    
+    best_config = loadargs_from_json('src/dgld/config/Radar.json')[args.dataset]
+    config = vars(args)
+    config.update(best_config)
+    args = argparse.Namespace(**config)    
             
     final_args_dict = {
         "dataset": args.dataset,
