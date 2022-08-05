@@ -141,7 +141,7 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subgraph_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4096</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AAGNN/AAGNN_batch.html#AAGNN_batch.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subgraph_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4096</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/AAGNN/AAGNN_batch.html#AAGNN_batch.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.AAGNN.AAGNN_batch.AAGNN_batch.fit" title="Permalink to this definition"></a></dt>
 <dd><p>This is a function used to train the model.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -150,12 +150,16 @@
 <li><p><strong>num_epoch</strong> (<em>int</em>) – The number of times you want to train the model.</p></li>
 <li><p><strong>device</strong> (<em>str</em>) – The number of times you want to train the model.</p></li>
 <li><p><strong>lr</strong> (<em>float</em>) – Learning rate for model training.</p></li>
-<li><p><strong>logdir</strong> (<em>str</em>) – The storage address of the training log.</p></li>
-<li><p><strong>subgraph_size</strong> (<em>int</em>) – The size of training subgraph.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>None</p>
+</dl>
+<dl class="simple">
+<dt>subgraph_size<span class="classifier">int</span></dt><dd><p>The size of training subgraph.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>
