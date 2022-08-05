@@ -21,6 +21,7 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
+from dgld.models.ANOMALOUS import ANOMALOUS
 from dgld.models.Radar import Radar
 from dgld.models.MLPAE import MLPAE
 import time
@@ -87,6 +88,8 @@ if __name__ == "__main__":
         model = ANEMONE(**args_dict["model"])
     elif args.model == 'GCNAE':
         model = GCNAE(**args_dict["model"])
+    elif args.model == 'ANOMALOUS':
+        model = ANOMALOUS(**args_dict["model"])
     elif args.model == 'Radar':
         model = Radar(**args_dict["model"])
     elif args.model == 'MLPAE':

@@ -108,6 +108,7 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 |[GCNAE](https://arxiv.org/abs/1611.07308)|0.7707|0.7696|0.7941|0.7363|0.7529|-|0.7530|
 |[Radar](https://www.researchgate.net/publication/318830338_Radar_Residual_Analysis_for_Anomaly_Detection_in_Attributed_Networks)|0.7125|0.7368|0.6981|0.7360|0.6867|-|-|
 |[MLPAE](https://dl.acm.org/doi/10.1145/2689746.2689747)|0.8069|0.7914|0.8112|0.7362|0.7525|-|0.7581|
+|[ANOMALOUS](https://www.ijcai.org/proceedings/2018/0488.pdf)|0.9065|0.9617|0.6982|0.6739|0.7380|-|-|
 
 
 ## Upcoming Features
