@@ -57,6 +57,9 @@ from models.GCNAE import get_subargs as gcnae_get_args
 #MLPAE
 from models.MLPAE import set_subargs as mlpae_set_args
 from models.MLPAE import get_subargs as mlpae_get_args
+#SCAN
+from models.SCAN import set_subargs as scan_set_args
+from models.SCAN import get_subargs as scan_get_args
 
 # set args
 models_set_args_map = {
@@ -75,7 +78,8 @@ models_set_args_map = {
     "AAGNN": aagnn_set_args,
     "ANEMONE": anemone_set_args,
     "GCNAE": gcnae_set_args,
-    "MLPAE": mlpae_set_args
+    "MLPAE": mlpae_set_args,
+    "SCAN": scan_set_args
 }
 # get args
 models_get_args_map = {
@@ -94,7 +98,8 @@ models_get_args_map = {
     "AAGNN": aagnn_get_args,
     "ANEMONE": anemone_get_args,
     "GCNAE": gcnae_get_args,
-    "MLPAE": mlpae_get_args
+    "MLPAE": mlpae_get_args,
+    "SCAN": scan_get_args
 }
 
 
