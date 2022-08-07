@@ -14,20 +14,15 @@ from utils.common_params import IN_FEATURE_MAP
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--lr', type=float, default=0.005, help='learning rate')
+    parser.add_argument('--lr', type=float, default=0.001, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.)
     parser.add_argument('--dropout', type=float, default=0.3)
     parser.add_argument('--batch_size', type=int, default=0)
-    parser.add_argument('--hidden_dim', type=int, default=128)
-    parser.add_argument('--n_layers', type=int, default=2)
+    parser.add_argument('--hidden_dim', type=int, default=64)
+    parser.add_argument('--n_layers', type=int, default=3)
 
 
 def get_subargs(args):
-    if args.dataset == 'Citeseer':
-        args.n_layers = 3
-    if args.dataset == 'Pubmed':
-        args.hidden_dim = 256
-
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

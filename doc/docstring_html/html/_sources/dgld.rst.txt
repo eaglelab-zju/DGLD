@@ -128,6 +128,13 @@ dgld.models.ONE
 
    dgld.models.ONE
 
+dgld.models.SCAN
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.SCAN
+
 dgld.models.SLGAD
 -----------
 .. toctree::

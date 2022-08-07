@@ -1,0 +1,7 @@
+dgld.models.SCAN.model 
+=======================
+
+.. automodule:: dgld.models.SCAN.model
+   :members:
+   :undoc-members:
+   :show-inheritance:
