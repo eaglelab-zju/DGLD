@@ -57,7 +57,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     >>> print(dataset[0])
     """
 
-    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, is_preprocess_features=True, g_data=None, y_data=None):
+    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, is_preprocess_features=True, g_data=None, y_data=None, seed = 42):
         super().__init__(name=name)
         if raw_dir == None:
             raw_dir = data_path
@@ -88,7 +88,8 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
             assert self.dataset_name in self.q_map and self.dataset_name in self.dataset_map, self.dataset_name
             self.q = self.q_map[name]
             self.k = k
-            self.seed = 42
+            self.seed = seed
+            # np.random.seed(self.seed)
             self.dataset = eval(self.dataset_map[self.dataset_name])[0]
         elif self.dataset_name == 'ACM':
             self.dataset = eval(self.dataset_map[self.dataset_name])[0]
