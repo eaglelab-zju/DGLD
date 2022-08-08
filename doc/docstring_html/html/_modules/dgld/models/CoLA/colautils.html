@@ -72,7 +72,7 @@
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span>
 <span class="n">current_file_name</span> <span class="o">=</span> <span class="vm">__file__</span>
-<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">)))</span>
+<span class="n">current_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">current_file_name</span><span class="p">))))</span>
 <span class="k">if</span> <span class="n">current_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_dir</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">utils.common_params</span> <span class="kn">import</span> <span class="n">IN_FEATURE_MAP</span>
@@ -153,15 +153,10 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--auc_test_rounds&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--num_workers&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--negsamp_ratio&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">)</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--global_adg&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">bool</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="get_subargs"><a class="viewcode-back" href="../../../../dgld.models.CoLA.colautils.html#dgld.models.CoLA.colautils.get_subargs">[docs]</a><span class="k">def</span> <span class="nf">get_subargs</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
 
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">):</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Cora&#39;</span><span class="p">,</span> <span class="s1">&#39;Citeseer&#39;</span><span class="p">,</span> <span class="s1">&#39;Pubmed&#39;</span><span class="p">,</span> <span class="s1">&#39;Flickr&#39;</span><span class="p">]:</span>
@@ -200,7 +195,6 @@
             <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="s2">&quot;num_epoch&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_epoch</span><span class="p">,</span>
             <span class="s2">&quot;lr&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span>
-            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span><span class="p">,</span>
             <span class="s2">&quot;weight_decay&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>
             <span class="s2">&quot;seed&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span>
         <span class="p">},</span>
@@ -209,7 +203,6 @@
             <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
             <span class="s2">&quot;num_workers&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">num_workers</span><span class="p">,</span>
             <span class="s2">&quot;auc_test_rounds&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">auc_test_rounds</span><span class="p">,</span>
-            <span class="s2">&quot;logdir&quot;</span><span class="p">:</span><span class="n">args</span><span class="o">.</span><span class="n">logdir</span>
         <span class="p">}</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="n">final_args_dict</span><span class="p">,</span><span class="n">args</span></div>

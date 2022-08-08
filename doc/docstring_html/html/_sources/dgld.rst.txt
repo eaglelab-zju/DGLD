@@ -114,12 +114,26 @@ dgld.models.GUIDE
 
    dgld.models.GUIDE
 
+dgld.models.MLPAE
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.MLPAE
+
 dgld.models.ONE
 -----------
 .. toctree::
    :maxdepth: 4
 
    dgld.models.ONE
+
+dgld.models.SCAN
+-----------
+.. toctree::
+   :maxdepth: 4
+
+   dgld.models.SCAN
 
 dgld.models.SLGAD
 -----------

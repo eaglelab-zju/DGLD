@@ -21,14 +21,17 @@ from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
-from dgld.models.Radar import Radar
+from dgld.models.MLPAE import MLPAE
+from dgld.models.SCAN import SCAN
 import time
 import os 
 class Logger(object):
     def __init__(self, filename="Default.log"):
         self.terminal = sys.stdout
         self.log = open(filename, "a")
-
+    def __getattr__(self, attr):
+        return getattr(self.terminal, attr)
+        
     def write(self, message):
         self.terminal.write(message)
         self.log.write(message)
@@ -84,8 +87,10 @@ if __name__ == "__main__":
         model = ANEMONE(**args_dict["model"])
     elif args.model == 'GCNAE':
         model = GCNAE(**args_dict["model"])
-    elif args.model == 'Radar':
-        model = Radar(**args_dict["model"])
+    elif args.model == 'MLPAE':
+        model = MLPAE(**args_dict["model"])
+    elif args.model == 'SCAN':
+        model = SCAN(**args_dict["model"])
     else:
         raise ValueError(f"{args.model} is not implemented!")
 
