@@ -25,19 +25,7 @@ from dgld.models.MLPAE import MLPAE
 from dgld.models.SCAN import SCAN
 import time
 import os 
-class Logger(object):
-    def __init__(self, filename="Default.log"):
-        self.terminal = sys.stdout
-        self.log = open(filename, "a")
-    def __getattr__(self, attr):
-        return getattr(self.terminal, attr)
-        
-    def write(self, message):
-        self.terminal.write(message)
-        self.log.write(message)
-
-    def flush(self):
-        pass
+import json 
 
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
@@ -46,10 +34,10 @@ if __name__ == "__main__":
     data_name = args_dict['dataset']
     log_dir = args.logdir
     if log_dir is None:
-        log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.txt'
+        log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.json'
         if not os.path.exists('result'):
             os.makedirs('result')
-    sys.stdout = Logger(log_dir)
+    # sys.stdout = Logger(log_dir)
     
     graph = load_data(data_name)
 
@@ -96,5 +84,14 @@ if __name__ == "__main__":
 
     model.fit(graph, **args_dict["fit"])
     result = model.predict(graph, **args_dict["predict"])
-    split_auc(label, result)
+    final_score, a_score, s_score = split_auc(label, result)
     print(args_dict)
+    
+    result = {}
+    result['model_name'] = args.model
+    result.update(args_dict)
+    result['final anomaly score'] = final_score
+    result['attribute anomaly score'] = a_score 
+    result['structural anomaly score'] = s_score
+    with open(log_dir, 'w') as json_file:
+        json_file.write(json.dumps(result, ensure_ascii=False, indent=4))
