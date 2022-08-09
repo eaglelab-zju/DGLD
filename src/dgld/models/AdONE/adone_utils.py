@@ -32,14 +32,7 @@ def set_subargs(parser):
     parser.add_argument('--verbose', type=bool, default=True)
     
 
-def get_subargs(args):
-
-
-    best_config = loadargs_from_json('src/dgld/config/AdONE.json')[args.dataset]
-    config = vars(args)
-    config.update(best_config)
-    args = argparse.Namespace(**config)
-            
+def get_subargs(args): 
     in_feature_map = {
         "Cora":1433,
         "Citeseer":3703,

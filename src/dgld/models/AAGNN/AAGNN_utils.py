@@ -27,49 +27,6 @@ def set_subargs(parser):
                         help='structure penalty balance parameter')
 
 def get_subargs(args):
-
-
-    if args.lr is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
-            args.lr = 1e-3
-        elif args.dataset == 'ACM':
-            args.lr = 5e-4
-        elif args.dataset == 'BlogCatalog':
-            args.lr = 3e-3
-        elif args.dataset == 'ogbn-arxiv':
-            args.lr = 1e-3
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
-
-    if args.dataset == 'Citeseer':
-        args.alpha = 0.8
-        args.seed = 4096
-        args.dropout = 0.3
-        args.hidden_dim = 32
-    elif args.dataset == 'Pubmed':
-        args.alpha = 0.8
-        args.seed = 4096
-        args.dropout = 0.3
-        args.hidden_dim = 128
-    elif args.dataset == 'Flickr':
-        args.alpha = 0.6
-        args.seed = 1024
-        args.dropout = 0.0
-        args.hidden_dim = 64
-    elif args.dataset == 'ACM':
-        args.alpha = 0.2
-        args.seed = 4096
-        args.dropout = 0.0
-        args.hidden_dim = 16
-        # args.lr = 1e-5
-        args.num_epoch = 300
-
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,

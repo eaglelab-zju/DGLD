@@ -91,26 +91,6 @@ def set_subargs(parser):
     parser.add_argument('--expid', type=int)
 
 def get_subargs(args):
-
-    if args.lr is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
-            args.lr = 1e-3
-        elif args.dataset == 'ACM':
-            args.lr = 5e-4
-        elif args.dataset == 'BlogCatalog':
-            args.lr = 3e-3
-        elif args.dataset == 'ogbn-arxiv':
-            args.lr = 1e-3
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
-
-
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,

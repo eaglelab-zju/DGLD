@@ -25,12 +25,6 @@ def set_subargs(parser):
     parser.add_argument('--embedding_dim', type=int, default=32)
     
 def get_subargs(args):
-    
-    best_config = loadargs_from_json('src/dgld/config/DONE.json')[args.dataset]
-    config = vars(args)
-    config.update(best_config)
-    args = argparse.Namespace(**config)    
-            
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

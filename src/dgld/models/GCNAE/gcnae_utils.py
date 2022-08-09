@@ -21,11 +21,7 @@ def set_subargs(parser):
     parser.add_argument('--n_layers', type=int, default=2)
 
 
-def get_subargs(args):
-        
-    if args.dataset == 'Citeseer':
-        args.n_layers = 3
-            
+def get_subargs(args):    
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
