@@ -14,7 +14,7 @@ def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
     parser.add_argument('--m', type=int,
                         default=171743, help='num of edges')
-    parser.add_argument('--lr', type=float, help='learning rate')
+    parser.add_argument('--lr', type=float, default=1e-5, help='learning rate')
     parser.add_argument('--dropout', type=float,
                         default=0.0, help='Dropout rate')
     parser.add_argument('--weight_decay', type=float,
@@ -33,47 +33,6 @@ def set_subargs(parser):
 
 
 def get_subargs(args):
-
-    if args.lr is None:
-        args.lr = 1e-5
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
-
-    if args.dataset == 'Cora':
-        args.alpha = 0.2
-        
-    elif args.dataset == 'Citeseer':
-        args.alpha = 0.1
-
-    elif args.dataset == 'Pubmed':
-        args.alpha = 0.3
-
-    elif args.dataset == 'BlogCatalog':
-        args.num_epoch = 100
-        args.alpha = 0.4
-        args.eta = 5.0
-        args.theta = 40.0
-
-    elif args.dataset == 'Flickr':
-        args.num_epoch = 100
-        args.alpha = 0.4
-        args.eta = 8.0
-        args.theta = 90.0
-
-    elif args.dataset == 'ACM':
-        args.num_epoch = 80
-        args.alpha = 0.2
-        args.eta = 3.0
-        args.theta = 10.0
-
-
-    
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

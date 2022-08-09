@@ -1,0 +1,42 @@
+{
+    "Cora": {
+        "lr": 1e-3,
+        "num_epoch": 100
+    },
+    "Citeseer": {
+        "lr": 1e-3,
+        "num_epoch": 100,
+        "alpha": 0.8,
+        "dropout": 0.3,
+        "hidden_dim": 32
+    },
+    "Pubmed": {
+        "lr": 1e-3,
+        "num_epoch": 100,
+        "alpha": 0.8,
+        "dropout": 0.3,
+        "hidden_dim": 128
+    },
+    "BlogCatalog": {
+        "lr": 3e-3,
+        "num_epoch": 400
+    }, 
+    "Flickr": {
+        "lr": 1e-3,
+        "num_epoch": 400,
+        "alpha": 0.6,
+        "dropout": 0.0,
+        "hidden_dim": 64
+    },
+    "ACM": {
+        "lr": 5e-4,
+        "num_epoch": 300,
+        "alpha": 0.2,
+        "dropout": 0.0,
+        "hidden_dim": 16
+    },
+    "ogbn-arxiv": {
+        "lr": 1e-3,
+        "num_epoch": 10
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "Cora": {
+        "lr": 1e-3,
+        "num_epoch": 100
+    },
+    "Citeseer": {
+        "lr": 1e-3,
+        "num_epoch": 100
+    },
+    "Pubmed": {
+        "lr": 1e-3,
+        "num_epoch": 100
+    },
+    "BlogCatalog": {
+        "lr": 3e-3,
+        "num_epoch": 400
+    }, 
+    "Flickr": {
+        "lr": 1e-3,
+        "num_epoch": 400
+    },
+    "ACM": {
+        "lr": 5e-4,
+        "num_epoch": 400
+    },
+    "ogbn-arxiv": {
+        "lr": 1e-3,
+        "num_epoch": 10
+    }
+}
