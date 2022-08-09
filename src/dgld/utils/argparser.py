@@ -119,10 +119,12 @@ def parse_all_args() -> argparse.Namespace:
                         type=int,
                         default=4096,
                         help='Random seed. Defaults to 4096.')
-    parser.add_argument('--logdir',
+    parser.add_argument('--save_path',
                         type=str,
-                        default=None,
-                        help='The path of stored results.')
+                        help='save path of the result')
+    parser.add_argument('--exp_name',
+                        type=str,
+                        help='exp_name experiment identification')
     # get dataset
     arg_list = sys.argv[1:]
     if '--dataset' in arg_list:
