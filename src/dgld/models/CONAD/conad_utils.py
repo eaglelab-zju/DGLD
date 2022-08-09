@@ -10,7 +10,8 @@ if current_dir not in sys.path:
 from utils.common_params import IN_FEATURE_MAP
 
 import argparse
-from dgld.utils.common import loadargs_from_json
+
+
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
@@ -23,13 +24,7 @@ def set_subargs(parser):
     parser.add_argument('--margin', type=float, default=0.5)
     parser.add_argument('--batch_size', type=int, default=0)
     
-def get_subargs(args):
-    
-    best_config = loadargs_from_json('src/dgld/config/CONAD.json')[args.dataset]
-    config = vars(args)
-    config.update(best_config)
-    args = argparse.Namespace(**config)
-            
+def get_subargs(args):     
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

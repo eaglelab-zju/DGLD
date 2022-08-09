@@ -8,7 +8,7 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common import tab_printer    
+from utils.common import tab_printer, loadargs_from_json
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
@@ -123,6 +123,14 @@ def parse_all_args() -> argparse.Namespace:
                         type=str,
                         default=None,
                         help='The path of stored results.')
+    # get dataset
+    arg_list = sys.argv[1:]
+    if '--dataset' in arg_list:
+        idx = arg_list.index('--dataset') + 1
+        dataset = arg_list[idx]
+    else:
+        dataset = parser.get_default('dataset')
+    
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
     # set sub args
@@ -131,9 +139,15 @@ def parse_all_args() -> argparse.Namespace:
             _model, help=f"Run anomaly detection on {_model}")
         set_arg_func(sub_parser)
         
+        # set best args
+        fp = f'src/dgld/config/{_model}.json'
+        if os.path.exists(fp):
+            best_config = loadargs_from_json(fp)
+            sub_parser.set_defaults(**best_config.get(dataset, {}))
+            
     # get model args
     args = parser.parse_args()
-    args_dict,args = models_get_args_map[args.model](args)
+    args_dict, args = models_get_args_map[args.model](args)
 
     tab_printer(args)
     
