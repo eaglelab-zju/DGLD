@@ -27,17 +27,50 @@ import time
 import os 
 import json 
 
+class Logger(object):
+    def __init__(self, filename="Default.log"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "a")
+    def __getattr__(self, attr):
+        return getattr(self.terminal, attr)
+        
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
+
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
     seed_everything(args_dict['seed'])
 
     data_name = args_dict['dataset']
-    log_dir = args.logdir
-    if log_dir is None:
-        log_dir = 'result/'+args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))+'.json'
-        if not os.path.exists('result'):
-            os.makedirs('result')
-    # sys.stdout = Logger(log_dir)
+    save_path = args.save_path
+    exp_name = args.exp_name
+    if save_path is None:
+        save_path = 'result'
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    if exp_name is None:
+        exp_name = args.model+'_'+data_name+'_'+str(time.strftime("%Y_%m_%d_%H_%M_%S", time.localtime()))
+    exp_path = save_path+'/'+exp_name
+    if not os.path.exists(exp_path):
+        os.makedirs(exp_path)
+    file_list = os.listdir(exp_path)
+    id = 0
+    for f in file_list:
+        if f.startswith(exp_name):
+            try:
+                id_f = int(f.split('_')[-1])
+                id = max(id_f+1,id)
+            except:
+                pass 
+    exp_name += f'_{id}'
+    exp_path += f'/{exp_name}'
+    os.makedirs(exp_path)
+    sys.stdout = Logger(exp_path+'/'+exp_name+'.log')
     
     graph = load_data(data_name)
 
@@ -93,5 +126,5 @@ if __name__ == "__main__":
     result['final anomaly score'] = final_score
     result['attribute anomaly score'] = a_score 
     result['structural anomaly score'] = s_score
-    with open(log_dir, 'w') as json_file:
+    with open(exp_path+'/'+exp_name+'.json', 'w') as json_file:
         json_file.write(json.dumps(result, ensure_ascii=False, indent=4))
