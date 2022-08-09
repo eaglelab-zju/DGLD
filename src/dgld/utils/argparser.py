@@ -128,6 +128,9 @@ def parse_all_args() -> argparse.Namespace:
     if '--dataset' in arg_list:
         idx = arg_list.index('--dataset') + 1
         dataset = arg_list[idx]
+    elif any(map(lambda x: x.startswith('--dataset='), arg_list)):
+        dataset = [x.split("=")[-1] for x in arg_list if x.startswith('--dataset=')]
+        dataset = dataset[0]
     else:
         dataset = parser.get_default('dataset')
     
