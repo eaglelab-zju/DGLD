@@ -28,16 +28,14 @@ def get_subargs(args):
     if args.num_epoch is None:
         if args.dataset in ['Cora', 'Citeseer']:
             args.num_epoch = 100
-        elif args.dataset in ['Pubmed','BlogCatalog', 'Flickr', 'ACM']:
+        elif args.dataset in ['Pubmed','BlogCatalog', 'Flickr']:
             args.num_epoch = 30
         else:
             args.num_epoch = 10
-    if args.dataset in ['BlogCatalog','ogbn-arxiv']:
+    if args.dataset in ['ogbn-arxiv']:
         args.alpha = 0.1
-    if args.dataset == 'Flickr':
-        args.weight_decay = 0.001
-    if args.dataset == 'ACM':
-        args.alpha = 0
+    if args.dataset in ['BlogCatalog','Flickr']:
+        args.weight_decay = 0.0001
 
     final_args_dict = {
         "dataset": args.dataset,
