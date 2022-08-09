@@ -1,0 +1,23 @@
+{
+    "Cora": {
+        
+    },
+    "Citeseer": {
+        "n_layers": 3
+    },
+    "Pubmed": {
+        
+    },
+    "BlogCatalog": {
+        
+    }, 
+    "Flickr": {
+        
+    },
+    "ACM": {
+        
+    },
+    "ogbn-arxiv": {
+        
+    }
+}
