@@ -1,0 +1,46 @@
+{
+    "Cora": {
+        "num_epoch": 100,
+        "alpha": 0.9987,
+        "lr": 1e-3
+    },
+    "Citeseer": {
+        "num_epoch": 100,
+        "alpha": 0.9997
+    },
+    "Pubmed": {
+        "num_epoch": 400,
+        "alpha": 0.9996,
+        "lr": 1e-3,
+        "attrb_hid": 256
+    },
+    "BlogCatalog": {
+        "num_epoch": 100,
+        "alpha": 1,
+        "lr": 0.01,
+        "attrb_hid": 128,
+        "batch_size": 2048,
+        "dropout": 0.3
+    }, 
+    "Flickr": {
+        "num_epoch": 50,
+        "alpha": 1,
+        "batch_size": 2048
+    },
+    "ACM": {
+        "num_epoch": 50,
+        "alpha": 0.81,
+        "lr": 1e-3,
+        "attrb_hid": 256,
+        "struct_hid": 64,
+        "batch_size": 2048
+    },
+    "ogbn-arxiv": {
+        "num_epoch": 10,
+        "alpha": 0.999,
+        "lr": 1e-3,
+        "attrb_hid": 64,
+        "struct_hid": 16,
+        "batch_size": 1024
+    }
+}

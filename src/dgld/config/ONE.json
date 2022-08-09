@@ -1,0 +1,35 @@
+{
+    "Cora": {
+        "alpha": 1,
+        "beta": 1,
+        "gamma": 4
+    },
+    "Citeseer": {
+        "alpha": 0,
+        "beta": 4,
+        "gamma": 1
+    },
+    "Pubmed": {
+        "alpha": 2,
+        "beta": 4,
+        "gamma": 1
+    },
+    "BlogCatalog": {
+        "alpha": 1,
+        "beta": 1,
+        "gamma": 1
+    }, 
+    "Flickr": {
+        "alpha": 3,
+        "beta": 2,
+        "gamma": 1
+    },
+    "ACM": {
+        "alpha": 4,
+        "beta": 0,
+        "gamma": 1
+    },
+    "ogbn-arxiv": {
+        
+    }
+}
