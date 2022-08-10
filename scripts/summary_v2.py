@@ -5,20 +5,12 @@ import pandas as pd
 def get_table_header(res_dict:dict):
     head = ['task']
     for first_head in res_dict.keys():
-        if isinstance(res_dict[first_head],dict):
-            for second_head in res_dict[first_head].keys():
-                head.append(first_head+'.'+second_head)
-        else :
-            head.append(first_head)
+        head.append(first_head)
     return head 
 def add_table_value(res_dict:dict,id):
     body = [f'task{id}']
     for first_head in res_dict.keys():
-        if isinstance(res_dict[first_head],dict):
-            for second_head in res_dict[first_head].keys():
-                body.append(res_dict[first_head][second_head])
-        else :
-            body.append(res_dict[first_head])
+        body.append(res_dict[first_head])
     return body 
 def get_table(res_list,id_list):
     head = get_table_header(res_list[0])
@@ -50,7 +42,7 @@ if __name__ == "__main__":
     for f in file_list:
         path = dir + '/' + f 
         try:
-            if os.path.isdir(path) and f.startswith(args.exp_name):
+            if os.path.isdir(path) and f.startswith(args.exp_name) and os.path.exists(path+'/'+f+'.json'):
                 id = int(f.split('_')[-1])
                 dir_list.append(path+'/'+f+'.json')
                 id_list.append(id)
@@ -76,4 +68,3 @@ if __name__ == "__main__":
             finally_col += col[-3:]
             table = table[finally_col]
     table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary_v2.md',index=False)
-
