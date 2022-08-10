@@ -43,7 +43,6 @@ if __name__ == "__main__":
                         action='store_true',
                         help='filter same parameter in summary table')
     args = parser.parse_args()   
-    print(args)
     dir = args.save_path+'/'+args.exp_name
     dir_list = []
     id_list = []
@@ -64,21 +63,17 @@ if __name__ == "__main__":
             res = json.load(f)
         res_list.append(res)
     table = get_table(res_list,id_list) 
-    print(args.filter)
     if args.filter :
         print('filter')
-        col = list(table.columns)
-        finally_col = col[:3]
-        for c in col[3:-3]:
-            li = table[c].values
-            flag = False
-            for i in range(1,len(li)):
-                if str(li[i]) != str(li[i-1]):
-                    flag = True
-                    break
-            if flag:
-                finally_col.append(c)
-        finally_col += col[-3:]
-        table = table[finally_col]
+        if table.shape[0] > 1:
+            col = list(table.columns)
+            finally_col = col[:3]
+            for c in col[3:-3]:
+                li = table[c].values
+                s_li = set(li)
+                if len(s_li) != 1:
+                    finally_col.append(c)
+            finally_col += col[-3:]
+            table = table[finally_col]
     table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary_v2.md',index=False)
 
