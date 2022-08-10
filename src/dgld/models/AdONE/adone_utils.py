@@ -17,19 +17,19 @@ from dgld.utils.common import loadargs_from_json
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
-    parser.add_argument('--disc_update_times', type=int, default=1)
-    parser.add_argument('--gen_update_times', type=int, default=5)
+    parser.add_argument('--disc_update_times', type=int, default=1, help="number of discriminator updates")
+    parser.add_argument('--gen_update_times', type=int, default=5, help="number of generator updates")
     parser.add_argument('--lr_all', type=float, default=0.001, help='learning rate')
     parser.add_argument('--lr_disc', type=float, default=0.001, help='learning rate')
     parser.add_argument('--lr_gen', type=float, default=0.001, help='learning rate')
-    parser.add_argument('--weight_decay', type=float, default=0.)
-    parser.add_argument('--dropout', type=float, default=0.)
-    parser.add_argument('--batch_size', type=int, default=0)
-    parser.add_argument('--max_len', type=int, default=0)
-    parser.add_argument('--restart', type=float, default=0.)
-    parser.add_argument('--num_neighbors', type=int, default=-1)
-    parser.add_argument('--embedding_dim', type=int, default=32)
-    parser.add_argument('--verbose', type=bool, default=True)
+    parser.add_argument('--weight_decay', type=float, default=0., help="weight decay (L2 penalty)")
+    parser.add_argument('--dropout', type=float, default=0., help="rate of dropout")
+    parser.add_argument('--batch_size', type=int, default=0, help="size of training batch")
+    parser.add_argument('--max_len', type=int, default=0, help="maximum length of the truncated random walk")
+    parser.add_argument('--restart', type=float, default=0., help="probability of restart")
+    parser.add_argument('--num_neighbors', type=int, default=-1, help="number of sampling neighbors")
+    parser.add_argument('--embedding_dim', type=int, default=32, help="dimension of embedding")
+    parser.add_argument('--verbose', type=bool, default=True, help="verbose or not")
     
 
 def get_subargs(args): 

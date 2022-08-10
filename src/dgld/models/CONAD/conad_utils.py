@@ -19,10 +19,13 @@ def set_subargs(parser):
     parser.add_argument('--weight_decay', type=float, default=0.)
     parser.add_argument('--alpha', type=float, default=0.9, help='balance parameter')
     parser.add_argument('--eta', type=float, default=0.7, help='Attribute penalty balance parameter')
-    parser.add_argument('--contrast_type', type=str, default='siamese')
-    parser.add_argument('--rate', type=float, default=0.2)
-    parser.add_argument('--margin', type=float, default=0.5)
-    parser.add_argument('--batch_size', type=int, default=0)
+    parser.add_argument('--contrast_type', type=str, default='siamese', choices=['siamese', 'triplet'], help="categories of contrastive loss function")
+    parser.add_argument('--rate', type=float, default=0.2, help="rate of anomalies")
+    parser.add_argument('--margin', type=float, default=0.5, help="parameter of the contrastive loss function")
+    parser.add_argument('--batch_size', type=int, default=0, help="size of training batch")
+    parser.add_argument('--num_added_edge', type=int, default=50, help="parameter for generating high-degree anomalies")
+    parser.add_argument('--surround', type=int, default=50, help="parameter for generating outlying anomalies")
+    parser.add_argument('--scale_factor', type=float, default=10, help="parameter for generating disproportionate anomalies")
     
 def get_subargs(args):     
     final_args_dict = {
