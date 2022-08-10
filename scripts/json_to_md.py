@@ -55,16 +55,17 @@ if __name__ == "__main__":
     dir = args.save_path+'/'+args.exp_name
     dir_list = []
     id_list = []
-    try:
-        file_list = os.listdir(dir)
-        for f in file_list:
-            path = dir + '/' + f 
+    file_list = os.listdir(dir)
+    for f in file_list:
+        path = dir + '/' + f 
+        try:
             if os.path.isdir(path) and f.startswith(args.exp_name):
-                dir_list.append(path+'/'+f+'.json')
                 id = int(f.split('_')[-1])
+                dir_list.append(path+'/'+f+'.json')
                 id_list.append(id)
-    except:
-        raise('error')
+        except:
+            pass 
+
     res_list = []
     for d in dir_list:
         with open(d) as f:
