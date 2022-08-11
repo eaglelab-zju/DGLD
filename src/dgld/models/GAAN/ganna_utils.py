@@ -8,9 +8,9 @@ from utils.common_params import IN_FEATURE_MAP
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
-    parser.add_argument('--gen_hid_dims', type=list, default=[32,64,128],
+    parser.add_argument('--gen_hid_dims', nargs='+', type=int, default=[32,64,128],
                     help='generator hidden dims list')
-    parser.add_argument('--ed_hid_dims', type=list, default=[32,64],
+    parser.add_argument('--ed_hid_dims', nargs='+', type=int, default=[32,64],
                     help='discriminator hidden dims list')
     parser.add_argument('--out_dim', type=int, default=128,
                     help='discriminator of encoder out')

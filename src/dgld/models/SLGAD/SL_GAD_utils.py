@@ -86,7 +86,7 @@ def set_subargs(parser):
     parser.add_argument('--attention', type=lambda x: x.lower() == 'true', default=False)
     parser.add_argument('--positive_subgraph_cor', type=lambda x: x.lower() == 'true', default=False)
     parser.add_argument('--negative_subgraph_cor', type=lambda x: x.lower() == 'true', default=False)
-    parser.add_argument('--arw', type=bool, default=False)
+    parser.add_argument('--arw', type=lambda x: x.lower() == 'true', default=False)
     parser.add_argument('--patience', type=int, default=400)
     parser.add_argument('--expid', type=int)
 
