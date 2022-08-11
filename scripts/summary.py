@@ -35,6 +35,8 @@ if __name__ == "__main__":
                         action='store_true',
                         help='filter same parameter in summary table')
     args = parser.parse_args()   
+    if args.exp_name is None :
+        raise NameError('exp_name is none')
     dir = args.save_path+'/'+args.exp_name
     dir_list = []
     id_list = []
@@ -61,10 +63,10 @@ if __name__ == "__main__":
             col = list(table.columns)
             finally_col = col[:3]
             for c in col[3:-3]:
-                li = table[c].values
+                li = table[c].astype(str).values
                 s_li = set(li)
                 if len(s_li) != 1:
                     finally_col.append(c)
             finally_col += col[-3:]
             table = table[finally_col]
-    table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary_v2.md',index=False)
+    table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary.md',index=False)
