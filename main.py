@@ -119,10 +119,11 @@ if __name__ == "__main__":
     result = model.predict(graph, **args_dict["predict"])
     final_score, a_score, s_score = split_auc(label, result)
     print(args_dict)
-    
     result = {}
-    result['model_name'] = args.model
-    result.update(args_dict)
+    result['model'] = args.model
+    result.update(vars(args))
+    del result["save_path"]
+    del result['exp_name']
     result['final anomaly score'] = final_score
     result['attribute anomaly score'] = a_score 
     result['structural anomaly score'] = s_score
