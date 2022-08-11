@@ -85,7 +85,7 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--global_adg', type=bool, default=True)
+    parser.add_argument('--global_adg', type=lambda x: x.lower() == 'true', default=True)
 
 def get_subargs(args):    
     final_args_dict = {
