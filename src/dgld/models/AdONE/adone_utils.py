@@ -29,7 +29,7 @@ def set_subargs(parser):
     parser.add_argument('--restart', type=float, default=0., help="probability of restart")
     parser.add_argument('--num_neighbors', type=int, default=-1, help="number of sampling neighbors")
     parser.add_argument('--embedding_dim', type=int, default=32, help="dimension of embedding")
-    parser.add_argument('--verbose', type=bool, default=True, help="verbose or not")
+    parser.add_argument('--verbose', type=lambda x: x.lower() == 'true', default=True, help="verbose or not")
     
 
 def get_subargs(args): 
