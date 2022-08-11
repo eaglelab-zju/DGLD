@@ -21,7 +21,7 @@ def set_subargs(parser):
                         help='balance parameter')
     parser.add_argument('--view_num', type=int, default=3)
     parser.add_argument('--agg_type', type=int, default=0, help='Aggregator type (default: 0)')
-    parser.add_argument('--agg_vec', type=list, default=[1,1,1], help=' Weighted aggregation vector (default: [1,1,1])')
+    parser.add_argument('--agg_vec', nargs='+', type=int, default=[1,1,1], help=' Weighted aggregation vector (default: [1,1,1])')
     # parser.add_argument('--device', type=str, default='0')
 
 def get_subargs(args):
