@@ -1,5 +1,6 @@
 import torch 
 import numpy as np
+import copy
 
 class EarlyStopping:
     """
@@ -114,5 +115,5 @@ class EarlyStopping:
         model : torch.nn.modules
             The model
         """
-        self.__best_parameters = model.state_dict()    
+        self.__best_parameters = copy.deepcopy(model.state_dict())
         
