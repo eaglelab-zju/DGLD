@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+ 
+<head>
+    <meta charset="UTF-8">
+    <title>DGLD HTML</title>
+
+    <link rel="stylesheet" id="templatecss" type="text/css" href="css/bootstrap-frm.css">
+
+    <script type="text/javascript" src="js/jQuery.js"></script>
+
+</head>
+
+<body>
+        <form action="" method="post" class="bootstrap-frm" id="form">
+                <h1>DGLD benchmark demo
+                        <span>select the model, dataset, and fill in the parameters of the model.</span>
+                </h1>
+
+                <label>
+                        <span>model :</span>
+                        <select id="model" name="model" onchange="ChangeForm()">
+                                <option value="Please select model">Please select model</option>
+                        </select>
+                </label>
+ 
+                <label>
+                        <span>dataset :</span>
+                        <select id="dataset" name="dataset" onchange="ChangeForm()">
+                                <option value="Cora">Cora</option>
+                                <option value="Citeseer">Citeseer</option>
+                                <option value="Pubmed">Pubmed</option>
+                                <option value="BlogCatalog">BlogCatalog</option>
+                                <option value="Flickr">Flickr</option>
+                                <option value="ACM">ACM</option>
+                                <option value="ogbn-arxiv">ogbn-arxiv</option>
+                        </select>
+                </label>
+
+                <label>
+                        <span>exp_name :</span>
+                        <input id="exp_name" type="text" name="exp_name" placeholder="">
+                </label>
+
+                <label>
+                        <span>save path :</span>
+                        <input id="save_path" type="text" name="save_path" placeholder="">
+                </label>
+
+                <label1></label1>
+
+                <div id="config"></div>
+
+                <label>
+                        <span>Filter same parameters :</span>
+                        <select id="filter" name="filter">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                        </select>
+                </label>
+
+                <label>
+                        <span>&nbsp;</span>
+                        <input type="button" class="button" value="Submit" onclick="SubmitForm()"/>
+                </label>
+
+                <label>
+                        <span>Shell Scripts :</span>
+                        <textarea id="shelltxt" name="shelltxt"></textarea>
+                </label>
+
+                <label>
+                        <span>&nbsp;</span>
+                        <input type="button" class="button" value="COPY" onclick="CopyText()"/>
+                </label>
+
+        </form>
+ 
+        <script>
+                var listargs = [];
+                $(document).ready(function () {
+                        $.ajax({
+                                url: "../datas.json",
+                                type: "GET",
+                                dataType: "json",
+                                async: false,
+                                success: function(data) {
+                                        var selector = document.getElementById("model");
+                                        for(var i=0;i<data['data'].length;i++){
+                                                var opt = document.createElement("option");
+                                                opt.value = data['data'][i]['col1'];
+                                                opt.innerText = data['data'][i]['col1'];
+                                                selector.appendChild(opt);
+                                        }
+                                },
+                                error: function () {
+                                      alert("error!");
+                                }
+                        });
+                })
+ 
+                function ChangeForm() {
+                        var model = document.getElementById("model");
+                        var mindex = model.selectedIndex;
+                        var modelvalue = model.options[mindex].value;
+
+                        var dataset = document.getElementById("dataset");
+                        var dindex = dataset.selectedIndex;
+                        var datasetvalue = dataset.options[dindex].value;
+
+                        $.ajax({
+                                url: "../hyper/"+modelvalue+"_"+datasetvalue+".json",
+                                type: "GET",
+                                dataType: "json",
+                                async: false,
+                                success: function(data) {
+                                        var config = document.getElementById('config');
+                                        config.innerHTML = "";
+
+                                        var shelltxt = document.getElementById('shelltxt');
+                                        shelltxt.value = "";
+
+                                        listargs = [];
+                                        for(var i=0;i<data["hyper"].length;i++){
+                                                s = '<label><span>';
+                                                s += data["hyper"][i]["name"] + ' :';
+                                                s += '</span>';
+                                                var multiselect = 0;
+                                                if(data["hyper"][i]["choices"] === null){
+                                                        var d = "";
+                                                        if(data["hyper"][i]["type"] === "list") {
+                                                                listargs.push(data["hyper"][i]["name"]);
+                                                                d += data["hyper"][i]["default"][0];
+                                                                for(var k=1; k<data["hyper"][i]["default"].length;k++) {
+                                                                        d += ' ' + data["hyper"][i]["default"][k];
+                                                                }
+                                                                // console.log(d);
+                                                        }else{
+                                                                d = data["hyper"][i]["default"];
+                                                        }
+                                                        s += '<input id="' + data["hyper"][i]["name"]
+                                                                + '" type="text'
+                                                                + '" name="' + data["hyper"][i]["name"]
+                                                                + '" value="' + d
+                                                                + '" placeholder="' + d + '" />';
+                                                }else{
+                                                        multiselect = 1;
+                                                        s += '<select id="' + data["hyper"][i]["name"]
+                                                                + '" name="' + data["hyper"][i]["name"]
+                                                                + '" multiple>';
+                                                        for(var j in data["hyper"][i]["choices"]){
+                                                                s += '<option value="' + data["hyper"][i]["choices"][j] + '"';
+                                                                if(data["hyper"][i]["choices"][j] === data["hyper"][i]["default"]){
+                                                                        s += ' selected="selected"';
+                                                                }
+                                                                s += ' >' + data["hyper"][i]["choices"][j] + '</option>';
+                                                        }
+                                                        s += '</select>';
+                                                }
+                                                s += '</label>';
+                                                $("#config").append(s);
+                                                if(multiselect === 1) {
+                                                        // $(`#${data["hyper"][i]["name"]}`).selectpicker();
+                                                }
+                                        }
+                                },
+                                error: function () {
+                                        alert("error!");
+                                }
+                        });
+
+                }
+
+                function serializeForm(form) {
+                        var obj = {};
+                        $.each(form.serializeArray(),function(index){
+                                var s = this['value'];
+                                if(s.includes(';') || s.includes('；')) {
+                                        s = s.split(/;|；/);
+                                        // console.log(s);
+                                }
+                                if(listargs.includes(this['name']) && Array.isArray(s)){
+                                        for(var i in s){
+                                                s[i] = '\"' + s[i] + '\"';
+                                        }
+                                }
+                                if(obj[this['name']]){
+                                        if(Array.isArray(obj[this['name']])){
+                                                obj[this['name']].push(s);
+                                        }else{
+                                                var temp = obj[this['name']];
+                                                obj[this['name']] = [];
+                                                obj[this['name']].push(temp);
+                                                obj[this['name']].push(s);
+                                        }
+                                } else {
+                                    obj[this['name']] = s;
+                                }
+                        });
+                        return obj;
+                }
+
+                function SubmitForm() {
+                        var modelvalue = $('#form')[0]['model']['value']
+                        // console.log(modelvalue);
+                        if(modelvalue === "Please select model"){
+                                alert("Please select model!");
+                                return;
+                        }
+                        var jsonObj = serializeForm($("form"));
+                        console.log(jsonObj);
+                        args2shell(jsonObj);
+                }
+
+                function args2shell(args) {
+                        var command_head = "python main.py";
+                        var command_body = " " + args['model'];
+                        var command_tail = "";
+
+                        var space = ""
+                        var head = "";
+                        var tail = "";
+
+                        if(args['exp_name'] === ""){
+                                args['exp_name'] = args['model'] + '_' + args['dataset'];
+                        }
+
+                        if(args['save_path'] === ""){
+                                args['save_path'] = 'result';
+                        }
+
+                        var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name'];
+
+                        for(var key in args){
+                                if(key === "model" || args[key] === "null" || args[key] === "" || key === "shelltxt" || key === "filter")
+                                        continue;
+                                if(Array.isArray(args[key])){
+                                        head += space + `for ${key} in `;
+                                        head += args[key].join(" ") + "\n" + space + "do\n";
+                                        tail = space + "done\n" + tail;
+                                        space += "  ";
+                                        if(head_list.includes(key)){
+                                                command_head += ` --${key} \$${key}`;
+                                        }else{
+                                                command_tail += ` --${key} \$${key}`;
+                                        }
+                                }else{
+                                        if(head_list.includes(key)){
+                                                command_head += ` --${key} ${args[key]}`;
+                                        }else{
+                                                command_tail += ` --${key} ${args[key]}`;
+                                        }
+                                }
+                        }
+                        var body = space + command_head + command_body + command_tail + "\n";
+                        var content = head + body + tail;
+                        content += "python scripts/summary.py --exp_name=" + `${args['exp_name']} `
+                                   + "--save_path=" + `${args['save_path']}`;
+                        if(args['filter'] === 'yes'){
+                                content += ' --filter';
+                        }
+                        console.log(content);
+
+                        $("#shelltxt").val(content)
+
+                        return content;
+                }
+
+                function CopyText() {
+                        var shelltext=document.getElementById("shelltxt");
+                        shelltext.select();
+                        document.execCommand("Copy");
+                        alert("Copy successfully!");
+                }
+
+        </script>
+ 
+</body>
+
+</html>

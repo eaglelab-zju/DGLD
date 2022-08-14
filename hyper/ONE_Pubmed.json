@@ -1,0 +1,39 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":5,
+            "choices":null
+        },
+        {
+            "name":"K",
+            "tip":"The embedding size of graph nodes",
+            "type":"int",
+            "default":8,
+            "choices":null
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":2,
+            "choices":null
+        },
+        {
+            "name":"beta",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":4,
+            "choices":null
+        },
+        {
+            "name":"gamma",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":1,
+            "choices":null
+        }
+    ]
+}

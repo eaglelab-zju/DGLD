@@ -1,0 +1,91 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":100,
+            "choices":null
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.001,
+            "choices":null
+        },
+        {
+            "name":"weight_decay",
+            "tip":"",
+            "type":"float",
+            "default":0.0,
+            "choices":null
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.99,
+            "choices":null
+        },
+        {
+            "name":"eta",
+            "tip":"Attribute penalty balance parameter",
+            "type":"float",
+            "default":0.5,
+            "choices":null
+        },
+        {
+            "name":"contrast_type",
+            "tip":"categories of contrastive loss function",
+            "type":"str",
+            "default":"siamese",
+            "choices":[
+                "siamese",
+                "triplet"
+            ]
+        },
+        {
+            "name":"rate",
+            "tip":"rate of anomalies",
+            "type":"float",
+            "default":0.2,
+            "choices":null
+        },
+        {
+            "name":"margin",
+            "tip":"parameter of the contrastive loss function",
+            "type":"float",
+            "default":0.5,
+            "choices":null
+        },
+        {
+            "name":"batch_size",
+            "tip":"size of training batch",
+            "type":"int",
+            "default":0,
+            "choices":null
+        },
+        {
+            "name":"num_added_edge",
+            "tip":"parameter for generating high-degree anomalies",
+            "type":"int",
+            "default":50,
+            "choices":null
+        },
+        {
+            "name":"surround",
+            "tip":"parameter for generating outlying anomalies",
+            "type":"int",
+            "default":50,
+            "choices":null
+        },
+        {
+            "name":"scale_factor",
+            "tip":"parameter for generating disproportionate anomalies",
+            "type":"float",
+            "default":10,
+            "choices":null
+        }
+    ]
+}

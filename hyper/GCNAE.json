@@ -1,0 +1,46 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":100
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.005
+        },
+        {
+            "name":"weight_decay",
+            "tip":"",
+            "type":"float",
+            "default":0.0
+        },
+        {
+            "name":"dropout",
+            "tip":"",
+            "type":"float",
+            "default":0.3
+        },
+        {
+            "name":"batch_size",
+            "tip":"",
+            "type":"int",
+            "default":0
+        },
+        {
+            "name":"hidden_dim",
+            "tip":"",
+            "type":"int",
+            "default":64
+        },
+        {
+            "name":"n_layers",
+            "tip":"",
+            "type":"int",
+            "default":2
+        }
+    ]
+}
