@@ -1,0 +1,83 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":null
+        },
+        {
+            "name":"gen_hid_dims",
+            "tip":"generator hidden dims list",
+            "type":"list",
+            "default":[
+                32,
+                64,
+                128
+            ]
+        },
+        {
+            "name":"ed_hid_dims",
+            "tip":"discriminator hidden dims list",
+            "type":"list",
+            "default":[
+                32,
+                64
+            ]
+        },
+        {
+            "name":"out_dim",
+            "tip":"discriminator of encoder out",
+            "type":"int",
+            "default":128
+        },
+        {
+            "name":"batch_size",
+            "tip":"batch_size, 0 for all data ",
+            "type":"int",
+            "default":1024
+        },
+        {
+            "name":"g_lr",
+            "tip":"generator learning rate",
+            "type":"float",
+            "default":0.005
+        },
+        {
+            "name":"d_lr",
+            "tip":"discriminator learning rate",
+            "type":"float",
+            "default":0.005
+        },
+        {
+            "name":"weight_decay",
+            "tip":"Weight decay",
+            "type":"float",
+            "default":0.01
+        },
+        {
+            "name":"noise_dim",
+            "tip":"noise_dim",
+            "type":"int",
+            "default":32
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.2
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.3
+        },
+        {
+            "name":"num_neighbor",
+            "tip":"the simple number of neighbor -1 for all neighbor",
+            "type":"int",
+            "default":200
+        }
+    ]
+}

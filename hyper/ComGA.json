@@ -1,0 +1,82 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":null
+        },
+        {
+            "name":"m",
+            "tip":"num of edges",
+            "type":"int",
+            "default":171743
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":1e-05
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.0
+        },
+        {
+            "name":"weight_decay",
+            "tip":"weight decay",
+            "type":"float",
+            "default":0
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.7
+        },
+        {
+            "name":"eta",
+            "tip":"Attribute penalty balance parameter",
+            "type":"float",
+            "default":5.0
+        },
+        {
+            "name":"theta",
+            "tip":"structure penalty balance parameter",
+            "type":"float",
+            "default":40.0
+        },
+        {
+            "name":"no_cuda",
+            "tip":"",
+            "type":null,
+            "default":null
+        },
+        {
+            "name":"n_enc_1",
+            "tip":"number of encode1 units",
+            "type":"int",
+            "default":2000
+        },
+        {
+            "name":"n_enc_2",
+            "tip":"number of encode2 units",
+            "type":"int",
+            "default":500
+        },
+        {
+            "name":"n_enc_3",
+            "tip":"number of encode2 units",
+            "type":"int",
+            "default":128
+        },
+        {
+            "name":"patience",
+            "tip":"early stop patience",
+            "type":"int",
+            "default":10
+        }
+    ]
+}

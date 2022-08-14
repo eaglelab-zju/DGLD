@@ -1,0 +1,67 @@
+alabaster==0.7.12
+Babel==2.10.3
+brotlipy @ file:///D:/bld/brotlipy_1648854327487/work
+certifi @ file:///C:/Windows/TEMP/abs_e9b7158a-aa56-4a5b-87b6-c00d295b01fanefpc8_o/croots/recipe/certifi_1655968940823/work/certifi
+cffi @ file:///D:/bld/cffi_1656782930891/work
+charset-normalizer @ file:///home/conda/feedstock_root/build_artifacts/charset-normalizer_1655906222726/work
+colorama @ file:///C:/Windows/TEMP/abs_9439aeb1-0254-449a-96f7-33ab5eb17fc8apleb4yn/croots/recipe/colorama_1657009099097/work
+cryptography @ file:///D:/bld/cryptography_1657174166005/work
+cycler==0.11.0
+dgl-cuda11.3==0.9.0
+docutils==0.17.1
+fonttools==4.34.4
+idna @ file:///home/conda/feedstock_root/build_artifacts/idna_1642433548627/work
+imagesize==1.4.1
+importlib-metadata==4.12.0
+Jinja2==3.1.2
+joblib==1.1.0
+kiwisolver==1.4.4
+littleutils==0.2.2
+MarkupSafe==2.1.1
+matplotlib==3.5.2
+mkl-fft==1.3.1
+mkl-random @ file:///C:/ci/mkl_random_1626186184308/work
+mkl-service==2.4.0
+networkx==2.8.5
+numpy @ file:///C:/ci/numpy_and_numpy_base_1652784039997/work
+ogb==1.3.3
+outdated==0.2.1
+packaging==21.3
+pandas==1.4.3
+Pillow @ file:///D:/bld/pillow_1657007292472/work
+psutil==5.9.1
+pycparser @ file:///home/conda/feedstock_root/build_artifacts/pycparser_1636257122734/work
+Pygments==2.12.0
+pyOpenSSL @ file:///home/conda/feedstock_root/build_artifacts/pyopenssl_1643496850550/work
+pyparsing==3.0.9
+PySocks @ file:///D:/bld/pysocks_1648857426942/work
+python-dateutil==2.8.2
+pytz==2022.1
+requests @ file:///home/conda/feedstock_root/build_artifacts/requests_1656534056640/work
+scikit-learn==1.1.1
+scipy==1.9.0
+six @ file:///tmp/build/80754af9/six_1644875935023/work
+snowballstemmer==2.2.0
+Sphinx==5.1.1
+sphinx-copybutton==0.5.0
+sphinx-rtd-theme==1.0.0
+sphinxcontrib-applehelp==1.0.2
+sphinxcontrib-devhelp==1.0.2
+sphinxcontrib-htmlhelp==2.0.0
+sphinxcontrib-jsmath==1.0.1
+sphinxcontrib-qthelp==1.0.3
+sphinxcontrib-serializinghtml==1.1.5
+tabulate==0.8.10
+termcolor==1.1.0
+texttable==1.6.4
+threadpoolctl==3.1.0
+torch==1.12.0
+torchaudio==0.12.0
+torchvision==0.13.0
+tqdm @ file:///C:/ci/tqdm_1650636210717/work
+typing_extensions @ file:///home/conda/feedstock_root/build_artifacts/typing_extensions_1656706066251/work
+urllib3 @ file:///home/conda/feedstock_root/build_artifacts/urllib3_1658789158161/work
+wget==3.2
+win-inet-pton @ file:///D:/bld/win_inet_pton_1648771910527/work
+wincertstore==0.2
+zipp==3.8.1

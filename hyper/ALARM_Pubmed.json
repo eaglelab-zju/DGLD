@@ -1,0 +1,64 @@
+{
+    "hyper":[
+        {
+            "name":"hidden_dim",
+            "tip":"dimension of hidden embedding (default: 64)",
+            "type":"int",
+            "default":128,
+            "choices":null
+        },
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":100,
+            "choices":null
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.001,
+            "choices":null
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.3,
+            "choices":null
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.8,
+            "choices":null
+        },
+        {
+            "name":"view_num",
+            "tip":"",
+            "type":"int",
+            "default":3,
+            "choices":null
+        },
+        {
+            "name":"agg_type",
+            "tip":"Aggregator type (default: 0)",
+            "type":"int",
+            "default":0,
+            "choices":null
+        },
+        {
+            "name":"agg_vec",
+            "tip":" Weighted aggregation vector (default: [1,1,1])",
+            "type":"list",
+            "default":[
+                1,
+                1,
+                1
+            ],
+            "choices":null
+        }
+    ]
+}
