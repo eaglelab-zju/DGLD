@@ -69,4 +69,7 @@ if __name__ == "__main__":
                     finally_col.append(c)
             finally_col += col[-3:]
             table = table[finally_col]
+    table['sort_value'] = table['task'].apply(lambda x : int(x[4:]))
+    table = table.sort_values(by='sort_value')
+    del table['sort_value']
     table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary.md',index=False)
