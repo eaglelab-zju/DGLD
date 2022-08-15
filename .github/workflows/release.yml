@@ -25,9 +25,6 @@ jobs:
           python-version: '3.9'
           cache: 'pip' # caching pip dependencies
       - run: |
-          cd web
-          pip install -r requirements.txt
-          cd ..
           python src/dgld/utils/argparser.py
       
       # push code
