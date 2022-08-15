@@ -75,12 +75,12 @@ class Encoder(nn.Module):
             x[i] = F.dropout(x[i], self.dropout, training=self.training)
             x[i] = F.relu(self.gc2(g, x[i]))
         
-        if self.agg_type is 1:
+        if self.agg_type == 1:
             rand_weight = torch.rand(1, self.view_num)
             for i in range(0, self.view_num):
                 x[i] = rand_weight * x[i]
             x = torch.cat([i for i in x], 1)
-        elif self.agg_type is 2:
+        elif self.agg_type == 2:
             manual_weight = torch.tensor(self.agg_vec)
             for i in range(0, self.view_num):
                 x[i] = manual_weight * x[i]
