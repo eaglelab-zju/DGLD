@@ -6,7 +6,7 @@ from dgld.utils.argparser import parse_all_args
 from dgld.utils.load_data import load_data
 from dgld.utils.inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
 from dgld.utils.common_params import Q_MAP,K,P
-from dgld.models.DOMINANT import Dominant
+from dgld.models.DOMINANT import DOMINANT
 from dgld.models.AnomalyDAE import AnomalyDAE
 from dgld.models.ComGA import ComGA
 from dgld.models.DONE import DONE
@@ -78,40 +78,12 @@ if __name__ == "__main__":
     graph = inject_structural_anomalies(graph=graph,p=P,q=Q_MAP[data_name])
     label = graph.ndata['label']
 
-    if args.model == 'DOMINANT':
-        model = Dominant(**args_dict["model"])
-    elif args.model == 'AnomalyDAE':
-        model = AnomalyDAE(**args_dict["model"])
-    elif args.model == 'ComGA':
-        model = ComGA(**args_dict["model"])
-    elif args.model == 'DONE':
-        model = DONE(**args_dict["model"])
-    elif args.model == 'AdONE':
-        model = AdONE(**args_dict["model"])
-    elif args.model == 'CONAD':
-        model = CONAD(**args_dict["model"])
-    elif args.model == 'ALARM':
-        model = ALARM(**args_dict["model"])
-    elif args.model == 'ONE':
-        model = ONE(**args_dict["model"])
-    elif args.model == 'GAAN':
-        model = GAAN(**args_dict["model"])
-    elif args.model == 'GUIDE':
-        model = GUIDE(**args_dict["model"])
-    elif args.model == 'CoLA':
-        model = CoLA(**args_dict["model"])
-    elif args.model == 'AAGNN':
-        model = AAGNN_batch(**args_dict["model"])
-    elif args.model == 'SLGAD':
-        model = SLGAD(**args_dict["model"])
-    elif args.model == 'ANEMONE':
-        model = ANEMONE(**args_dict["model"])
-    elif args.model == 'GCNAE':
-        model = GCNAE(**args_dict["model"])
-    elif args.model == 'MLPAE':
-        model = MLPAE(**args_dict["model"])
-    elif args.model == 'SCAN':
-        model = SCAN(**args_dict["model"])
+    if args.model in ['DOMINANT','AnomalyDAE','ComGA','DONE','AdONE','CONAD','ALARM','ONE','GAAN','GUIDE','CoLA',
+                       'AAGNN', 'SLGAD','ANEMONE','GCNAE','MLPAE','SCAN']:
+        model_name = args.model
+        if model_name == 'AAGNN':
+            model_name = 'AAGNN_batch'
+        model = eval(f'{model_name}(**args_dict["model"])')
     else:
         raise ValueError(f"{args.model} is not implemented!")
 

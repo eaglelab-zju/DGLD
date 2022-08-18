@@ -12,3 +12,4 @@ tqdm==4.63.0
 wget==3.2
 tensorboard==2.8.0
 protobuf==3.19.4
+tabulate==0.8.10

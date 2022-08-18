@@ -9,7 +9,7 @@ from dgl.nn.pytorch import GraphConv
 from .dominant_utils import  train_step, test_step,normalize_adj
 from utils.early_stopping import EarlyStopping
 
-class Dominant(nn.Module):
+class DOMINANT(nn.Module):
     """Deep Anomaly Detection on Attributed Networks.[SDM19]
     ref:https://github.com/kaize0409/GCN_AnomalyDetection_pytorch
     
@@ -24,7 +24,7 @@ class Dominant(nn.Module):
     
     """
     def __init__(self, feat_size, hidden_size, dropout):
-        super(Dominant, self).__init__()
+        super(DOMINANT, self).__init__()
         self.model = DominantModel(feat_size, hidden_size, dropout)
     
     def fit(self,graph,lr=5e-3,num_epoch=1,alpha=0.8,device='cpu',patience=10):

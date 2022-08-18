@@ -25,7 +25,7 @@ class AAGNN_batch(nn.Module):
 
     Examples
     -------
-    >>> from DGLD.AAGNN import AAGNN_batch
+    >>> from DGLD.AAGNN import AAGNN
     >>> model = AAGNN_batch(in_feats=in_feats, out_feats=300)
     >>> model.fit(graph, num_epoch=30, device='cuda:0', subgraph_size=32)
     """
