@@ -4,7 +4,7 @@
  
 <head>
     <meta charset="UTF-8">
-    <title>DGLD HTML</title>
+    <title>DGLD Command Line Tool</title>
 
     <link rel="stylesheet" id="templatecss" type="text/css" href="css/bootstrap-frm.css">
 
@@ -14,8 +14,8 @@
 
 <body>
         <form action="" method="post" class="bootstrap-frm" id="form">
-                <h1>DGLD benchmark demo
-                        <span>select the model, dataset, and fill in the parameters of the model.</span>
+                <h1>DGLD Command Line Tool
+                        <span>DGLD provides an easy-to-use graphical command line tool for users to run experiments with different models, datasets and customized parameters. You can select all the settings in this page, click 'Submit' and copy the shell scripts to your terminal. Then enjoy the DGLD!</span>
                 </h1>
 
                 <label>
@@ -66,13 +66,23 @@
                 </label>
 
                 <label>
-                        <span>Shell Scripts :</span>
+                        <span>Run experiments :</span>
                         <textarea id="shelltxt" name="shelltxt"></textarea>
                 </label>
 
                 <label>
                         <span>&nbsp;</span>
-                        <input type="button" class="button" value="COPY" onclick="CopyText()"/>
+                        <input type="button" class="button" value="Copy" onclick="CopyText()"/>
+                </label>
+
+                <label>
+                        <span>Order results :</span>
+                        <textarea id="shelltxt2" name="shelltxt2"></textarea>
+                </label>
+
+                <label>
+                        <span>&nbsp;</span>
+                        <input type="button" class="button" value="Copy" onclick="CopyText()"/>
                 </label>
 
         </form>
@@ -120,6 +130,9 @@
 
                                         var shelltxt = document.getElementById('shelltxt');
                                         shelltxt.value = "";
+
+                                        var shelltxt2 = document.getElementById('shelltxt2');
+                                        shelltxt2.value = "";
 
                                         listargs = [];
                                         for(var i=0;i<data["hyper"].length;i++){
@@ -255,14 +268,15 @@
                         }
                         var body = space + command_head + command_body + command_tail + "\n";
                         var content = head + body + tail;
-                        content += "python scripts/summary.py --exp_name=" + `${args['exp_name']} `
+                        var content2 = "python scripts/summary.py --exp_name=" + `${args['exp_name']} `
                                    + "--save_path=" + `${args['save_path']}`;
                         if(args['filter'] === 'yes'){
-                                content += ' --filter';
+                                content2 += ' --filter';
                         }
                         console.log(content);
 
                         $("#shelltxt").val(content)
+                        $("#shelltxt2").val(content2)
 
                         return content;
                 }

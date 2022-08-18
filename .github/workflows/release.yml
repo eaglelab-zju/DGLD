@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ "release" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      # switch to release branch
+      - name: witch to release branch
+        run: |
+          git pull --all
+          git checkout origin/release
+      
+      
+      # install python and dependencies
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          cache: 'pip' # caching pip dependencies
+      - run: |
+          cd web
+          pip install -r requirements.txt
+          cd ..
+          python src/dgld/utils/argparser.py
+      
+      # push code
+      - name: push code
+        run: |
+          git add .
+          git commit -m 'auto update json file'
+          git push
