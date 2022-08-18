@@ -12,7 +12,7 @@ from tqdm import tqdm
 from torch.autograd import Variable # torch 中 Variable 模块
 from utils.early_stopping import EarlyStopping
 
-class AAGNN_batch(nn.Module):
+class AAGNN(nn.Module):
     """
     This is a model for large graph training based on the AAGNN model.
 
@@ -25,8 +25,8 @@ class AAGNN_batch(nn.Module):
 
     Examples
     -------
-    >>> from DGLD.AAGNN import AAGNN_batch
-    >>> model = AAGNN_batch(in_feats=in_feats, out_feats=300)
+    >>> from DGLD.AAGNN import AAGNN
+    >>> model = AAGNN(in_feats=in_feats, out_feats=300)
     >>> model.fit(graph, num_epoch=30, device='cuda:0', subgraph_size=32)
     """
     def __init__(self, feat_size, out_feats=300):
