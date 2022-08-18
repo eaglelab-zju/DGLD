@@ -30,7 +30,7 @@
  
          font: 50px "Helvetica Neue", Helvetica, Arial, sans-serif;
  
-         padding: 20px 0px 30px 70px;
+         padding: 20px 30px 30px 70px;
  
          display: block;
  
@@ -46,7 +46,7 @@
  
          display: block;
  
-         font-size: 20px;
+         font-size: 15px;
  
 }
  
@@ -160,7 +160,7 @@
  
 .bootstrap-frm textarea{
  
-         height:200px;
+         height:100px;
  
          padding: 5px 0px 0px 5px;
  
