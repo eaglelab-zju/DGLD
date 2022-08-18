@@ -1,2 +1,2 @@
 from .dominant_utils import set_subargs,get_subargs
-from .models import Dominant
+from .models import DOMINANT

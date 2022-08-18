@@ -6,7 +6,7 @@ from dgld.utils.argparser import parse_all_args
 from dgld.utils.load_data import load_data
 from dgld.utils.inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
 from dgld.utils.common_params import Q_MAP,K,P
-from dgld.models.DOMINANT import Dominant
+from dgld.models.DOMINANT import DOMINANT
 from dgld.models.AnomalyDAE import AnomalyDAE
 from dgld.models.ComGA import ComGA
 from dgld.models.DONE import DONE
