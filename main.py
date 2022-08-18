@@ -17,7 +17,7 @@ from dgld.models.ONE import ONE
 from dgld.models.GAAN import GAAN
 from dgld.models.GUIDE import GUIDE
 from dgld.models.CoLA import CoLA
-from dgld.models.AAGNN import AAGNN
+from dgld.models.AAGNN import AAGNN_batch
 from dgld.models.SLGAD import SLGAD
 from dgld.models.ANEMONE import ANEMONE
 from dgld.models.GCNAE import GCNAE
@@ -80,7 +80,10 @@ if __name__ == "__main__":
 
     if args.model in ['DOMINANT','AnomalyDAE','ComGA','DONE','AdONE','CONAD','ALARM','ONE','GAAN','GUIDE','CoLA',
                        'AAGNN', 'SLGAD','ANEMONE','GCNAE','MLPAE','SCAN']:
-        model = eval(f'{args.model}(**args_dict["model"])')
+        model_name = args.model
+        if model_name == 'AAGNN':
+            model_name = 'AAGNN_batch'
+        model = eval(f'{model_name}(**args_dict["model"])')
     else:
         raise ValueError(f"{args.model} is not implemented!")
 
