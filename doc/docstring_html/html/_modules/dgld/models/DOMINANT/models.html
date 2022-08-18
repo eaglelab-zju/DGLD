@@ -75,7 +75,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">dgl.nn.pytorch</span> <span class="kn">import</span> <span class="n">GraphConv</span>
 <span class="kn">from</span> <span class="nn">.dominant_utils</span> <span class="kn">import</span>  <span class="n">train_step</span><span class="p">,</span> <span class="n">test_step</span><span class="p">,</span><span class="n">normalize_adj</span>
-<span class="kn">from</span> <span class="nn">torch.utils.tensorboard</span> <span class="kn">import</span> <span class="n">SummaryWriter</span>
 <span class="kn">from</span> <span class="nn">utils.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
 
 <div class="viewcode-block" id="Dominant"><a class="viewcode-back" href="../../../../dgld.models.DOMINANT.models.html#dgld.models.DOMINANT.models.Dominant">[docs]</a><span class="k">class</span> <span class="nc">Dominant</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -96,7 +95,7 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Dominant</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">DominantModel</span><span class="p">(</span><span class="n">feat_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">dropout</span><span class="p">)</span>
     
-<div class="viewcode-block" id="Dominant.fit"><a class="viewcode-back" href="../../../../dgld.models.DOMINANT.models.html#dgld.models.DOMINANT.models.Dominant.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span><span class="n">logdir</span><span class="o">=</span><span class="s1">&#39;tmp&#39;</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="Dominant.fit"><a class="viewcode-back" href="../../../../dgld.models.DOMINANT.models.html#dgld.models.DOMINANT.models.Dominant.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">graph</span><span class="p">,</span><span class="n">lr</span><span class="o">=</span><span class="mf">5e-3</span><span class="p">,</span><span class="n">num_epoch</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span><span class="n">device</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span><span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fitting model</span>
 
 <span class="sd">        Parameters</span>
@@ -105,8 +104,6 @@
 <span class="sd">            graph dataset</span>
 <span class="sd">        lr : float, optional</span>
 <span class="sd">            learning rate, by default 5e-3</span>
-<span class="sd">        logdir : str, optional</span>
-<span class="sd">            log dir, by default &#39;tmp&#39;</span>
 <span class="sd">        num_epoch : int, optional</span>
 <span class="sd">            number of training epochs , by default 1</span>
 <span class="sd">        alpha : float, optional</span>
@@ -146,7 +143,6 @@
             <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Using cpu!!!&#39;</span><span class="p">)</span>      
         
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">SummaryWriter</span><span class="p">(</span><span class="n">log_dir</span><span class="o">=</span><span class="n">logdir</span><span class="p">)</span>
         
         <span class="n">early_stop</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">early_stopping_rounds</span><span class="o">=</span><span class="n">patience</span><span class="p">,</span><span class="n">patience</span> <span class="o">=</span> <span class="n">patience</span><span class="p">)</span>
 
@@ -156,12 +152,6 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span><span class="n">adj_label</span><span class="p">,</span><span class="n">alpha</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Epoch:&quot;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">%04d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span><span class="p">),</span> <span class="s2">&quot;train_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(</span>
             <span class="p">)),</span> <span class="s2">&quot;train/struct_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">struct_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()),</span> <span class="s2">&quot;train/feat_loss=&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{:.5f}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feat_loss</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">add_scalars</span><span class="p">(</span>
-                <span class="s2">&quot;loss&quot;</span><span class="p">,</span>
-                <span class="p">{</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="n">loss</span><span class="p">,</span> <span class="s2">&quot;struct_loss&quot;</span><span class="p">:</span> <span class="n">struct_loss</span><span class="p">,</span> <span class="s2">&quot;feat_loss&quot;</span><span class="p">:</span> <span class="n">feat_loss</span><span class="p">},</span>
-                <span class="n">epoch</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">writer</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
             
             <span class="n">early_stop</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
  

@@ -1,0 +1,95 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":30,
+            "choices":null
+        },
+        {
+            "name":"gen_hid_dims",
+            "tip":"generator hidden dims list",
+            "type":"list",
+            "default":[
+                32,
+                64,
+                128
+            ],
+            "choices":null
+        },
+        {
+            "name":"ed_hid_dims",
+            "tip":"discriminator hidden dims list",
+            "type":"list",
+            "default":[
+                32,
+                64
+            ],
+            "choices":null
+        },
+        {
+            "name":"out_dim",
+            "tip":"discriminator of encoder out",
+            "type":"int",
+            "default":128,
+            "choices":null
+        },
+        {
+            "name":"batch_size",
+            "tip":"batch_size, 0 for all data ",
+            "type":"int",
+            "default":1024,
+            "choices":null
+        },
+        {
+            "name":"g_lr",
+            "tip":"generator learning rate",
+            "type":"float",
+            "default":0.005,
+            "choices":null
+        },
+        {
+            "name":"d_lr",
+            "tip":"discriminator learning rate",
+            "type":"float",
+            "default":0.005,
+            "choices":null
+        },
+        {
+            "name":"weight_decay",
+            "tip":"Weight decay",
+            "type":"float",
+            "default":0.01,
+            "choices":null
+        },
+        {
+            "name":"noise_dim",
+            "tip":"noise_dim",
+            "type":"int",
+            "default":32,
+            "choices":null
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.2,
+            "choices":null
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.3,
+            "choices":null
+        },
+        {
+            "name":"num_neighbor",
+            "tip":"the simple number of neighbor -1 for all neighbor",
+            "type":"int",
+            "default":200,
+            "choices":null
+        }
+    ]
+}

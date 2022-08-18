@@ -78,39 +78,19 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int, default=256)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--global_adg', type=bool, default=True)  
+    parser.add_argument('--global_adg', type=lambda x: x.lower() == 'true', default=True)  
     parser.add_argument('--alpha', type = float, default = 1.0)
     parser.add_argument('--beta', type = float, default = 0.6)
     parser.add_argument('--act_function', type = str, default= "PReLU")
     parser.add_argument('--degree_coefficient', type=float, default=-1)
-    parser.add_argument('--attention', type=bool, default=False)
-    parser.add_argument('--positive_subgraph_cor', type=bool, default=False)
-    parser.add_argument('--negative_subgraph_cor', type=bool, default=False)
-    parser.add_argument('--arw', type=bool, default=False)
+    parser.add_argument('--attention', type=lambda x: x.lower() == 'true', default=False)
+    parser.add_argument('--positive_subgraph_cor', type=lambda x: x.lower() == 'true', default=False)
+    parser.add_argument('--negative_subgraph_cor', type=lambda x: x.lower() == 'true', default=False)
+    parser.add_argument('--arw', type=lambda x: x.lower() == 'true', default=False)
     parser.add_argument('--patience', type=int, default=400)
     parser.add_argument('--expid', type=int)
 
 def get_subargs(args):
-
-    if args.lr is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
-            args.lr = 1e-3
-        elif args.dataset == 'ACM':
-            args.lr = 5e-4
-        elif args.dataset == 'BlogCatalog':
-            args.lr = 3e-3
-        elif args.dataset == 'ogbn-arxiv':
-            args.lr = 1e-3
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
-
-
     final_args_dict = {
         "dataset": args.dataset,
         "seed":args.seed,

@@ -107,7 +107,7 @@ registered hooks while the latter silently ignores them.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>feat_size</strong> (<em>int</em>) – dimension of input node feature.</p></li>
-<li><p><strong>hidden_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – dimension of hidden layers’ feature. Defaults: 128.</p></li>
+<li><p><strong>hidden_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – dimension of hidden layers’ feature. Defaults: 64.</p></li>
 <li><p><strong>n_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – number of network layers. Defaults: 2.</p></li>
 <li><p><strong>dropout</strong> (<em>float</em><em>, </em><em>optional</em>) – dropout probability. Defaults: 0.3.</p></li>
 <li><p><strong>act</strong> (<em>callable activation function</em><em>, </em><em>optional</em>) – Activation function. Default: torch.nn.functional.relu.</p></li>
@@ -123,16 +123,15 @@ registered hooks while the latter silently ignores them.</p>
 </div>
 <dl class="py method">
 <dt class="sig sig-object py" id="dgld.models.GCNAE.model.GCNAE.fit">
-<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tmp'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/GCNAE/model.html#GCNAE.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.GCNAE.model.GCNAE.fit" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_epoch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_decay</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/GCNAE/model.html#GCNAE.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.GCNAE.model.GCNAE.fit" title="Permalink to this definition"></a></dt>
 <dd><p>Fitting model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>g</strong> (<em>dgl.DGLGraph</em>) – graph dataset.</p></li>
-<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – learning rate. Defaults: 1e-3.</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – learning rate. Defaults: 5e-3.</p></li>
 <li><p><strong>batch_size</strong> (<em>int</em><em>, </em><em>optional</em>) – the size of training batch. Defaults: 0 for full graph train.</p></li>
-<li><p><strong>num_epoch</strong> (<em>int</em><em>, </em><em>optional</em>) – number of training epochs. Defaults: 1.</p></li>
-<li><p><strong>log_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – log dir. Defaults: ‘tmp’.</p></li>
+<li><p><strong>num_epoch</strong> (<em>int</em><em>, </em><em>optional</em>) – number of training epochs. Defaults: 100.</p></li>
 <li><p><strong>weight_decay</strong> (<em>float</em><em>, </em><em>optional</em>) – weight decay (L2 penalty). Defaults: 0.</p></li>
 <li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – device of computation. Defaults: ‘cpu’.</p></li>
 </ul>
@@ -147,8 +146,8 @@ registered hooks while the latter silently ignores them.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.tensor</em>) – The output by model.</p></li>
-<li><p><strong>x_hat</strong> (<em>torch.tensor</em>) – The original features of node data.</p></li>
+<li><p><strong>x</strong> (<em>torch.tensor</em>) – The original features of node data.</p></li>
+<li><p><strong>x_hat</strong> (<em>torch.tensor</em>) – The output by model.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -162,7 +161,7 @@ registered hooks while the latter silently ignores them.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dgld.models.GCNAE.model.GCNAE.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/GCNAE/model.html#GCNAE.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.GCNAE.model.GCNAE.predict" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/dgld/models/GCNAE/model.html#GCNAE.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dgld.models.GCNAE.model.GCNAE.predict" title="Permalink to this definition"></a></dt>
 <dd><p>predict and return anomaly score of each node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -197,7 +196,7 @@ registered hooks while the latter silently ignores them.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>feat_size</strong> (<em>int</em>) – dimension of input node feature.</p></li>
-<li><p><strong>hidden_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – dimension of hidden layers’ feature. Defaults: 128.</p></li>
+<li><p><strong>hidden_dim</strong> (<em>int</em><em>, </em><em>optional</em>) – dimension of hidden layers’ feature. Defaults: 64.</p></li>
 <li><p><strong>n_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – number of network layers. Defaults: 2.</p></li>
 <li><p><strong>dropout</strong> (<em>float</em><em>, </em><em>optional</em>) – dropout probability. Defaults: 0.3.</p></li>
 <li><p><strong>act</strong> (<em>callable activation function</em><em>, </em><em>optional</em>) – Activation function. Default: torch.nn.functional.relu.</p></li>

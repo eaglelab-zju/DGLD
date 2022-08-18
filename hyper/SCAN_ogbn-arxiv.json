@@ -1,0 +1,18 @@
+{
+    "hyper":[
+        {
+            "name":"eps",
+            "tip":"neighborhood threshold",
+            "type":"float",
+            "default":0.5,
+            "choices":null
+        },
+        {
+            "name":"mu",
+            "tip":"minimal size of clusters",
+            "type":"int",
+            "default":2,
+            "choices":null
+        }
+    ]
+}

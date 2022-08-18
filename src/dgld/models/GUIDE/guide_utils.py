@@ -27,47 +27,7 @@ def set_subargs(parser):
                         help='the number of layers')
     parser.add_argument('--batch_size', type=int, default=0,help='batch_size, 0 for all data ')
 
-def get_subargs(args):
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer']:
-            args.num_epoch = 100
-        elif args.dataset in [ 'Flickr', 'ACM']:
-            args.num_epoch = 50
-        else:
-            args.num_epoch = 10
-    if args.dataset == 'Cora':
-        args.alpha = 0.9987
-        args.lr = 0.001
-    if args.dataset == 'Citeseer':
-        args.alpha = 0.9997
-    if args.dataset == 'Pubmed':
-        args.alpha = 0.9996
-        args.lr = 0.001
-        args.attrb_hid = 256
-        args.num_epoch = 400
-    if args.dataset == 'BlogCatalog':
-        args.alpha = 1
-        args.lr = 0.01
-        args.num_epoch = 100
-        args.attrb_hid = 128
-        args.batch_size = 2048
-        args.dropout=0.3
-    if args.dataset == 'Flickr':
-        args.alpha = 1
-        args.batch_size = 2048
-    if args.dataset == 'ACM':
-        args.alpha = 0.81
-        args.lr = 0.001
-        args.attrb_hid = 256
-        args.struct_hid = 64
-        args.batch_size = 2048
-    if args.dataset == 'ogbn-arxiv':
-        args.alpha = 0.999
-        args.lr = 0.001
-        args.attrb_hid = 64
-        args.struct_hid = 16
-        args.batch_size = 1024
-    
+def get_subargs(args):  
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

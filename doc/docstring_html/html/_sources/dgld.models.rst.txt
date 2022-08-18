@@ -20,7 +20,9 @@ Subpackages
    dgld.models.GAAN
    dgld.models.GCNAE
    dgld.models.GUIDE
+   dgld.models.MLPAE
    dgld.models.ONE
+   dgld.models.SCAN
    dgld.models.SLGAD
 
 Module contents

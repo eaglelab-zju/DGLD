@@ -7,8 +7,6 @@ import dgl.function as fn
 
 from .done_utils import random_walk_with_restart, train_step, test_step
 
-import sys
-sys.path.append('../../')
 from dgld.utils.early_stopping import EarlyStopping
 
 class DONE():

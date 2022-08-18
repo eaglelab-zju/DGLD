@@ -1,0 +1,7 @@
+dgld.models.MLPAE.model 
+========================
+
+.. automodule:: dgld.models.MLPAE.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -122,6 +122,12 @@
 <span class="c1"># GCNAE</span>
 <span class="kn">from</span> <span class="nn">models.GCNAE</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">gcnae_set_args</span>
 <span class="kn">from</span> <span class="nn">models.GCNAE</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">gcnae_get_args</span>
+<span class="c1">#MLPAE</span>
+<span class="kn">from</span> <span class="nn">models.MLPAE</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">mlpae_set_args</span>
+<span class="kn">from</span> <span class="nn">models.MLPAE</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">mlpae_get_args</span>
+<span class="c1">#SCAN</span>
+<span class="kn">from</span> <span class="nn">models.SCAN</span> <span class="kn">import</span> <span class="n">set_subargs</span> <span class="k">as</span> <span class="n">scan_set_args</span>
+<span class="kn">from</span> <span class="nn">models.SCAN</span> <span class="kn">import</span> <span class="n">get_subargs</span> <span class="k">as</span> <span class="n">scan_get_args</span>
 
 <span class="c1"># set args</span>
 <span class="n">models_set_args_map</span> <span class="o">=</span> <span class="p">{</span>
@@ -139,7 +145,9 @@
     <span class="s2">&quot;SLGAD&quot;</span><span class="p">:</span> <span class="n">slgad_set_args</span><span class="p">,</span>
     <span class="s2">&quot;AAGNN&quot;</span><span class="p">:</span> <span class="n">aagnn_set_args</span><span class="p">,</span>
     <span class="s2">&quot;ANEMONE&quot;</span><span class="p">:</span> <span class="n">anemone_set_args</span><span class="p">,</span>
-    <span class="s2">&quot;GCNAE&quot;</span><span class="p">:</span> <span class="n">gcnae_set_args</span>
+    <span class="s2">&quot;GCNAE&quot;</span><span class="p">:</span> <span class="n">gcnae_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;MLPAE&quot;</span><span class="p">:</span> <span class="n">mlpae_set_args</span><span class="p">,</span>
+    <span class="s2">&quot;SCAN&quot;</span><span class="p">:</span> <span class="n">scan_set_args</span>
 <span class="p">}</span>
 <span class="c1"># get args</span>
 <span class="n">models_get_args_map</span> <span class="o">=</span> <span class="p">{</span>
@@ -157,7 +165,9 @@
     <span class="s2">&quot;SLGAD&quot;</span><span class="p">:</span><span class="n">slgad_get_args</span><span class="p">,</span>
     <span class="s2">&quot;AAGNN&quot;</span><span class="p">:</span> <span class="n">aagnn_get_args</span><span class="p">,</span>
     <span class="s2">&quot;ANEMONE&quot;</span><span class="p">:</span> <span class="n">anemone_get_args</span><span class="p">,</span>
-    <span class="s2">&quot;GCNAE&quot;</span><span class="p">:</span> <span class="n">gcnae_get_args</span>
+    <span class="s2">&quot;GCNAE&quot;</span><span class="p">:</span> <span class="n">gcnae_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;MLPAE&quot;</span><span class="p">:</span> <span class="n">mlpae_get_args</span><span class="p">,</span>
+    <span class="s2">&quot;SCAN&quot;</span><span class="p">:</span> <span class="n">scan_get_args</span>
 <span class="p">}</span>
 
 
@@ -177,7 +187,10 @@
                         <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
                         <span class="n">default</span><span class="o">=</span><span class="mi">4096</span><span class="p">,</span>
                         <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Random seed. Defaults to 4096.&#39;</span><span class="p">)</span>
-
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--logdir&#39;</span><span class="p">,</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+                        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The path of stored results.&#39;</span><span class="p">)</span>
     <span class="n">subparsers</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_subparsers</span><span class="p">(</span><span class="n">dest</span><span class="o">=</span><span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;sub-command help&#39;</span><span class="p">)</span>
     
     <span class="c1"># set sub args</span>

@@ -1,0 +1,105 @@
+{
+    "hyper":[
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":100,
+            "choices":null
+        },
+        {
+            "name":"disc_update_times",
+            "tip":"number of discriminator updates",
+            "type":"int",
+            "default":1,
+            "choices":null
+        },
+        {
+            "name":"gen_update_times",
+            "tip":"number of generator updates",
+            "type":"int",
+            "default":5,
+            "choices":null
+        },
+        {
+            "name":"lr_all",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.0003,
+            "choices":null
+        },
+        {
+            "name":"lr_disc",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.001,
+            "choices":null
+        },
+        {
+            "name":"lr_gen",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.0003,
+            "choices":null
+        },
+        {
+            "name":"weight_decay",
+            "tip":"weight decay (L2 penalty)",
+            "type":"float",
+            "default":0.0,
+            "choices":null
+        },
+        {
+            "name":"dropout",
+            "tip":"rate of dropout",
+            "type":"float",
+            "default":0.0,
+            "choices":null
+        },
+        {
+            "name":"batch_size",
+            "tip":"size of training batch",
+            "type":"int",
+            "default":0,
+            "choices":null
+        },
+        {
+            "name":"max_len",
+            "tip":"maximum length of the truncated random walk",
+            "type":"int",
+            "default":0,
+            "choices":null
+        },
+        {
+            "name":"restart",
+            "tip":"probability of restart",
+            "type":"float",
+            "default":0.0,
+            "choices":null
+        },
+        {
+            "name":"num_neighbors",
+            "tip":"number of sampling neighbors",
+            "type":"int",
+            "default":-1,
+            "choices":null
+        },
+        {
+            "name":"embedding_dim",
+            "tip":"dimension of embedding",
+            "type":"int",
+            "default":32,
+            "choices":null
+        },
+        {
+            "name":"verbose",
+            "tip":"verbose or not",
+            "type":"bool",
+            "default":true,
+            "choices":[
+                true,
+                false
+            ]
+        }
+    ]
+}

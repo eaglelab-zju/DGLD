@@ -1,0 +1,37 @@
+{
+    "Cora": {
+        "lr": 1e-3,
+        "num_epoch": 100,
+        "auc_test_rounds": 256
+    },
+    "Citeseer": {
+        "lr": 1e-3,
+        "num_epoch": 100,
+        "auc_test_rounds": 256
+    },
+    "Pubmed": {
+        "lr": 1e-3,
+        "num_epoch": 100,
+        "auc_test_rounds": 256
+    },
+    "BlogCatalog": {
+        "lr": 3e-3,
+        "num_epoch": 400,
+        "auc_test_rounds": 256
+    }, 
+    "Flickr": {
+        "lr": 1e-3,
+        "num_epoch": 400,
+        "auc_test_rounds": 256
+    },
+    "ACM": {
+        "lr": 5e-4,
+        "num_epoch": 400,
+        "auc_test_rounds": 256
+    },
+    "ogbn-arxiv": {
+        "lr": 1e-3,
+        "num_epoch": 10,
+        "auc_test_rounds": 20
+    }
+}

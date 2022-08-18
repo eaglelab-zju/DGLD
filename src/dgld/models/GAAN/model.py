@@ -50,7 +50,7 @@ class GAAN():
         self.noise_dim = noise_dim
 
     def fit(self,graph,attrb_feat=None,batch_size=0,num_epoch=10,g_lr=0.001,d_lr=0.001,
-            weight_decay=0,num_neighbor = -1,device='cpu',verbose=False,y_true=None,alpha=0.3):
+            weight_decay=0,num_neighbor = -1,device='cpu',verbose=True,y_true=None,alpha=0.3):
         """
         Train the model.
 
@@ -92,7 +92,9 @@ class GAAN():
         else:
             device = torch.device("cpu")
             print('Using cpu!!!')  
-
+        graph = dgl.to_simple(graph)
+        graph = dgl.remove_self_loop(graph)
+        graph = dgl.add_self_loop(graph)
         self.model.to(device)
 
         opt_g = torch.optim.Adam(self.model.generator.parameters(),g_lr,weight_decay=weight_decay)
@@ -184,7 +186,9 @@ class GAAN():
         else:
             device = torch.device("cpu")
             print('Using cpu!!!') 
-
+        graph = dgl.to_simple(graph)
+        graph = dgl.remove_self_loop(graph)
+        graph = dgl.add_self_loop(graph)
         self.model = self.model.to(device)
 
 

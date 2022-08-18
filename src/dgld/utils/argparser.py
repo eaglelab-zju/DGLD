@@ -8,7 +8,7 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common import tab_printer    
+from utils.common import tab_printer, loadargs_from_json
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
@@ -54,6 +54,12 @@ from models.ANEMONE import get_subargs as anemone_get_args
 # GCNAE
 from models.GCNAE import set_subargs as gcnae_set_args
 from models.GCNAE import get_subargs as gcnae_get_args
+#MLPAE
+from models.MLPAE import set_subargs as mlpae_set_args
+from models.MLPAE import get_subargs as mlpae_get_args
+#SCAN
+from models.SCAN import set_subargs as scan_set_args
+from models.SCAN import get_subargs as scan_get_args
 
 # set args
 models_set_args_map = {
@@ -71,7 +77,9 @@ models_set_args_map = {
     "SLGAD": slgad_set_args,
     "AAGNN": aagnn_set_args,
     "ANEMONE": anemone_set_args,
-    "GCNAE": gcnae_set_args
+    "GCNAE": gcnae_set_args,
+    "MLPAE": mlpae_set_args,
+    "SCAN": scan_set_args
 }
 # get args
 models_get_args_map = {
@@ -89,7 +97,9 @@ models_get_args_map = {
     "SLGAD":slgad_get_args,
     "AAGNN": aagnn_get_args,
     "ANEMONE": anemone_get_args,
-    "GCNAE": gcnae_get_args
+    "GCNAE": gcnae_get_args,
+    "MLPAE": mlpae_get_args,
+    "SCAN": scan_get_args
 }
 
 
@@ -109,10 +119,23 @@ def parse_all_args() -> argparse.Namespace:
                         type=int,
                         default=4096,
                         help='Random seed. Defaults to 4096.')
-    parser.add_argument('--logdir',
+    parser.add_argument('--save_path',
                         type=str,
-                        default=None,
-                        help='The path of stored results.')
+                        help='save path of the result')
+    parser.add_argument('--exp_name',
+                        type=str,
+                        help='exp_name experiment identification')
+    # get dataset
+    arg_list = sys.argv[1:]
+    if '--dataset' in arg_list:
+        idx = arg_list.index('--dataset') + 1
+        dataset = arg_list[idx]
+    elif any(map(lambda x: x.startswith('--dataset='), arg_list)):
+        dataset = [x.split("=")[-1] for x in arg_list if x.startswith('--dataset=')]
+        dataset = dataset[0]
+    else:
+        dataset = parser.get_default('dataset')
+    
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
     # set sub args
@@ -121,9 +144,15 @@ def parse_all_args() -> argparse.Namespace:
             _model, help=f"Run anomaly detection on {_model}")
         set_arg_func(sub_parser)
         
+        # set best args
+        fp = f'src/dgld/config/{_model}.json'
+        if os.path.exists(fp):
+            best_config = loadargs_from_json(fp)
+            sub_parser.set_defaults(**best_config.get(dataset, {}))
+            
     # get model args
     args = parser.parse_args()
-    args_dict,args = models_get_args_map[args.model](args)
+    args_dict, args = models_get_args_map[args.model](args)
 
     tab_printer(args)
     

@@ -31,35 +31,10 @@ def set_subargs(parser):
     parser.add_argument('--auc_test_rounds', type=int)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--negsamp_ratio', type=int, default=1)
-    parser.add_argument('--global_adg', type=bool, default=True)
+    parser.add_argument('--global_adg', type=lambda x: x.lower() == 'true', default=True)
 
 
 def get_subargs(args):
-
-    if args.lr is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed', 'Flickr']:
-            args.lr = 1e-3
-        elif args.dataset == 'ACM':
-            args.lr = 5e-4
-        elif args.dataset == 'BlogCatalog':
-            args.lr = 3e-3
-        elif args.dataset == 'ogbn-arxiv':
-            args.lr = 1e-3
-
-    if args.num_epoch is None:
-        if args.dataset in ['Cora', 'Citeseer', 'Pubmed']:
-            args.num_epoch = 100
-        elif args.dataset in ['BlogCatalog', 'Flickr', 'ACM']:
-            args.num_epoch = 400
-        else:
-            args.num_epoch = 10
-
-    if args.auc_test_rounds is None:
-        if args.dataset != 'ogbn-arxiv':
-            args.auc_test_rounds = 256
-        else:
-            args.auc_test_rounds = 20
-
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,

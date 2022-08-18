@@ -45,6 +45,9 @@ class CONAD(nn.Module):
             rate=0.2,
             contrast_type='siamese',
             batch_size=0,
+            num_added_edge=50, 
+            surround=50, 
+            scale_factor=10
             ):
         """Fitting model
 
@@ -69,10 +72,15 @@ class CONAD(nn.Module):
         rate : float, optional
             the rate of anomalies, by default 0.2
         contrast_type : str, optional
-            categories of contrastive loss functions, by default 'siamese'
+            categories of contrastive loss function, by default 'siamese'
         batch_size : int, optional
             the size of training batch, by default 0
-            
+        num_added_edge : int
+            parameter for generating high-degree anomalies, by default 50
+        surround : int
+            parameter for generating outlying anomalies, by default 50
+        scale_factor : float
+            parameter for generating disproportionate anomalies, by default 10    
         """
         print('*'*20,'training','*'*20)
         
@@ -93,7 +101,7 @@ class CONAD(nn.Module):
         graph = graph.remove_self_loop()
         
         g_orig = graph.add_self_loop()  
-        transform = KnowledgeModel(rate=rate, num_added_edge=50, surround=50, scale_factor=10)
+        transform = KnowledgeModel(rate=rate, num_added_edge=num_added_edge, surround=surround, scale_factor=scale_factor)
         g_aug = transform(deepcopy(graph)).add_self_loop() 
         
         self.model.to(device) 

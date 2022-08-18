@@ -1,0 +1,67 @@
+{
+    "hyper":[
+        {
+            "name":"out_feats",
+            "tip":"dimension of hidden embedding (default: 64)",
+            "type":"int",
+            "default":256,
+            "choices":null
+        },
+        {
+            "name":"out_dim",
+            "tip":"dimension of output embedding (default: 128)",
+            "type":"int",
+            "default":128,
+            "choices":null
+        },
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":300,
+            "choices":null
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.001,
+            "choices":null
+        },
+        {
+            "name":"subgraph_size",
+            "tip":"",
+            "type":"int",
+            "default":4096,
+            "choices":null
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.0,
+            "choices":null
+        },
+        {
+            "name":"weight_decay",
+            "tip":"weight decay",
+            "type":"float",
+            "default":0,
+            "choices":null
+        },
+        {
+            "name":"eta",
+            "tip":"Attribute penalty balance parameter",
+            "type":"float",
+            "default":5.0,
+            "choices":null
+        },
+        {
+            "name":"theta",
+            "tip":"structure penalty balance parameter",
+            "type":"float",
+            "default":40.0,
+            "choices":null
+        }
+    ]
+}

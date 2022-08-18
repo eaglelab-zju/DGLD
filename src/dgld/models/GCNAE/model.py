@@ -61,7 +61,7 @@ class GCNAEModel(nn.Module):
         feat_size : int
             dimension of input node feature.
         hidden_dim : int, optional
-            dimension of hidden layers' feature. Defaults: 128.
+            dimension of hidden layers' feature. Defaults: 64.
         n_layers : int, optional
             number of network layers. Defaults: 2.
         dropout : float, optional
@@ -108,7 +108,7 @@ class GCNAE(nn.Module):
     feat_size : int
         dimension of input node feature.
     hidden_dim : int, optional
-        dimension of hidden layers' feature. Defaults: 128.
+        dimension of hidden layers' feature. Defaults: 64.
     n_layers : int, optional
         number of network layers. Defaults: 2.
     dropout : float, optional
@@ -142,9 +142,9 @@ class GCNAE(nn.Module):
         Parameters
         ----------
         x : torch.tensor
-            The output by model.
-        x_hat : torch.tensor
             The original features of node data.
+        x_hat : torch.tensor
+            The output by model.
 
         Returns
         ----------
@@ -161,7 +161,7 @@ class GCNAE(nn.Module):
             batch_size=0,
             num_epoch=100,
             weight_decay=0.,
-            device=0
+            device='cpu'
             ):
         """Fitting model
 
@@ -170,11 +170,11 @@ class GCNAE(nn.Module):
         g : dgl.DGLGraph
             graph dataset.
         lr : float, optional
-            learning rate. Defaults: 1e-3.
+            learning rate. Defaults: 5e-3.
         batch_size : int, optional
             the size of training batch. Defaults: 0 for full graph train.
         num_epoch : int, optional
-            number of training epochs. Defaults: 1.
+            number of training epochs. Defaults: 100.
         weight_decay : float, optional
             weight decay (L2 penalty). Defaults: 0.
         device : str, optional
@@ -267,8 +267,8 @@ class GCNAE(nn.Module):
 
     def predict(self,
                 g,
-                batch_size,
-                device
+                batch_size=0,
+                device='cpu'
                 ):
         """predict and return anomaly score of each node
 

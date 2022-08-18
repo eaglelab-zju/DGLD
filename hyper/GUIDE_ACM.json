@@ -1,0 +1,67 @@
+{
+    "hyper":[
+        {
+            "name":"attrb_hid",
+            "tip":"dimension of hidden embedding for attribute encoder (default: 64)",
+            "type":"int",
+            "default":256,
+            "choices":null
+        },
+        {
+            "name":"struct_hid",
+            "tip":"dimension of hidden embedding for structure encoder (default: 8)",
+            "type":"int",
+            "default":64,
+            "choices":null
+        },
+        {
+            "name":"num_epoch",
+            "tip":"Training epoch",
+            "type":"int",
+            "default":50,
+            "choices":null
+        },
+        {
+            "name":"lr",
+            "tip":"learning rate",
+            "type":"float",
+            "default":0.001,
+            "choices":null
+        },
+        {
+            "name":"dropout",
+            "tip":"Dropout rate",
+            "type":"float",
+            "default":0.5,
+            "choices":null
+        },
+        {
+            "name":"alpha",
+            "tip":"balance parameter",
+            "type":"float",
+            "default":0.81,
+            "choices":null
+        },
+        {
+            "name":"struct_dim",
+            "tip":"struct feature dim",
+            "type":"int",
+            "default":6,
+            "choices":null
+        },
+        {
+            "name":"num_layers",
+            "tip":"the number of layers",
+            "type":"int",
+            "default":4,
+            "choices":null
+        },
+        {
+            "name":"batch_size",
+            "tip":"batch_size, 0 for all data ",
+            "type":"int",
+            "default":2048,
+            "choices":null
+        }
+    ]
+}
