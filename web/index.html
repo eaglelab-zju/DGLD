@@ -64,10 +64,10 @@
                         </select>
                 </label>
 
-                <label>
+                <div>
                         <span>&nbsp;</span>
                         <input type="button" class="button" value="Submit" onclick="SubmitForm()"/>
-                </label>
+                </div>
 
                 <label1></label1>
 
@@ -76,20 +76,20 @@
                         <textarea id="shelltxt" name="shelltxt"></textarea>
                 </label>
 
-                <label>
+                <div>
                         <span>&nbsp;</span>
                         <input type="button" class="button" value="Copy" onclick="CopyText()"/>
-                </label>
+                </div>
 
                 <label>
                         <span>Order results :</span>
                         <textarea id="shelltxt2" name="shelltxt2"></textarea>
                 </label>
 
-                <label>
+                <div>
                         <span>&nbsp;</span>
                         <input type="button" class="button" value="Copy" onclick="CopyText2()"/>
-                </label>
+                </div>
 
         </form>
  
@@ -188,6 +188,7 @@
                                         var en = model.value + '_' + dataset.value;
                                         $("#exp_name").val(en);
                                         $("#save_path").val("result");
+                                        $("#device").val("0");
                                 },
                                 error: function () {
                                         alert("error!");
@@ -252,6 +253,10 @@
 
                         if(args['save_path'] === ""){
                                 args['save_path'] = 'result';
+                        }
+
+                        if(args['device'] === ""){
+                                args['device'] = '0';
                         }
 
                         var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name'];
