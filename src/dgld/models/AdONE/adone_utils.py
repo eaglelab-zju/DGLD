@@ -33,30 +33,12 @@ def set_subargs(parser):
     
 
 def get_subargs(args): 
-    in_feature_map = {
-        "Cora":1433,
-        "Citeseer":3703,
-        "Pubmed":500,
-        "BlogCatalog":8189,
-        "Flickr":12047,
-        "ACM":8337,
-        "ogbn-arxiv":128,
-    }
-    num_nodes_map={
-        "Cora":2708,
-        "Citeseer":3327,
-        "Pubmed":19717,
-        "BlogCatalog":5196,
-        "Flickr":7575,
-        "ACM":16484,
-        "ogbn-arxiv":169343,
-    }
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "feat_size": in_feature_map[args.dataset],
-            "num_nodes": num_nodes_map[args.dataset],
+            "feat_size": args.feat_dim,
+            "num_nodes": args.num_nodes,
             "embedding_dim": args.embedding_dim,
             "dropout": args.dropout,
         },

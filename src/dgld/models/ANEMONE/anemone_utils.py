@@ -9,7 +9,6 @@ import os
 
 sys.path.append('../../')
 # from utils.print import cprint, lcprint
-from utils.common_params import IN_FEATURE_MAP
 
 def set_subargs(parser):
     """
@@ -39,7 +38,7 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed": args.seed,
         "model": {
-            "in_feats": IN_FEATURE_MAP[args.dataset],
+            "in_feats": args.feat_dim,
             "out_feats": args.embedding_dim,
             "global_adg": args.global_adg
         },

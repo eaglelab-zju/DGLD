@@ -7,7 +7,6 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 
 def set_subargs(parser):
     # max min avg  weighted_sum
@@ -37,8 +36,8 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "num_nodes":NUM_NODES_MAP[args.dataset],
-            "num_feats":IN_FEATURE_MAP[args.dataset],
+            "num_nodes":args.num_nodes,
+            "num_feats":args.feat_dim,
             "n_enc_1":args.n_enc_1,
             "n_enc_2":args.n_enc_2,
             "n_enc_3":args.n_enc_3,
