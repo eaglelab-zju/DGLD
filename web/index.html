@@ -33,7 +33,6 @@
                                 <option value="Pubmed">Pubmed</option>
                                 <option value="BlogCatalog">BlogCatalog</option>
                                 <option value="Flickr">Flickr</option>
-                                <option value="ACM">ACM</option>
                                 <option value="ogbn-arxiv">ogbn-arxiv</option>
                         </select>
                 </label>
@@ -46,6 +45,11 @@
                 <label>
                         <span>save path :</span>
                         <input id="save_path" type="text" name="save_path" placeholder="">
+                </label>
+
+                <label>
+                        <span>device :</span>
+                        <input id="device" type="text" name="device" placeholder="">
                 </label>
 
                 <label1></label1>
@@ -65,6 +69,8 @@
                         <input type="button" class="button" value="Submit" onclick="SubmitForm()"/>
                 </label>
 
+                <label1></label1>
+
                 <label>
                         <span>Run experiments :</span>
                         <textarea id="shelltxt" name="shelltxt"></textarea>
@@ -82,7 +88,7 @@
 
                 <label>
                         <span>&nbsp;</span>
-                        <input type="button" class="button" value="Copy" onclick="CopyText()"/>
+                        <input type="button" class="button" value="Copy" onclick="CopyText2()"/>
                 </label>
 
         </form>
@@ -177,6 +183,11 @@
                                                         // $(`#${data["hyper"][i]["name"]}`).selectpicker();
                                                 }
                                         }
+                                        var model = document.getElementById('model');
+                                        var dataset = document.getElementById('dataset');
+                                        var en = model.value + '_' + dataset.value;
+                                        $("#exp_name").val(en);
+                                        $("#save_path").val("result");
                                 },
                                 error: function () {
                                         alert("error!");
@@ -246,7 +257,7 @@
                         var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name'];
 
                         for(var key in args){
-                                if(key === "model" || args[key] === "null" || args[key] === "" || key === "shelltxt" || key === "filter")
+                                if(key === "model" || args[key] === "null" || args[key] === "" || key === "shelltxt" || key === "shelltxt2" || key === "filter")
                                         continue;
                                 if(Array.isArray(args[key])){
                                         head += space + `for ${key} in `;
@@ -283,6 +294,13 @@
 
                 function CopyText() {
                         var shelltext=document.getElementById("shelltxt");
+                        shelltext.select();
+                        document.execCommand("Copy");
+                        alert("Copy successfully!");
+                }
+
+                function CopyText2() {
+                        var shelltext=document.getElementById("shelltxt2");
                         shelltext.select();
                         document.execCommand("Copy");
                         alert("Copy successfully!");
