@@ -125,6 +125,11 @@ def parse_all_args() -> argparse.Namespace:
     parser.add_argument('--exp_name',
                         type=str,
                         help='exp_name experiment identification')
+    parser.add_argument('--runs',
+                        type=int,
+                        default=1,
+                        help='The number of runs of task with same parmeter,If the number of runs is not 1, \
+                            we will randomly generate different seeds to calculate the variance')
     # get dataset
     arg_list = sys.argv[1:]
     if '--dataset' in arg_list:

@@ -62,12 +62,12 @@ if __name__ == "__main__":
         if table.shape[0] > 1:
             col = list(table.columns)
             finally_col = col[:3]
-            for c in col[3:-3]:
+            for c in col[3:-4]:
                 li = table[c].astype(str).values
                 s_li = set(li)
                 if len(s_li) != 1:
                     finally_col.append(c)
-            finally_col += col[-3:]
+            finally_col += col[-4:]
             table = table[finally_col]
     table['sort_value'] = table['task'].apply(lambda x : int(x[4:]))
     table = table.sort_values(by='sort_value')
