@@ -14,8 +14,9 @@ DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch
 
 
 ## News
-* For PyG users, we recommend the [PyGOD](https://github.com/pygod-team/pygod/), which is another comprehensive package that also supports many graph anomaly detection methods.
-* Recently we receive feedback that the reported results are slightly different from the original paper. This is due to the anomaly injection setting, the graph augmentation and sampling. We will provide more details on the settings. 
+* [Aug 2022] We have released an [easy-to-use graphical command line tool](https://zhoushengisnoob.github.io/DGLD/web/index.html) for users to run experiments with different models, datasets and customized parameters. Users can select all the settings in the page, click 'Submit' and copy the shell scripts to the terminal. 
+* [July 2022] For PyG users, we recommend the [PyGOD](https://github.com/pygod-team/pygod/), which is another comprehensive package that also supports many graph anomaly detection methods.
+* [June 2022] Recently we receive feedback that the reported results are slightly different from the original paper. This is due to the anomaly injection setting, the graph augmentation and sampling. We will provide more details on the settings. 
 
 ## Installation
 Basic environment installation:
@@ -88,7 +89,7 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 
 
 
-## Implemented Results
+## Implemented Results ([Sorted Results](https://zhoushengisnoob.github.io/projects/DGLD_Fronted/leaderboard.html))
 |                                  Method                                   |  Cora  | Citeseer | Pubmed | BlogCatalog | Flickr |  ACM   | Arxiv  |
 |:-------------------------------------------------------------------------:|:------:|:--------:|:------:|:-----------:|:------:|:------:|:------:|
 |                 [CoLA](https://arxiv.org/abs/2103.00113)                  | 0.8823 |  0.8765  | 0.9632 |   0.6488    | 0.5790 | 0.8194 | 0.8833 |
