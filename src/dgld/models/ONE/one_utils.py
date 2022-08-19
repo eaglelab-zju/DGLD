@@ -4,7 +4,7 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common_params import NUM_NODES_MAP
+
 
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=5, help='Training epoch')
@@ -20,7 +20,7 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "node_num":NUM_NODES_MAP[args.dataset],
+            "node_num":args.num_nodes,
             "K":args.K
         },
         "fit":{

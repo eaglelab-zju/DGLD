@@ -7,7 +7,6 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common_params import IN_FEATURE_MAP
 
 
 def set_subargs(parser):
@@ -15,7 +14,7 @@ def set_subargs(parser):
     parser.add_argument('--hidden_dim', type=int, default=64,
                         help='dimension of hidden embedding (default: 64)')
     parser.add_argument('--num_epoch', type=int, help='Training epoch',default=1000)
-    parser.add_argument('--lr', type=float, help='learning rate')
+    parser.add_argument('--lr', type=float, help='learning rate',default=0.01)
     parser.add_argument('--dropout', type=float,
                         default=0.0, help='Dropout rate')
     parser.add_argument('--alpha', type=float, default=0.6,
@@ -28,7 +27,7 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "feat_size":IN_FEATURE_MAP[args.dataset],
+            "feat_size":args.feat_dim,
             "hidden_size":args.hidden_dim,
             "dropout":args.dropout
         },

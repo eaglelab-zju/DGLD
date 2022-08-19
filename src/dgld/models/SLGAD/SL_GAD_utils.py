@@ -9,7 +9,6 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common_params import IN_FEATURE_MAP
 from utils.common import lcprint
 
 
@@ -95,7 +94,7 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed":args.seed,
         "model":{
-            "in_feats":IN_FEATURE_MAP[args.dataset],
+            "in_feats":args.feat_dim,
             "out_feats":args.embedding_dim,
             "global_adg":args.global_adg,
             "alpha":args.alpha,

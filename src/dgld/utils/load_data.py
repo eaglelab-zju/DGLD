@@ -28,7 +28,7 @@ def load_data(dataset_name=None,raw_dir=data_path,feat_norm=True,add_self_loop=F
     data_path : str
         the file to read in
     feat_norm : bool, optional
-        process features, here norm in row, by default False
+        process features, here norm in row, by default True
     add_self_loop : bool, optional
         if add self loop to graph, by default False
 
@@ -59,7 +59,53 @@ def load_data(dataset_name=None,raw_dir=data_path,feat_norm=True,add_self_loop=F
         print(f"Total edges after adding self-loop {graph.number_of_edges()}")
 
     return graph
+
+
+def load_custom_data(data_path,feat_norm=True,add_self_loop=False):
+    """
+    load custom data
+
+    Parameters
+    ----------
+    data_path : str
+        data path
+    feat_norm : bool, optional
+        process features, here norm in row, by default True
+    add_self_loop : bool, optional
+        if add self loop to graph, by default False
+
+    Returns
+    -------
+    graph : DGL.graph
+        the graph read from data_path,default row feature norm.
+    """
+    # biuld graph
+    edges = pd.read_csv(data_path+'cora_edges.csv')
+    nodes = pd.read_csv(data_path+'cora_nodes.csv')
+    feats=np.ascontiguousarray(nodes[[name for name in nodes.columns.values if 'emb' in name]])
+    nodes=nodes.reset_index().rename(columns={'index':'tmp_id'})
+    id_old2new_dict = dict(zip(nodes.id.tolist(),nodes.tmp_id.tolist()))
+    u,v = edges.id_src.map(id_old2new_dict).tolist(),edges.id_dst.map(id_old2new_dict)
+    graph=dgl.graph((u,v))
+    graph.ndata['feat'] = torch.tensor(feats,dtype=torch.float32)
+    graph.ndata['label'] = torch.zeros(graph.num_nodes())
+
+    if not is_bidirected(graph):
+        graph = dgl.to_bidirected(graph,copy_ndata=True)
+
+    if feat_norm:
+        graph.ndata['feat'] = preprocess_features(graph.ndata['feat'])
+
+    if add_self_loop:
+        print(f"Total edges before adding self-loop {graph.number_of_edges()}")
+        graph = graph.remove_self_loop().add_self_loop()
+        print(f"Total edges after adding self-loop {graph.number_of_edges()}")
+
+
+
+    return graph
     
+
 
 def load_mat_data2dgl(data_path, verbose=True):
     """

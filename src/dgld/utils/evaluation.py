@@ -22,6 +22,7 @@ def split_auc(groundtruth, prob):
     -------
     None
     """
+    final_score = -1
     s_score = -1
     a_score = -1
     try:
@@ -42,9 +43,11 @@ def split_auc(groundtruth, prob):
         a_score = roc_auc_score(attr_data_groundtruth, attr_data_predict)
         print("structural anomaly score:", s_score)
         print("attribute anomaly score:", a_score)
+
+        final_score = roc_auc_score(np.where(groundtruth == 0, 0, 1), prob)
+
     except ValueError:
         pass
-    final_score = roc_auc_score(np.where(groundtruth == 0, 0, 1), prob)
-
+    
     print("final anomaly score:", final_score)
     return final_score, a_score, s_score

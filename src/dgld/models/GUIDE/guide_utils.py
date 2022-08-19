@@ -6,8 +6,6 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-from utils.common_params import IN_FEATURE_MAP
-
 
 
 def set_subargs(parser):
@@ -32,7 +30,7 @@ def get_subargs(args):
         "dataset": args.dataset,
         "seed": args.seed,
         "model":{
-            "attrb_dim": IN_FEATURE_MAP[args.dataset],
+            "attrb_dim": args.feat_dim,
             "struct_dim": args.struct_dim,
             "num_layers": args.num_layers,
             "attrb_hid": args.attrb_hid,
