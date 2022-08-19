@@ -79,7 +79,7 @@ class Dgldlog():
                             'final anomaly score':final_list,
                             'attribute anomaly score':a_list,
                             'structural anomaly score':s_list},index = index)
-        res.to_markdown(self.exp_path+'/aus_res.md')
+        res.to_markdown(self.exp_path+'/auc_res.md')
 
     def save_result(self,res_list_final,res_list_attrb,res_list_struct,seed_list,args):
             result = {}
