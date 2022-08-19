@@ -3,6 +3,7 @@ import os
 import time
 import numpy as np
 import pandas as pd 
+import json
 
 class Logger(object):
     def __init__(self, filename="Default.log",terminal = sys.stdout):
@@ -48,8 +49,6 @@ class Dgldlog():
         self.exp_path = exp_path 
         self.run_num = 0
 
-    def get_path(self):
-        return self.exp_name,self.exp_path
     
     def update_runs(self):
         sys.stdout = Logger(self.exp_path+'/'+self.exp_name+f'_run{self.run_num}'+'.log',self.terminal)
@@ -60,13 +59,38 @@ class Dgldlog():
         columns = ['final anomaly score','attribute anomaly score','structural anomaly score']
         for idx in range(len(final_list)):
             index.append('run'+str(idx))
+        index.append('mean')
         index.append('variance')
-        final_list.append(np.std(final_list))
-        a_list.append(np.std(a_list))
-        s_list.append(np.std(s_list))
+        f_mean = np.mean(final_list)
+        a_mean = np.mean(a_list)
+        s_mean = np.mean(s_list)
+        f_std = np.std(final_list)
+        a_std = np.std(a_list)
+        s_std = np.std(s_list)
+        final_list.append(f_mean)
+        a_list.append(a_mean)
+        s_list.append(s_mean)
+        seed_list.append('-')
+        final_list.append(f_std)
+        a_list.append(a_std)
+        s_list.append(s_std)
         seed_list.append('-')
         res = pd.DataFrame({'seed':seed_list,
                             'final anomaly score':final_list,
                             'attribute anomaly score':a_list,
                             'structural anomaly score':s_list},index = index)
         res.to_markdown(self.exp_path+'/aus_res.md')
+
+    def save_result(self,res_list_final,res_list_attrb,res_list_struct,seed_list,args):
+            result = {}
+            result['model'] = args.model
+            result.update(vars(args))
+            del result["save_path"]
+            del result['exp_name']
+            result['final anomaly score'] = np.mean(res_list_final)
+            result['attribute anomaly score'] = np.mean(res_list_attrb)
+            result['structural anomaly score'] = np.mean(res_list_struct)
+            result['variance'] = np.std(res_list_final)
+            with open(self.exp_path+'/'+self.exp_name+'.json', 'w') as json_file:
+                json_file.write(json.dumps(result, ensure_ascii=False, indent=4))
+            self.auc_result(res_list_final,res_list_attrb,res_list_struct,seed_list)
