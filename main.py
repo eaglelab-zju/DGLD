@@ -3,7 +3,7 @@ sys.path.append('./src')
 from dgld.utils.evaluation import split_auc
 from dgld.utils.common import seed_everything
 from dgld.utils.argparser import parse_all_args
-from dgld.utils.load_data import load_data
+from dgld.utils.load_data import load_data,load_custom_data
 from dgld.utils.inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
 from dgld.utils.common_params import Q_MAP,K,P
 from dgld.utils.log import Dgldlog
@@ -30,10 +30,13 @@ if __name__ == "__main__":
         seed_everything(seed)
         args_dict['seed'] = seed
         
-        graph = load_data(data_name)
+        if data_name == 'custom':
+            graph = load_custom_data(data_path=args.data_path)
+        else:
+            graph = load_data(data_name)
+            graph = inject_contextual_anomalies(graph=graph,k=K,p=P,q=Q_MAP[data_name],seed=seed)
+            graph = inject_structural_anomalies(graph=graph,p=P,q=Q_MAP[data_name],seed=seed)
 
-        graph = inject_contextual_anomalies(graph=graph,k=K,p=P,q=Q_MAP[data_name],seed=seed)
-        graph = inject_structural_anomalies(graph=graph,p=P,q=Q_MAP[data_name],seed=seed)
         label = graph.ndata['label']
 
         if args.model in ['DOMINANT','AnomalyDAE','ComGA','DONE','AdONE','CONAD','ALARM','ONE','GAAN','GUIDE','CoLA',
