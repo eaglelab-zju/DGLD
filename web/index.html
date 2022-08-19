@@ -9,6 +9,7 @@
     <link rel="stylesheet" id="templatecss" type="text/css" href="css/bootstrap-frm.css">
 
     <script type="text/javascript" src="js/jQuery.js"></script>
+    <script type="text/javascript" src="js/selectMultip.js"></script>
 
 </head>
 
@@ -52,6 +53,11 @@
                         <input id="device" type="text" name="device" placeholder="">
                 </label>
 
+                <label>
+                        <span>runs :</span>
+                        <input id="runs" type="text" name="runs" placeholder="">
+                </label>
+
                 <label1></label1>
 
                 <div id="config"></div>
@@ -82,7 +88,7 @@
                 </div>
 
                 <label>
-                        <span>Order results :</span>
+                        <span title="The experimental results are saved in save_ path/exp_name folder, the results of the i-th parameter experiment are saved in save_ path/exp_ name/exp_ name_ i  folder, the *. log file stores the log of the training process, auc_ res.md stores the AUC results of this group of experiments, *.json file contains the results and the experimental configuration. If you want to aggregate all the experimental results in one table, you can use summary.py in scripts. The summarized results are saved in save_ path/exp_name folder.">Order results :</span>
                         <textarea id="shelltxt2" name="shelltxt2"></textarea>
                 </label>
 
@@ -174,6 +180,7 @@
                                                                 s += '<option value="' + data["hyper"][i]["choices"][j] + '"';
                                                                 if(data["hyper"][i]["choices"][j] === data["hyper"][i]["default"]){
                                                                         s += ' selected="selected"';
+                                                                        // s += 'choose';
                                                                 }
                                                                 s += ' >' + data["hyper"][i]["choices"][j] + '</option>';
                                                         }
@@ -182,8 +189,9 @@
                                                 s += '</label>';
                                                 $("#config").append(s);
                                                 if(multiselect === 1) {
-                                                        // $(`#${data["hyper"][i]["name"]}`).selectpicker();
+                                                        // $(`#${data["hyper"][i]["name"]}`).register();
                                                 }
+                                                // selectMultip.register();
                                         }
                                         var model = document.getElementById('model');
                                         var dataset = document.getElementById('dataset');
@@ -191,6 +199,7 @@
                                         $("#exp_name").val(en);
                                         $("#save_path").val("result");
                                         $("#device").val("0");
+                                        $("#runs").val("1");
                                 },
                                 error: function () {
                                         alert("error!");
@@ -245,7 +254,7 @@
                         var command_body = " " + args['model'];
                         var command_tail = "";
 
-                        var space = ""
+                        var space = "";
                         var head = "";
                         var tail = "";
 
@@ -261,7 +270,7 @@
                                 args['device'] = '0';
                         }
 
-                        var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name'];
+                        var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name', 'runs'];
 
                         for(var key in args){
                                 if(key === "model" || args[key] === "null" || args[key] === "" || key === "shelltxt" || key === "shelltxt2" || key === "filter")
