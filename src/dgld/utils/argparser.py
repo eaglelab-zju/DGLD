@@ -9,6 +9,7 @@ current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 from utils.common import tab_printer, loadargs_from_json
+from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
@@ -111,6 +112,18 @@ def parse_all_args() -> argparse.Namespace:
                         type=str,
                         default='Cora',
                         help='Dataset used in the experiment')
+    parser.add_argument('--feat_dim',
+                        type=int,
+                        default=1433,
+                        help='number of features dimension. Defaults to 1000.')
+    parser.add_argument('--num_nodes',
+                        type=int,
+                        default=2708,
+                        help='number of nodes. Defaults to 2708.')
+    parser.add_argument('--data_path',
+                        type=str,
+                        default='src/dgld/data/',
+                        help='data path')
     parser.add_argument('--device',
                         type=str,
                         default='0',
@@ -141,6 +154,10 @@ def parse_all_args() -> argparse.Namespace:
     else:
         dataset = parser.get_default('dataset')
     
+    # set default feat_dim and num_nodes
+    if dataset in IN_FEATURE_MAP.keys():
+        parser.set_defaults(feat_dim=IN_FEATURE_MAP[dataset],num_nodes=NUM_NODES_MAP[dataset])
+
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
     # set sub args
@@ -157,6 +174,8 @@ def parse_all_args() -> argparse.Namespace:
             
     # get model args
     args = parser.parse_args()
+
+
     args_dict, args = models_get_args_map[args.model](args)
 
     tab_printer(args)
