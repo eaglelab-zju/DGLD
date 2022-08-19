@@ -142,7 +142,9 @@
 
                                         listargs = [];
                                         for(var i=0;i<data["hyper"].length;i++){
-                                                s = '<label><span>';
+                                                s = '<label><span title="';
+                                                s += data["hyper"][i]["tip"];
+                                                s += '">';
                                                 s += data["hyper"][i]["name"] + ' :';
                                                 s += '</span>';
                                                 var multiselect = 0;
