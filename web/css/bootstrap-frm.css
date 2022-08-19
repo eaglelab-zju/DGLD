@@ -49,6 +49,28 @@
          font-size: 15px;
  
 }
+
+.bootstrap-frm div {
+
+         display: block;
+
+         margin: 0px 0px 5px;
+
+}
+
+.bootstrap-frm div>span2 {
+
+         display: block;
+
+         padding: 20px 30px 30px 70px;
+
+         font-size: 15px;
+
+         line-height: 150%;
+
+         margin: 0 auto;
+
+}
  
 .bootstrap-frm label {
  
@@ -67,14 +89,6 @@
          margin: 0px -30px 30px -30px;
 
          border-bottom: 1px solid #DADADA;
-
-}
-
-.bootstrap-frm div {
-
-         display: block;
-
-         margin: 0px 0px 5px;
 
 }
 

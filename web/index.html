@@ -22,7 +22,7 @@
                 <label>
                         <span>model :</span>
                         <select id="model" name="model" onchange="ChangeForm()">
-                                <option value="Please select model">Please select model</option>
+                                <option value="">---Please select model---</option>
                         </select>
                 </label>
  
@@ -39,23 +39,38 @@
                 </label>
 
                 <label>
-                        <span>exp_name :</span>
+                        <span title="exp_name experiment identification">exp_name :</span>
                         <input id="exp_name" type="text" name="exp_name" placeholder="">
                 </label>
 
                 <label>
-                        <span>save path :</span>
+                        <span title="save path of the result">save path :</span>
                         <input id="save_path" type="text" name="save_path" placeholder="">
                 </label>
 
                 <label>
-                        <span>device :</span>
+                        <span title="ID(s) of gpu used by cuda">device :</span>
                         <input id="device" type="text" name="device" placeholder="">
                 </label>
 
                 <label>
-                        <span>runs :</span>
+                        <span title="The number of runs of task with same parmeter,If the number of runs is not 1, we will randomly generate different seeds to calculate the variance">runs :</span>
                         <input id="runs" type="text" name="runs" placeholder="">
+                </label>
+
+                <label>
+                        <span title="number of features dimension. Defaults to 1000.">feat_dim :</span>
+                        <input id="feat_dim" type="text" name="feat_dim" placeholder="">
+                </label>
+
+                <label>
+                        <span title="number of nodes. Defaults to 2708.">num_nodes :</span>
+                        <input id="num_nodes" type="text" name="num_nodes" placeholder="">
+                </label>
+
+                <label>
+                        <span title="self determined data path">data_path :</span>
+                        <input id="data_path" type="text" name="data_path" placeholder="">
                 </label>
 
                 <label1></label1>
@@ -77,6 +92,12 @@
 
                 <label1></label1>
 
+                <div>
+                        <span2>
+                                The experimental results are saved in save_ path/exp_name folder, the results of the i-th parameter experiment are saved in save_ path/exp_ name/exp_ name_ i  folder, the *. log file stores the log of the training process, auc_ res.md stores the AUC results of this group of experiments, *.json file contains the results and the experimental configuration. If you want to aggregate all the experimental results in one table, you can use summary.py in scripts. The summarized results are saved in save_ path/exp_name folder.
+                        </span2>
+                </div>
+
                 <label>
                         <span>Run experiments :</span>
                         <textarea id="shelltxt" name="shelltxt"></textarea>
@@ -88,7 +109,7 @@
                 </div>
 
                 <label>
-                        <span title="The experimental results are saved in save_ path/exp_name folder, the results of the i-th parameter experiment are saved in save_ path/exp_ name/exp_ name_ i  folder, the *. log file stores the log of the training process, auc_ res.md stores the AUC results of this group of experiments, *.json file contains the results and the experimental configuration. If you want to aggregate all the experimental results in one table, you can use summary.py in scripts. The summarized results are saved in save_ path/exp_name folder.">Order results :</span>
+                        <span>Order results :</span>
                         <textarea id="shelltxt2" name="shelltxt2"></textarea>
                 </label>
 
@@ -175,12 +196,13 @@
                                                         multiselect = 1;
                                                         s += '<select id="' + data["hyper"][i]["name"]
                                                                 + '" name="' + data["hyper"][i]["name"]
-                                                                + '" multiple>';
+                                                                + '" multip>';
+                                                        s += '<option value="">---please select---</option>';
                                                         for(var j in data["hyper"][i]["choices"]){
                                                                 s += '<option value="' + data["hyper"][i]["choices"][j] + '"';
                                                                 if(data["hyper"][i]["choices"][j] === data["hyper"][i]["default"]){
-                                                                        s += ' selected="selected"';
-                                                                        // s += 'choose';
+                                                                        // s += ' selected="selected"';
+                                                                        s += 'choose';
                                                                 }
                                                                 s += ' >' + data["hyper"][i]["choices"][j] + '</option>';
                                                         }
@@ -188,11 +210,8 @@
                                                 }
                                                 s += '</label>';
                                                 $("#config").append(s);
-                                                if(multiselect === 1) {
-                                                        // $(`#${data["hyper"][i]["name"]}`).register();
-                                                }
-                                                // selectMultip.register();
                                         }
+                                        selectMultip.register();
                                         var model = document.getElementById('model');
                                         var dataset = document.getElementById('dataset');
                                         var en = model.value + '_' + dataset.value;
@@ -205,7 +224,6 @@
                                         alert("error!");
                                 }
                         });
-
                 }
 
                 function serializeForm(form) {
