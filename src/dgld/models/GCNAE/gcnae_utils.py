@@ -15,10 +15,10 @@ def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
     parser.add_argument('--lr', type=float, default=0.005, help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=0.)
-    parser.add_argument('--dropout', type=float, default=0.3)
-    parser.add_argument('--batch_size', type=int, default=0)
-    parser.add_argument('--hidden_dim', type=int, default=64)
-    parser.add_argument('--n_layers', type=int, default=2)
+    parser.add_argument('--dropout', type=float, default=0.3, help='Dropout rate')
+    parser.add_argument('--batch_size', type=int, default=0, help='Batch size')
+    parser.add_argument('--hidden_dim', type=int, default=64, help='dimension of hidden embedding')
+    parser.add_argument('--n_layers', type=int, default=2, help='num of gcn layers')
 
 
 def get_subargs(args):    
