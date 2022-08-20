@@ -169,9 +169,10 @@
 
                                         listargs = [];
                                         for(var i=0;i<data["hyper"].length;i++){
-                                                s = '<label><span title="';
+                                                s = '<label><span>';
+                                                s += '<img src="icon/tip.png" width="25" height="16" alt="tip" title="';
                                                 s += data["hyper"][i]["tip"];
-                                                s += '">';
+                                                s += '"/>';
                                                 s += data["hyper"][i]["name"] + ' :';
                                                 s += '</span>';
                                                 var multiselect = 0;
