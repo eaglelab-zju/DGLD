@@ -29,13 +29,13 @@ def get_table(res_list,id_list):
             if model_name != data[1]:
                 same_flag = False
     if not same_flag:
-        warnings.warn('There are different models in this experiment, and the parameters cannot be aligned. Only the results are summarized.',DeprecationWarning)
+        warnings.warn('There are different models in this experiment, and the parameters cannot be aligned. Only the results are summarized.')
         for i,data in enumerate(body):
             data = data[:3] + data[-4:]
             body[i] = data 
         head = ["task","model","dataset","final anomaly score","attribute anomaly score","structural anomaly score","variance"]
     table = pd.DataFrame(body,columns=head)
-    return table
+    return table,same_flag
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         with open(d) as f:
             res = json.load(f)
         res_list.append(res)
-    table = get_table(res_list,id_list) 
+    table,same_flag = get_table(res_list,id_list) 
     if args.filter :
         if table.shape[0] > 1:
             col = list(table.columns)
@@ -89,3 +89,7 @@ if __name__ == "__main__":
     table = table.sort_values(by='sort_value')
     del table['sort_value']
     table.to_markdown(f'{dir}'+f'/{args.exp_name}_summary.md',index=False)
+    if not same_flag:
+        with open(f'{dir}'+f'/{args.exp_name}_summary.md','a+') as f:
+            f.write('\n')
+            f.write('- There are different models in this experiment, and the parameters cannot be aligned. Only the results are summarized.')
