@@ -15,3 +15,4 @@ doc_html_auto_generator
 .DS_Store
 src/.DS_Store
 result
+data

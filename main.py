@@ -3,14 +3,14 @@ sys.path.append('./src')
 from dgld.utils.evaluation import split_auc
 from dgld.utils.common import seed_everything
 from dgld.utils.argparser import parse_all_args
-from dgld.utils.load_data import load_data,load_custom_data
+from dgld.utils.load_data import load_data,load_custom_data, load_truth_data
 from dgld.utils.inject_anomalies import inject_contextual_anomalies,inject_structural_anomalies
 from dgld.utils.common_params import Q_MAP,K,P
 from dgld.utils.log import Dgldlog
 from dgld.models import *
 import random 
 import os 
-
+truth_list = ['weibo','tfinance','tsocial','reddit','Amazon','Class','Disney','elliptic','Enron']
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
     data_name = args_dict['dataset']
@@ -30,7 +30,9 @@ if __name__ == "__main__":
         seed_everything(seed)
         args_dict['seed'] = seed
         
-        if data_name == 'custom':
+        if data_name in truth_list:
+            graph = load_truth_data(data_path=args.data_path,dataset_name=data_name)
+        elif data_name == 'custom':
             graph = load_custom_data(data_path=args.data_path)
         else:
             graph = load_data(data_name)
