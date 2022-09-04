@@ -289,7 +289,7 @@
                                 args['device'] = '0';
                         }
 
-                        var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name', 'runs'];
+                        var head_list = ['dataset', 'device', 'seed', 'save_path', 'exp_name', 'runs', 'feat_dim', 'num_nodes', 'data_path'];
 
                         for(var key in args){
                                 if(key === "model" || args[key] === "null" || args[key] === "" || key === "shelltxt" || key === "shelltxt2" || key === "filter")
