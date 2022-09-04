@@ -60,6 +60,39 @@ def load_data(dataset_name=None,raw_dir=data_path,feat_norm=True,add_self_loop=F
 
     return graph
 
+def load_truth_data(data_path,dataset_name,feat_norm=False,add_self_loop=False):
+    """
+    load truth data
+
+    Parameters
+    ----------
+    data_path : str
+        data path
+    dataset_name: str
+        dataset name
+    feat_norm : bool, optional
+        process features, here norm in row, by default True
+    add_self_loop : bool, optional
+        if add self loop to graph, by default False
+
+    Returns
+    -------
+    graph : DGL.graph
+        the graph read from data_path,default row feature norm.
+    """
+    graph = dgl.load_graphs(data_path+'/'+dataset_name)[0][0]
+    print(graph)
+    if not is_bidirected(graph):
+        graph = dgl.to_bidirected(graph,copy_ndata=True)
+    graph.ndata['feat'] = torch.tensor(graph.ndata['feat'],dtype=torch.float32)
+    if feat_norm:
+        graph.ndata['feat'] = preprocess_features(graph.ndata['feat'])
+    if add_self_loop:
+        print(f"Total edges before adding self-loop {graph.number_of_edges()}")
+        graph = graph.remove_self_loop().add_self_loop()
+        print(f"Total edges after adding self-loop {graph.number_of_edges()}")
+    return graph
+
 
 def load_custom_data(data_path,feat_norm=True,add_self_loop=False):
     """
