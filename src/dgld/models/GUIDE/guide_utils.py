@@ -6,7 +6,7 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
-
+from tqdm import tqdm
 
 def set_subargs(parser):
     parser.add_argument('--attrb_hid', type=int, default=64,
@@ -52,7 +52,7 @@ def get_subargs(args):
     }
     return final_args_dict,args
 
-def cal_motifs(nx_g,x,idx):
+def cal_motifs(nx_g,x,idx,sample=50):
     """
     count the number of motifs 
 
@@ -72,18 +72,27 @@ def cal_motifs(nx_g,x,idx):
     sum = 0 
     if idx == 0:
         adj_x = list(nx_g[x].keys())
+        if(len(adj_x) > sample):
+            adj_x = np.random.choice(adj_x, size=sample, replace=False)
         size = len(adj_x)
         for i in range(size):
             y = adj_x[i]
             adj_y = list(nx_g[y].keys())
+            if(len(adj_y) > sample):
+                adj_y = np.random.choice(adj_y, size=sample, replace=False)
             res = set(adj_x) & set(adj_y)
             sum += len(res)
         return sum // 2
     if idx == 1:
         adj_x = list(nx_g[x].keys())
+        if(len(adj_x) > sample):
+            adj_x = np.random.choice(adj_x, size=sample, replace=False)
         for i in range(len(adj_x)):
             y = adj_x[i]
-            adj_y = set(nx_g[y].keys())
+            adj_y = list(nx_g[y].keys())
+            if(len(adj_y) > sample):
+                adj_y = np.random.choice(adj_y, size=sample, replace=False)
+            adj_y = set(adj_y)
             res = adj_y - set(adj_x)
             sum += len(res) - 1
 
@@ -91,48 +100,68 @@ def cal_motifs(nx_g,x,idx):
             sum += len(res)
         return sum
     if idx == 2:
-        size = len(nx_g[x])
         adj_x = list(nx_g[x].keys())
+        if(len(adj_x) > sample):
+            adj_x = np.random.choice(adj_x, size=sample, replace=False)
+        size = len(adj_x)
         for i in range(size):
             y = adj_x[i]
-            adj_y = set(nx_g[y].keys())
+            adj_y = list(nx_g[y].keys())
+            if(len(adj_y) > sample):
+                adj_y = np.random.choice(adj_y, size=sample, replace=False)
+            adj_y = set(adj_y)
             for j in range(i+1,size):
                 z = adj_x[j]
                 if z not in adj_y:
                     continue
                 adj_z = set(nx_g[z].keys())
+                if(len(adj_z) > sample):
+                    adj_z = set(np.random.choice(list(adj_z), size=sample, replace=False))
                 a_list =  adj_y & set(adj_x[j+1:]) & adj_z
                 sum += len(a_list)
         return sum 
     if idx == 3:
-        size = len(nx_g[x])
         adj_x = list(nx_g[x].keys())
+        if(len(adj_x) > sample):
+            adj_x = np.random.choice(adj_x, size=sample, replace=False)
+        size = len(adj_x)
         for i in range(size):
             y = adj_x[i]
             adj_y = set(nx_g[y].keys())
-
+            if(len(adj_y) > sample):
+                adj_y = set(np.random.choice(list(adj_y), size=sample, replace=False))
             rx = set(adj_x[i+1:])
             z_set = rx - adj_y
             for z in z_set:
                 adj_z = set(nx_g[z].keys())
+                if(len(adj_z) > sample):
+                    adj_z = set(np.random.choice(list(adj_z), size=sample, replace=False))
                 res = adj_z & adj_y & set(adj_x)
                 sum += len(res)
             z_set = rx & adj_y
             for z in z_set:
                 adj_z = set(nx_g[z].keys())
+                if(len(adj_z) > sample):
+                    adj_z = set(np.random.choice(list(adj_z), size=sample, replace=False))
                 res = adj_z & adj_y - set(adj_x)
                 sum += len(res) - 1
 
         return sum 
     if idx == 4:
-        size = len(nx_g[x])
         adj_x = list(nx_g[x].keys())
+        if(len(adj_x) > sample):
+            adj_x = np.random.choice(adj_x, size=sample, replace=False)
+        size = len(adj_x)
         for i in range(size):
             y = adj_x[i]
             adj_y = set(nx_g[y].keys())
+            if(len(adj_y) > sample):
+                adj_y = set(np.random.choice(list(adj_y), size=sample, replace=False))
             z_list = set(adj_x[i+1:]) - adj_y
             for z in z_list:
                 adj_z = set(nx_g[z].keys())
+                if(len(adj_z) > sample):
+                    adj_z = set(np.random.choice(list(adj_z), size=sample, replace=False))
                 res = adj_z & adj_y - set(adj_x) 
                 sum += len(res) - 1
         return sum 
@@ -155,7 +184,7 @@ def get_struct_feat(graph:dgl.DGLGraph):
     nx_g = new_g.to_networkx().to_undirected()
     node_num = new_g.num_nodes()
     struct_feat = np.zeros((node_num,6))
-    for i in range(node_num):
+    for i in tqdm(range(node_num)):
         struct_feat[i][5] = len(nx_g[i])
         for  idx in range(5):
             struct_feat[i][idx] = cal_motifs(nx_g,i,idx)
