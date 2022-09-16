@@ -48,7 +48,9 @@ def split_auc(groundtruth, prob):
 
     except ValueError:
         pass
-    if final_score == -1 and attr_pos_idx.sum()==0:
+    
+    # for truth label 
+    if final_score == -1 and attr_pos_idx.sum()==0 and str_pos_idx.sum()!=0:
         final_score = roc_auc_score(groundtruth,prob)
     
     print("final anomaly score:", final_score)
