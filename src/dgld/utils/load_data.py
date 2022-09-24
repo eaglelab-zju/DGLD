@@ -113,8 +113,8 @@ def load_custom_data(data_path,feat_norm=True,add_self_loop=False):
         the graph read from data_path,default row feature norm.
     """
     # biuld graph
-    edges = pd.read_csv(data_path+'cora_edges.csv')
-    nodes = pd.read_csv(data_path+'cora_nodes.csv')
+    edges = pd.read_csv(data_path+'edges.csv')
+    nodes = pd.read_csv(data_path+'nodes.csv')
     feats=np.ascontiguousarray(nodes[[name for name in nodes.columns.values if 'emb' in name]])
     nodes=nodes.reset_index().rename(columns={'index':'tmp_id'})
     id_old2new_dict = dict(zip(nodes.id.tolist(),nodes.tmp_id.tolist()))
@@ -133,8 +133,6 @@ def load_custom_data(data_path,feat_norm=True,add_self_loop=False):
         print(f"Total edges before adding self-loop {graph.number_of_edges()}")
         graph = graph.remove_self_loop().add_self_loop()
         print(f"Total edges after adding self-loop {graph.number_of_edges()}")
-
-
 
     return graph
     
