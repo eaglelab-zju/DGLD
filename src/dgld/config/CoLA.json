@@ -33,5 +33,53 @@
         "lr": 1e-3,
         "num_epoch": 10,
         "auc_test_rounds": 20
+    },
+    "weibo": {
+        "embedding_dim": 32,
+        "lr": 0.001,
+        "drop_prob": 0,
+        "num_epoch": 100,
+        "weight_decay": 0.0001,
+        "auc_test_rounds": 256
+    },
+    "Amazon": {
+        "embedding_dim": 128,
+        "lr": 0.0001,
+        "drop_prob": 0.1,
+        "num_epoch": 200,
+        "weight_decay": 0.0001,
+        "auc_test_rounds": 64
+    },
+    "Enron": {
+        "embedding_dim": 64,
+        "lr": 0.001,
+        "drop_prob": 0.4,
+        "num_epoch": 200,
+        "auc_test_rounds": 32,
+        "batch_size": 256
+    },
+    "reddit": {
+        "embedding_dim": 32,
+        "lr": 0.01,
+        "drop_prob": 0,
+        "num_epoch": 200,
+        "auc_test_rounds": 128,
+        "batch_size": 512
+    },
+    "wiki": {
+        "embedding_dim": 64,
+        "lr": 0.01,
+        "drop_prob": 0.2,
+        "num_epoch": 200,
+        "auc_test_rounds": 64,
+        "batch_size": 256
+    },
+    "elliptic": {
+        "embedding_dim": 256,
+        "lr": 0.0001,
+        "drop_prob": 0.5,
+        "num_epoch": 200,
+        "auc_test_rounds": 32,
+        "batch_size": 1024
     }
 }

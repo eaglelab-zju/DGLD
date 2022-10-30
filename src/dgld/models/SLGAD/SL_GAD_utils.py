@@ -67,8 +67,8 @@ loss_fun = loss_fun_BCE
 
 def set_subargs(parser):
 
-    parser.add_argument('--num_epoch', type=int, help='Training epoch')
-    parser.add_argument('--lr', type=float, help='learning rate')
+    parser.add_argument('--num_epoch', type=int, help='Training epoch', default=100)
+    parser.add_argument('--lr', type=float, help='learning rate', default=1e-3)
     parser.add_argument('--weight_decay', type=float, default=0.0)
     parser.add_argument('--embedding_dim', type=int, default=64)
     parser.add_argument('--drop_prob', type=float, default=0.0)

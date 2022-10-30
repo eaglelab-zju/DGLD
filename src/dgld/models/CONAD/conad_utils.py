@@ -1,3 +1,4 @@
+from secrets import choice
 import numpy as np
 import torch
 import dgl
@@ -21,6 +22,8 @@ def set_subargs(parser):
     parser.add_argument('--num_added_edge', type=int, default=50, help="parameter for generating high-degree anomalies")
     parser.add_argument('--surround', type=int, default=50, help="parameter for generating outlying anomalies")
     parser.add_argument('--scale_factor', type=float, default=10, help="parameter for generating disproportionate anomalies")
+    parser.add_argument('--embedding_dim', type=int, default=64, help="dimension of embedding")
+    parser.add_argument('--struct_dec_act', type=str, default=None, help='structure decoder non-linear activation function')
     
 def get_subargs(args):     
     final_args_dict = {
@@ -28,6 +31,8 @@ def get_subargs(args):
         "seed": args.seed,
         "model":{
             "feat_size": args.feat_dim,
+            "embedding_dim": args.embedding_dim,
+            'struct_dec_act': args.struct_dec_act,
         },
         "fit":{
             "lr": args.lr,
@@ -185,18 +190,22 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
     epoch_loss = 0
     
     for (input_nodes_orig, output_nodes_orig, blocks_orig), (input_nodes_aug, output_nodes_aug, blocks_aug) in zip(dataloader_orig, dataloader_aug):
+        label = blocks_aug[-1].dstdata['label']
+        output_nodes_num = blocks_orig[-1].number_of_dst_nodes()
+        adj_orig = dgl.block_to_graph(blocks_orig[-1]).adj().to_dense()[:output_nodes_num, :output_nodes_num]
+        
         blocks_orig = [b.to(device) for b in blocks_orig] 
         blocks_aug = [b.to(device) for b in blocks_aug] 
+        label = label.to(device)
+        adj_orig = adj_orig.to(device)
         
         input_feat_orig = blocks_orig[0].srcdata['feat']
         input_feat_aug = blocks_aug[0].srcdata['feat']
         
-        label = blocks_aug[-1].dstdata['label']
         # contrastive loss
         h_orig = model.embed(blocks_orig, input_feat_orig)
         h_aug = model.embed(blocks_aug, input_feat_aug)
-        output_nodes_num = blocks_orig[-1].number_of_dst_nodes()
-        adj_orig = dgl.block_to_graph(blocks_orig[-1]).adj().to_dense().to(label.device)[:output_nodes_num, :output_nodes_num]
+        
         # print(h_orig.shape, h_aug.shape, adj_orig.shape, label.shape)
         contrast_loss = criterion(h_orig[:output_nodes_num], h_aug[:output_nodes_num], label, adj_orig)
         # recontruct loss
@@ -211,6 +220,7 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
         optimizer.step()
         
         epoch_loss += loss.item() * batch_size
+        print(loss.item())
         
     return epoch_loss
     

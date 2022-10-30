@@ -1,6 +1,5 @@
 """Parse All Model Args"""
 import sys
-import sys
 import os
 import argparse
 
@@ -171,10 +170,13 @@ def parse_all_args() -> argparse.Namespace:
         if os.path.exists(fp):
             best_config = loadargs_from_json(fp)
             sub_parser.set_defaults(**best_config.get(dataset, {}))
-            
+                        
     # get model args
     args = parser.parse_args()
 
+    import nni
+    args.__dict__.update(nni.get_next_parameter())
+    print(args)
 
     args_dict, args = models_get_args_map[args.model](args)
 

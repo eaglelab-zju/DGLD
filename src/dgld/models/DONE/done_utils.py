@@ -16,7 +16,7 @@ def set_subargs(parser):
     parser.add_argument('--dropout', type=float, default=0., help="rate of dropout")
     parser.add_argument('--batch_size', type=int, default=0, help="size of training batch")
     parser.add_argument('--max_len', type=int, default=0, help="maximum length of the truncated random walk")
-    parser.add_argument('--restart', type=float, default=0., help="probability of restart")
+    parser.add_argument('--restart', type=float, default=0.5, help="probability of restart")
     parser.add_argument('--num_neighbors', type=int, default=-1, help="number of sampling neighbors")
     parser.add_argument('--embedding_dim', type=int, default=32, help="dimension of embedding")
     

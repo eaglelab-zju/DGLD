@@ -10,7 +10,10 @@ from dgld.utils.log import Dgldlog
 from dgld.models import *
 import random 
 import os 
-truth_list = ['weibo','tfinance','tsocial','reddit','Amazon','Class','Disney','elliptic','Enron']
+import nni
+import numpy as np
+
+truth_list = ['weibo','tfinance','tsocial','reddit','Amazon','Class','Disney','elliptic','Enron', 'wiki']
 if __name__ == "__main__":
     args_dict,args = parse_all_args()
     data_name = args_dict['dataset']
@@ -54,6 +57,11 @@ if __name__ == "__main__":
         res_list_attrb.append(a_score)
         res_list_struct.append(s_score)
         print(args_dict)
+        
+        nni.report_intermediate_result(final_score)
 
+    nni.report_final_result(np.mean(res_list_final)) 
+    print(np.mean(res_list_final), np.std(res_list_final))
+    
     log.save_result(res_list_final,res_list_attrb,res_list_struct,seed_list,args)
     os._exit(0)

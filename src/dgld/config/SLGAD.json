@@ -26,5 +26,48 @@
     "ogbn-arxiv": {
         "lr": 1e-3,
         "num_epoch": 10
+    },
+    "weibo": {
+        "embedding_dim": 128,
+        "lr": 0.003,
+        "num_epoch": 100,
+        "auc_test_rounds": 256,
+        "batch_size": 256
+    },
+    "Amazon": {
+        "embedding_dim": 128,
+        "lr": 0.0003,
+        "num_epoch": 200,
+        "auc_test_rounds": 32,
+        "batch_size": 256
+    },
+    "reddit": {
+        "embedding_dim": 32,
+        "lr": 0.0003,
+        "num_epoch": 100,
+        "auc_test_rounds": 128,
+        "batch_size": 512
+    },
+    "Enron": {
+        "embedding_dim": 64,
+        "lr": 0.01,
+        "num_epoch": 200,
+        "auc_test_rounds": 256,
+        "batch_size": 1024
+    },
+    "wiki": {
+        "embedding_dim": 64,
+        "lr": 0.0001,
+        "num_epoch": 100,
+        "auc_test_rounds": 256,
+        "batch_size": 256
+    },
+    "elliptic": {
+        "num_epoch": 50,
+        "auc_test_rounds": 20
+    },
+    "tfinance": {
+        "num_epoch": 50,
+        "auc_test_rounds": 20
     }
 }

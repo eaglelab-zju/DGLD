@@ -28,10 +28,12 @@ class CONAD(nn.Module):
     >>> result = model.predict(g)
     """
     def __init__(self, 
-                 feat_size
+                 feat_size,
+                 embedding_dim=64,
+                 struct_dec_act=None
                  ):
         super(CONAD, self).__init__()
-        self.model = CONAD_Base(feat_size)
+        self.model = CONAD_Base(feat_size, hid_feats=2*embedding_dim, out_feats=embedding_dim, struct_dec_act=struct_dec_act)
         
     def fit(self,
             graph,
@@ -106,7 +108,7 @@ class CONAD(nn.Module):
         
         self.model.to(device) 
         
-        early_stop = EarlyStopping(early_stopping_rounds=10, patience=20)
+        early_stop = EarlyStopping(early_stopping_rounds=100, patience=20)
         
         if batch_size == 0:
             print("full graph training!!!")
@@ -274,7 +276,8 @@ class CONAD_Base(nn.Module):
                  hid_feats=128,
                  out_feats=64,
                  num_heads=2,
-                 activation=nn.LeakyReLU()
+                 activation=nn.LeakyReLU(),
+                 struct_dec_act=None,
                  ):
         super(CONAD_Base, self).__init__()
         self.in_feats = in_feats
@@ -290,7 +293,7 @@ class CONAD_Base(nn.Module):
         self.attr_decoder = GATConv(out_feats, in_feats, num_heads, activation=activation)
         
         self.struct_decoder = lambda h: h @ h.T 
-        # self.struct_decoder = lambda h: torch.sigmoid(h @ h.T) 
+        self.struct_dec_act = struct_dec_act
         
     def embed(self, g, h):
         """compute embeddings 
@@ -337,6 +340,8 @@ class CONAD_Base(nn.Module):
         x_hat = self.attr_decoder(g, h).mean(1)
         # reconstruct adjacency matrix
         a_hat = self.struct_decoder(h)
+        if self.struct_dec_act is not None:
+            a_hat = eval(f"torch.{self.struct_dec_act}(a_hat)")
         return a_hat, x_hat
     
     def forward(self, g, h):
@@ -405,6 +410,8 @@ class CONAD_Base(nn.Module):
         x_hat = self.attr_decoder(blocks[-1], h).mean(1)
         # reconstruct adjacency matrix
         a_hat = self.struct_decoder(h)
+        if self.struct_dec_act is not None:
+            a_hat = eval(f"torch.{self.struct_dec_act}(a_hat)")
         return a_hat, x_hat
     
     def forward_batch(self, blocks, h):

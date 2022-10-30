@@ -30,5 +30,59 @@
         "batch_size": 1024,
         "num_epoch": 30,
         "eta": 0.1
+    },
+    "weibo": {
+        "embedding_dim": 128,
+        "lr": 0.001,
+        "alpha": 0.8,
+        "eta": 0.1,
+        "dropout": 0.2,
+        "rate": 0.2,
+        "num_epoch": 100,
+        "weight_decay": 0.00001,
+        "contrast_type": "triplet"
+    },
+    "Amazon": {
+        "embedding_dim": 256,
+        "lr": 0.001,
+        "alpha": 0.9,
+        "eta": 0.9,
+        "dropout": 0.4,
+        "rate": 0.1,
+        "num_epoch": 100,
+        "weight_decay": 0.0001,
+        "contrast_type": "siamese"
+    },
+    "wiki": {
+        "embedding_dim": 32,
+        "lr": 0.001,
+        "alpha": 0.4,
+        "eta": 0.8,
+        "dropout": 0.2,
+        "rate": 0.2,
+        "num_epoch": 200,
+        "weight_decay": 0.0001,
+        "contrast_type": "triplet"
+    },
+    "reddit": {
+        "embedding_dim": 128,
+        "lr": 0.01,
+        "alpha": 0.6000000000000001,
+        "eta": 0.6000000000000001,
+        "dropout": 0.1,
+        "rate": 0.2,
+        "num_epoch": 100,
+        "weight_decay": 0.0001,
+        "contrast_type": "triplet"
+    },
+    "Enron": {
+        "struct_dec_act": "sigmoid"
+    },
+    "elliptic": {
+        "batch_size": 4096
+    },
+    "tfinance": {
+        "num_epoch": 5,
+        "batch_size": 64
     }
 }
