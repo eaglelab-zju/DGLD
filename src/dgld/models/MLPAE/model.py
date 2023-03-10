@@ -6,7 +6,7 @@ import torch
 from torch.utils.data import DataLoader
 
 import dgl
-from dgl.dataloading import MultiLayerFullNeighborSampler, NodeDataLoader
+from dgl.dataloading import MultiLayerFullNeighborSampler, DataLoader
 from dgld.utils.early_stopping import EarlyStopping
 
 
@@ -181,13 +181,11 @@ class MLPAE(nn.Module):
             device = torch.device("cpu")
             print('Using cpu!!!')
 
-        features = g.ndata['feat']
-
         self.model = self.model.to(device)
         g = dgl.remove_self_loop(g)
         g = dgl.add_self_loop(g)
         g = g.to(device)
-        features = features.to(device)
+        features = g.ndata['feat']
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
@@ -219,7 +217,7 @@ class MLPAE(nn.Module):
             sampler = MultiLayerFullNeighborSampler(num_layers=self.n_layers)
             nid = torch.arange(g.num_nodes())
             nid = torch.LongTensor(nid).to(device)
-            dataloader = NodeDataLoader(
+            dataloader = DataLoader(
                 g, nid, sampler,
                 batch_size=batch_size,
                 shuffle=True,
@@ -298,7 +296,7 @@ class MLPAE(nn.Module):
         else:
             sampler = MultiLayerFullNeighborSampler(self.n_layers)
             nid = torch.arange(g.num_nodes()).to(device)
-            dataloader = NodeDataLoader(g, nid, sampler,
+            dataloader = DataLoader(g, nid, sampler,
                                         batch_size=batch_size,
                                         shuffle=False,
                                         drop_last=False
