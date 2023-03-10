@@ -51,16 +51,16 @@ class DOMINANT(nn.Module):
         print(f"Total edges after adding self-loop {graph.number_of_edges()}")
 
         features = graph.ndata['feat']
-        print(features)
+        # print(features)
         adj = graph.adj(scipy_fmt='csr')
 
         
-        print(np.sum(adj))
+        # print(np.sum(adj))
         adj_label = torch.FloatTensor(adj.toarray())
         
-        print(graph)
-        print('adj_label shape:', adj_label.shape)
-        print('features shape:', features.shape)
+        # print(graph)
+        # print('adj_label shape:', adj_label.shape)
+        # print('features shape:', features.shape)
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
