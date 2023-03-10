@@ -7,7 +7,7 @@ from dgl.nn.pytorch import GraphConv
 
 import dgl
 from dgl.nn import GraphConv
-from dgl.dataloading import MultiLayerFullNeighborSampler, NodeDataLoader
+from dgl.dataloading import MultiLayerFullNeighborSampler, DataLoader
 from dgld.utils.early_stopping import EarlyStopping
 
 
@@ -230,7 +230,7 @@ class GCNAE(nn.Module):
             sampler = MultiLayerFullNeighborSampler(num_layers=self.n_layers)
             nid = torch.arange(g.num_nodes())
             nid = torch.LongTensor(nid).to(device)
-            dataloader = NodeDataLoader(
+            dataloader = DataLoader(
                 g, nid, sampler,
                 batch_size=batch_size,
                 shuffle=True,
@@ -311,7 +311,7 @@ class GCNAE(nn.Module):
         else:
             sampler = MultiLayerFullNeighborSampler(self.n_layers)
             nid = torch.arange(g.num_nodes()).to(device)
-            dataloader = NodeDataLoader(g, nid, sampler,
+            dataloader = DataLoader(g, nid, sampler,
                                         batch_size=batch_size,
                                         shuffle=False,
                                         drop_last=False
