@@ -35,12 +35,10 @@ def get_subargs(args):
         "fit":{
             "lr":args.lr,
             "num_epoch":args.num_epoch,
-            "subgraph_size":args.subgraph_size,
             "device":args.device,
         },
         "predict":{
             "device":args.device,
-            "subgraph_size": args.subgraph_size,
         }
     }
     return final_args_dict, args
