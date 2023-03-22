@@ -9,9 +9,8 @@ t.py
 **/log_bp/*
 **/tmp/*
 **__pycache__
-src/dgld/data/*
+src/dgld/data/downloads/*
 doc_html_auto_generator
-!src/dgld/data/README.md
 .DS_Store
 src/.DS_Store
 result

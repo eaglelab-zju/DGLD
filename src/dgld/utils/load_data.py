@@ -6,7 +6,7 @@ import scipy.io as sio
 import os,wget,ssl,sys
 import pandas as pd
 from typing import *
-from common import is_bidirected,preprocess_features
+from .common import is_bidirected,preprocess_features
 
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))

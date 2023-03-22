@@ -122,7 +122,7 @@ def parse_all_args() -> argparse.Namespace:
                         help='number of nodes. Defaults to 2708.')
     parser.add_argument('--data_path',
                         type=str,
-                        default='src/dgld/data/',
+                        default='src/dgld/data/downloads',
                         help='data path')
     parser.add_argument('--device',
                         type=str,
