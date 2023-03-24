@@ -1,7 +1,0 @@
-dgld.utils.early\_stopping 
-===========================
-
-.. automodule:: dgld.utils.early_stopping
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,8 +1,0 @@
-dgld.models.ComGA
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.ComGA.comga_utils
-   dgld.models.ComGA.models
-

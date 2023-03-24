@@ -1,7 +1,0 @@
-dgld.models.GUIDE.model 
-========================
-
-.. automodule:: dgld.models.GUIDE.model
-   :members:
-   :undoc-members:
-   :show-inheritance:

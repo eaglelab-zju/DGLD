@@ -1,7 +1,0 @@
-dgld.utils.inject\_anomalies 
-=============================
-
-.. automodule:: dgld.utils.inject_anomalies
-   :members:
-   :undoc-members:
-   :show-inheritance:

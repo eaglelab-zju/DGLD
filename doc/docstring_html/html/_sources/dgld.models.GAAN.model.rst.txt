@@ -1,7 +1,0 @@
-dgld.models.GAAN.model 
-=======================
-
-.. automodule:: dgld.models.GAAN.model
-   :members:
-   :undoc-members:
-   :show-inheritance:

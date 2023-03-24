@@ -1,7 +1,0 @@
-dgld.utils.load\_data 
-======================
-
-.. automodule:: dgld.utils.load_data
-   :members:
-   :undoc-members:
-   :show-inheritance:

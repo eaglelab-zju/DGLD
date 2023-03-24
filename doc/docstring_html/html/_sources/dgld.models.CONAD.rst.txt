@@ -1,8 +1,0 @@
-dgld.models.CONAD
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.CONAD.conad_utils
-   dgld.models.CONAD.models
-

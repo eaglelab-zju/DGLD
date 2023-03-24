@@ -16,7 +16,7 @@ if __name__ == "__main__":
     data_name = args_dict['dataset']
     save_path = args.save_path
     exp_name = args.exp_name
-    log = Dgldlog(save_path,exp_name,args)
+    log = Dgldlog(save_path, exp_name,args)
 
     res_list_final = []
     res_list_attrb = []

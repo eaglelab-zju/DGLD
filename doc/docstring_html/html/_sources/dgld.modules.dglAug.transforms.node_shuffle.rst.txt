@@ -1,7 +1,0 @@
-dgld.modules.dglAug.transforms.node\_shuffle 
-=============================================
-
-.. automodule:: dgld.modules.dglAug.transforms.node_shuffle
-   :members:
-   :undoc-members:
-   :show-inheritance:

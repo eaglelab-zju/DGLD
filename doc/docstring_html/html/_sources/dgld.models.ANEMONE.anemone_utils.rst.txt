@@ -1,7 +1,0 @@
-dgld.models.ANEMONE.anemone\_utils 
-===================================
-
-.. automodule:: dgld.models.ANEMONE.anemone_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-dgld.utils.common\_params 
-==========================
-
-.. automodule:: dgld.utils.common_params
-   :members:
-   :undoc-members:
-   :show-inheritance:

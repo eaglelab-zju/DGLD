@@ -7,7 +7,7 @@ from typing import List
 import dgl
 import torch
 from dgl import BaseTransform
-
+from dgl.transforms import *
 
 # pylint:disable=no-else-return
 class ComposeAug(BaseTransform):
@@ -109,3 +109,11 @@ class RandomChoiceAug(BaseTransform):
                 tmpg = deepcopy(g)
                 graphs.append(newg)
             return graphs
+
+class ContrastiveTransform:
+    def __init__(self, transform_list):
+        super().__init__()
+        self.transform_list = transform_list
+        
+    def __call__(self, g):
+        return [transform(g.clone()) for transform in self.transform_list]

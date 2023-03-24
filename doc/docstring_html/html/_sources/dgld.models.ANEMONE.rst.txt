@@ -1,9 +1,0 @@
-dgld.models.ANEMONE
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.ANEMONE.anemone_utils
-   dgld.models.ANEMONE.dataset
-   dgld.models.ANEMONE.models
-

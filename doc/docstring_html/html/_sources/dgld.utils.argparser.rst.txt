@@ -1,7 +1,0 @@
-dgld.utils.argparser 
-=====================
-
-.. automodule:: dgld.utils.argparser
-   :members:
-   :undoc-members:
-   :show-inheritance:

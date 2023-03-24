@@ -1,8 +1,0 @@
-dgld.models.DOMINANT
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.DOMINANT.dominant_utils
-   dgld.models.DOMINANT.models
-

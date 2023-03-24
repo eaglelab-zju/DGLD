@@ -1,8 +1,0 @@
-dgld.models.AnomalyDAE
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.AnomalyDAE.anomalydae_utils
-   dgld.models.AnomalyDAE.models
-

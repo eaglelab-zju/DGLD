@@ -1,8 +1,0 @@
-dgld.models.DONE
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.DONE.done_utils
-   dgld.models.DONE.models
-

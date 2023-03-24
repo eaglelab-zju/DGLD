@@ -1,8 +1,0 @@
-dgld.models.GAAN
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.GAAN.ganna_utils
-   dgld.models.GAAN.model
-

@@ -1,7 +1,0 @@
-dgld.models.CONAD.models 
-=========================
-
-.. automodule:: dgld.models.CONAD.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

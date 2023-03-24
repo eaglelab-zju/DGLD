@@ -1,7 +1,0 @@
-dgld.models.SCAN.scan\_utils 
-=============================
-
-.. automodule:: dgld.models.SCAN.scan_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,7 +1,0 @@
-dgld.models.DONE.models 
-========================
-
-.. automodule:: dgld.models.DONE.models
-   :members:
-   :undoc-members:
-   :show-inheritance:

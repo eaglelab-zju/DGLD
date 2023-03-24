@@ -61,7 +61,7 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
             elif name in ogb_datasets:
                 graph = load_ogbn_arxiv(raw_dir=raw_dir)
                 
-            graph = self.downsampled_all_class(graph)
+            graph = self.downsampled_all_class(graph, rate=kwargs.get('downsampled_rate'))
         
         # graph.ndata['feat'] = graph.ndata['feat'].float()
         self.graph = graph
@@ -140,11 +140,13 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
     
 if __name__ == '__main__':
     print('-'*20, 'downsampled', '-'*20)
-    dataset = NodeLevelAnomalyDataset('Cora', category='downsampled', raw_dir=current_dir+'/data/downloads')
+    dataset = NodeLevelAnomalyDataset('Cora', category='downsampled', raw_dir=current_dir+'/data/downloads', downsampled_rate=0.1)
     print(dataset)
-    graph = dataset[0]
-    label = graph.ndata['label']
-    print(label.sum())
+    for graph in dataset:
+        graph = dataset[0]
+        # print(graph)
+        label = graph.ndata['label']
+        print(label.sum() / graph.num_nodes())
     
     print('-'*20, 'injected', '-'*20)
     dataset = NodeLevelAnomalyDataset('Cora', category='injected', raw_dir=current_dir+'/data/downloads')

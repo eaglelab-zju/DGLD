@@ -1,8 +1,0 @@
-dgld.models.ONE
-==============
-.. toctree::
-   :maxdepth: 4
-
-   dgld.models.ONE.model
-   dgld.models.ONE.one_utils
-
