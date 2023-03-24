@@ -1,8 +1,8 @@
 import sys
 import os
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
-sys.path.append(current_dir)
+CODE_DIR=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
+sys.path.append(CODE_DIR)
 
 import torch
 import dgl
@@ -73,8 +73,8 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
         num_classes = torch.unique(original_label).shape[0]
         
         glst = []
-        for class_id in range(num_classes):
-            ng = self.downsampled(graph.clone(), anomaly_class=class_id, rate=rate)
+        for class_id in list(np.unique(original_label)):
+            ng = self.downsampled(graph.clone(), anomaly_class=int(class_id), rate=rate)
             glst.append(ng)
         
         return glst
@@ -139,8 +139,10 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
         return len(self.graph)
     
 if __name__ == '__main__':
+    data_path = os.path.join(CODE_DIR, 'dgld/data/downloads')
+    
     print('-'*20, 'downsampled', '-'*20)
-    dataset = NodeLevelAnomalyDataset('Cora', category='downsampled', raw_dir=current_dir+'/data/downloads', downsampled_rate=0.1)
+    dataset = NodeLevelAnomalyDataset('Cora', category='downsampled', raw_dir=data_path, downsampled_rate=0.1)
     print(dataset)
     for graph in dataset:
         graph = dataset[0]
@@ -149,14 +151,14 @@ if __name__ == '__main__':
         print(label.sum() / graph.num_nodes())
     
     print('-'*20, 'injected', '-'*20)
-    dataset = NodeLevelAnomalyDataset('Cora', category='injected', raw_dir=current_dir+'/data/downloads')
+    dataset = NodeLevelAnomalyDataset('Cora', category='injected', raw_dir=data_path)
     print(dataset)
     graph = dataset[0]
     label = graph.ndata['label']
     print(label.sum())
     
     print('-'*20, 'natural', '-'*20)
-    dataset = NodeLevelAnomalyDataset('Amazon', category='natural', raw_dir=current_dir+'/data/downloads')
+    dataset = NodeLevelAnomalyDataset('Amazon', category='natural', raw_dir=data_path)
     print(dataset)
     graph = dataset[0]
     label = graph.ndata['label']
