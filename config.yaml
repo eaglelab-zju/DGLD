@@ -1,0 +1,8 @@
+# data
+dataset: Amazon
+category: natural
+data_path: /data1/laichengyu/data
+
+#train
+model: DOMINANT
+runs: 2
