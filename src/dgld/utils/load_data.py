@@ -6,11 +6,11 @@ import scipy.io as sio
 import os,wget,ssl,sys
 import pandas as pd
 from typing import *
-from common import is_bidirected,preprocess_features
+from .common import is_bidirected,preprocess_features
 
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
-data_path = current_dir +'/data/'
+data_path = 'data/'
 
 dgl_datasets = ['Cora', 'Citeseer', 'Pubmed']
 ogb_datasets = ['ogbn-arxiv']
@@ -259,7 +259,6 @@ def load_Flickr(raw_dir=data_path):
 other_datasets_map = {
     'Flickr': load_Flickr,
     'BlogCatalog': load_BlogCatalog,
-    
 }
 
 # for test

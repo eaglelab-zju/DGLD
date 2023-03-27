@@ -15,7 +15,6 @@ IN_FEATURE_MAP = {
     "Pubmed":500,
     "BlogCatalog":8189,
     "Flickr":12047,
-    "ACM":8337,
     "ogbn-arxiv":128,
 }
 
@@ -25,7 +24,6 @@ NUM_NODES_MAP={
     "Pubmed":19717,
     "BlogCatalog":5196,
     "Flickr":7575,
-    "ACM":16484,
     "ogbn-arxiv":169343,
 }
 
