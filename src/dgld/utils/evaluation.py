@@ -5,7 +5,7 @@ This is a program about evaluating scores.
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
-def split_auc(groundtruth, prob):
+def split_auc(groundtruth, prob, verbose=False):
     """
     print the scoring(AUC) of the two types of anomalies separately and global auc.
 
@@ -53,5 +53,6 @@ def split_auc(groundtruth, prob):
     if final_score == -1 and attr_pos_idx.sum()==0 and str_pos_idx.sum()!=0:
         final_score = roc_auc_score(groundtruth,prob)
     
-    print("final anomaly score:", final_score)
+    if verbose:
+        print("final anomaly score:", final_score)
     return final_score, a_score, s_score

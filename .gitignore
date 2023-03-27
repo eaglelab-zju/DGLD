@@ -16,3 +16,4 @@ src/.DS_Store
 result
 data
 lightning_logs
+tests

@@ -53,7 +53,7 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
             graph = inject_structural_anomalies(graph=graph,p=P,q=Q_MAP[name],seed=42)
             graph = [graph]
         elif category == 'natural':
-            graph = load_truth_data(data_path=raw_dir, dataset_name=name)
+            graph = self.load_data(data_path=raw_dir, dataset_name=name)
             graph = [graph]
         elif category == 'downsampled':
             if name in dgl_datasets:
@@ -137,6 +137,34 @@ class NodeLevelAnomalyDataset(dgl.data.DGLDataset):
     def __len__(self):
         """number of data examples"""
         return len(self.graph)
+    
+    def load_data(self, data_path, dataset_name):
+        """
+        load truth data
+
+        Parameters
+        ----------
+        data_path : str
+            data path
+        dataset_name: str
+            dataset name
+
+        Returns
+        -------
+        graph : DGL.graph
+            the graph read from data_path,default row feature norm.
+        """
+        graph = dgl.load_graphs(os.path.join(data_path, dataset_name))[0][0]
+        graph.ndata['feat'] = graph.ndata['feat'].to(torch.float32)
+        
+        if dataset_name == 'Amazon':
+            print("Amazon del!!!")
+            feat = graph.ndata['feat']
+            new_feat = feat[:, torch.arange(0, feat.shape[1]) != 15]
+            graph.ndata['feat'] = new_feat
+        
+        return graph
+        
     
 if __name__ == '__main__':
     data_path = os.path.join(CODE_DIR, 'dgld/data/downloads')

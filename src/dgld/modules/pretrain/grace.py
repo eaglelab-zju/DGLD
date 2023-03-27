@@ -14,7 +14,7 @@ from dgld.modules.networks.gatv2 import *
 from dgld.modules.networks.mlp import *
 from dgld.utils.evaluation import *
 from dgld.data.dataloader import *
-from dgld.modules.dglAug.transforms import *
+from dgld.modules.dglAug.augs import *
 
 class GRACE(pl.LightningModule):
     def __init__(self,
