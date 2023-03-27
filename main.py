@@ -23,7 +23,8 @@ if __name__ == "__main__":
     res_list_struct = []
 
     seed_list = [random.randint(0,99999) for i in range(args.runs)]
-    seed_list[0] = args_dict['seed']
+    if args.runs == 1:
+        seed_list[0] = args_dict['seed']
     for runs in range(args.runs):
         log.update_runs()
         seed = seed_list[runs]
