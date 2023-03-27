@@ -169,7 +169,7 @@ def parse_all_args() -> argparse.Namespace:
                             we will randomly generate different seeds to calculate the variance')
     parser.add_argument('--config_file',
                         type=str,
-                        default=None,
+                        default='config.yaml',
                         help = 'config file data path')
 
     # get dataset
