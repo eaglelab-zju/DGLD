@@ -151,7 +151,7 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
         # newg = dgl.add_self_loop(newg)
         # length is Very influential to the effect of the model, maybe caused "remote" neighbor is
         # not "friendly" to Rebuild Properties.
-        paces = dgl.sampling.random_walk(g, start_nodes, length=self.length * 3, restart_prob=0)[0]
+        paces = dgl.sampling.random_walk(g, start_nodes, length=self.length * 3, restart_prob=0.)[0]
         rwl = []
         for start, pace in zip(start_nodes, paces):
             pace = pace.unique().numpy()

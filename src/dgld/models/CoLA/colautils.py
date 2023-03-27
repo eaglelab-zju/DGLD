@@ -138,7 +138,7 @@ def train_epoch(epoch, loader, net, device, criterion, optimizer):
     """
     loss_accum = 0
     net.train()
-    for step, (pos_subgraph, neg_subgraph) in enumerate(tqdm(loader, desc="Iteration")):
+    for step, (pos_subgraph, neg_subgraph) in enumerate(loader):
         pos_subgraph, neg_subgraph = pos_subgraph.to(
             device), neg_subgraph.to(device)
         posfeat = pos_subgraph.ndata['feat'].to(device)
@@ -151,8 +151,9 @@ def train_epoch(epoch, loader, net, device, criterion, optimizer):
         optimizer.step()
         loss_accum += loss.item()
     loss_accum /= (step + 1)
-    lcprint('TRAIN==>epoch', epoch, 'Average training loss: {:.2f}'.format(
-        loss_accum), color='blue')
+    # lcprint('TRAIN==>epoch', epoch, 'Average training loss: {:.2f}'.format(
+    #     loss_accum), color='blue')
+    print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(loss_accum))
     return loss_accum
 
 
@@ -180,7 +181,7 @@ def test_epoch(epoch, loader, net, device, criterion):
     loss_accum = 0
     net.eval()
     predict_scores = []
-    for step, (pos_subgraph, neg_subgraph) in enumerate(tqdm(loader, desc="Iteration")):
+    for step, (pos_subgraph, neg_subgraph) in enumerate(loader):
         pos_subgraph, neg_subgraph = pos_subgraph.to(
             device), neg_subgraph.to(device)
         posfeat = pos_subgraph.ndata['feat'].to(device)
@@ -192,6 +193,7 @@ def test_epoch(epoch, loader, net, device, criterion):
         loss = loss_fun(pos_scores, neg_scores, criterion, device)
         loss_accum += loss.item()
     loss_accum /= (step + 1)
-    lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.2f}'.format(
-        loss_accum), color='blue')
+    # lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.2f}'.format(
+    #     loss_accum), color='blue')
+    print("Epoch:", '%04d' % (epoch), "valid_loss=", "{:.5f}".format(loss_accum))
     return np.array(predict_scores)
