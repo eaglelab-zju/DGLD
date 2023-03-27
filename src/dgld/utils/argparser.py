@@ -9,7 +9,7 @@ current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 from utils.common import tab_printer, loadargs_from_json
-from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
+from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP,Q_MAP
 # DOMINANT
 from models.DOMINANT import set_subargs as dominant_set_args
 from models.DOMINANT import get_subargs as dominant_get_args
@@ -109,9 +109,33 @@ def parse_all_args() -> argparse.Namespace:
         prog='DGLD',
         description='Parameters for DGLD')
     parser.add_argument('--dataset',
+                        '-d',
                         type=str,
                         default='Cora',
                         help='Dataset used in the experiment')
+    parser.add_argument('--category',
+                        type=str,
+                        choices=['injected', 'natural', 'downsampled'],
+                        default='injected',
+                        help='the category of dataset')
+    
+    parser.add_argument('--downsampled_rate',
+                        type=float,
+                        default=0.1,
+                        help='the category of dataset')
+    parser.add_argument('--k',
+                        type=int,
+                        default=50,
+                        help='anomaly injection hyperparameter')
+    parser.add_argument('--p',
+                        type=int,
+                        default=15,
+                        help='anomaly injection hyperparameter')
+    parser.add_argument('--q',
+                        type=int,
+                        default=15,
+                        help='anomaly injection hyperparameter')
+
     parser.add_argument('--feat_dim',
                         type=int,
                         default=1433,
@@ -122,7 +146,7 @@ def parse_all_args() -> argparse.Namespace:
                         help='number of nodes. Defaults to 2708.')
     parser.add_argument('--data_path',
                         type=str,
-                        default='src/dgld/data/',
+                        default='data/',
                         help='data path')
     parser.add_argument('--device',
                         type=str,
@@ -143,6 +167,11 @@ def parse_all_args() -> argparse.Namespace:
                         default=1,
                         help='The number of runs of task with same parmeter,If the number of runs is not 1, \
                             we will randomly generate different seeds to calculate the variance')
+    parser.add_argument('--config_file',
+                        type=str,
+                        default=None,
+                        help = 'config file data path')
+
     # get dataset
     arg_list = sys.argv[1:]
     if '--dataset' in arg_list:
@@ -156,7 +185,7 @@ def parse_all_args() -> argparse.Namespace:
     
     # set default feat_dim and num_nodes
     if dataset in IN_FEATURE_MAP.keys():
-        parser.set_defaults(feat_dim=IN_FEATURE_MAP[dataset],num_nodes=NUM_NODES_MAP[dataset])
+        parser.set_defaults(feat_dim=IN_FEATURE_MAP[dataset],num_nodes=NUM_NODES_MAP[dataset],q=Q_MAP[dataset])
 
     subparsers = parser.add_subparsers(dest="model", help='sub-command help')
     
@@ -174,13 +203,25 @@ def parse_all_args() -> argparse.Namespace:
             
     # get model args
     args = parser.parse_args()
+    # args_dict, args = models_get_args_map[args.model](args)
 
-
-    args_dict, args = models_get_args_map[args.model](args)
-
-    tab_printer(args)
+    # tab_printer(args)
     
-    return args_dict,args
+    return args
+
+def get_data_config(args):
+    data_config = {
+        'p' : args.p,
+        'q' : args.q,
+        'k' : args.k,
+        'downsampled_rate': args.downsampled_rate
+    }
+    return data_config
+
+def param_divide(args):
+    args_dict, args = models_get_args_map[args.model](args)
+    tab_printer(args)
+    return args_dict
 
 if __name__ == "__main__":
     parse_all_args()
