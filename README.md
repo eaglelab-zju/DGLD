@@ -51,6 +51,7 @@ In anomaly detection, DGLD inject the abnormal node in two methods, structural a
 
 ```python
 from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
+
 gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
 g = gnd_dataset[0]
 label = gnd_dataset.anomaly_label
@@ -61,6 +62,8 @@ label = gnd_dataset.anomaly_label
 DGLD supports some basic methods. It's easy to construct and train model.
 
 ```python
+from DGLD.models import CoLA
+
 model = CoLA(in_feats = g.ndata['feat'].shape[1])
 ```
 
@@ -69,6 +72,8 @@ model = CoLA(in_feats = g.ndata['feat'].shape[1])
 Function fit need parameters to specify number of epoch and device. For gpu, device should be a int, while a string 'cpu' for cpu.
 
 ```python
+from DGLD.utils.evaluation import split_auc
+
 model.fit(g, num_epoch = 5, device = 0)
 result = model.predict(g, auc_test_rounds = 2)
 print(split_auc(label, result))
