@@ -27,13 +27,19 @@ conda install cudatoolkit==11.3.1
 pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
 pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
 ```
+- ###  install from source code
 Then clone the DGLD project, enter the directory and run:
 ```shell
+git clone git@github.com:EagleLab-ZJU/DGLD.git
 pip install -r requirements.txt
 ```
 To check whether you have successfully installed the package and environment, you can simply run
 ```shell
 python example.py
+```
+- ### install from pypi
+```shell
+pip install DGLD
 ```
 Now you can enjoy DGLD!
 
@@ -50,7 +56,7 @@ DGLD support multiple data import methods, including [PyTorch Geometric](https:/
 In anomaly detection, DGLD inject the abnormal node in two methods, structural and contextual, by two parameters - p and k. gnd_dataset is an instance of GraphNodeAnomalyDectionDataset. g is an instance of DGL.Graph. label is an instnace of torch.Tensor, presenting the anomaly class. Following is an example showing that a few lines of codes are sufficient to load and inject.
 
 ```python
-from dgld.utils.dataset import GraphNodeAnomalyDectionDataset
+from DGLD.utils.dataset import GraphNodeAnomalyDectionDataset
 
 gnd_dataset = GraphNodeAnomalyDectionDataset("Cora", p = 15, k = 50)
 g = gnd_dataset[0]
