@@ -2,7 +2,7 @@
     <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html"> <img src="images/DGLD_logo.jpg" width="200" alt="DGLD LOGO"/></a>
 <p>
 
-<h1 align="center"><p>A Deep Graph Anomaly Detection Library <br> based on DGL</p></h1>
+<h1 align="center">A Deep Graph Anomaly Detection Library <br> based on DGL</h1>
 
 <p align="center">
     <b> <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html">Website</a> | <a href="https://zhoushengisnoob.github.io/DGLD/doc/docstring_html/html/dgld.html">Doc</a> </b>
