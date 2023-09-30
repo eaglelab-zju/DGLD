@@ -56,10 +56,10 @@ def inject_structural_anomalies(graph,p,q,seed=42):
     print("anomalies numbers:", len(anomalies))
     return graph
 
+
 def inject_contextual_anomalies(graph,k,p,q,seed=42):
     """
     Functions that inject contextual anomaly
-        
     """
     np.random.seed(seed)
     attribute_anomalies_number = p * q
@@ -82,16 +82,11 @@ def inject_contextual_anomalies(graph,k,p,q,seed=42):
                 biggest_distance, biggest_attr = dis, all_attr[i]
         # the node which has biggest one euclidean distance
         all_attr[aa_i] = biggest_attr
-
     graph.ndata['feat'] = all_attr
     labels[attribute_anomalies_idx] = 2
     graph.ndata['label'] = labels
     contextual_anomalies = torch.where(labels == 2)[0].numpy()
-    print(
-        "inject contextual_anomalies numbers:", len(contextual_anomalies)
-    )
+    print("inject contextual_anomalies numbers:", len(contextual_anomalies))
     anomalies = torch.where(labels != 0)[0].numpy()
-
     print("anomalies numbers:", len(anomalies))
-
     return graph

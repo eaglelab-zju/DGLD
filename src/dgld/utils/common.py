@@ -6,22 +6,29 @@ from scipy.stats import rankdata
 from ogb.nodeproppred import DglNodePropPredDataset
 import scipy.io as sio
 import scipy.sparse as sp
-import random,os
-import os,wget,ssl,sys
+import random
+import os
+import wget
+import ssl
+import sys
 import os.path as osp
 import pandas as pd
 from texttable import Texttable
 from typing import *
+
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
-data_path = current_dir +'/data/'
+data_path = current_dir + '/data/'
+
 
 def print_shape(*a):
     for t in a:
         print(t.shape)
 
+
 def print_format_dict(dict_input):
-    """print dict with json for a decent show
+    """
+    Print dict with json for a decent show
 
     Parameters
     ----------
@@ -30,8 +37,10 @@ def print_format_dict(dict_input):
     """
     print(json.dumps(dict_input, indent=4, separators=(',', ':')))
 
+
 def loadargs_from_json(filename, indent=4):
-    """load args from a format json file
+    """
+    Load args from a format json file
 
     Parameters
     ----------
@@ -45,13 +54,15 @@ def loadargs_from_json(filename, indent=4):
     Dict : json
         args parameters
     """
-    f = open(filename, "r") 
+    f = open(filename, "r")
     content = f.read()
     args = json.loads(content)
     return args
 
+
 def saveargs2json(jsonobject, filename, indent=4):
-    """save args parameters to json with a decent format
+    """
+    Save args parameters to json with a decent format
 
     Parameters
     ----------
@@ -64,6 +75,7 @@ def saveargs2json(jsonobject, filename, indent=4):
     """
     with open(filename, "w") as write_file:
         json.dump(jsonobject, write_file, indent=indent, separators=(',', ':'))
+
 
 def seed_everything(seed=42):
     # basic
@@ -85,8 +97,10 @@ def seed_everything(seed=42):
         torch.cuda.manual_seed_all(seed)
         torch.cuda.manual_seed(seed)
 
+
 class ExpRecord():
-    """create a read a existed csv file to record the experiments
+    """
+    Create a read a existed csv file to record the experiments
 
     Parameters
     ----------
@@ -100,50 +114,50 @@ class ExpRecord():
     >>> argsdict['auc'] = 1.0
     >>> argsdict['info'] = "test"
     >>> exprecord.add_record(argsdict)
-    """ 
-    def __init__(self, filepath='result.csv'): 
+    """
+    def __init__(self, filepath='result.csv'):
         self.filepath = filepath
-        
+
     def add_record(self, dict_record):
-        """summary
+        """
+        Summary
 
         Parameters
         ----------
         dict_record : Dict
             record to add 
         """
-        
         if osp.exists(self.filepath):
             self.record = self.load_record()
         else:
             self.record = None
         print(dict_record)
         if not self.record:
-            self.record = {k:[v] for k, v in dict_record.items()}
+            self.record = {k: [v] for k, v in dict_record.items()}
         else:
             for k in dict_record:
                 # handle new column
                 if k not in self.record:
-                    self.record[k] = [''] * (len(self.record[list(self.record.keys())[0]])-1)
+                    self.record[k] = [''] * (len(self.record[list(self.record.keys())[0]]) - 1)
                 self.record[k].append(dict_record[k])
-
             # check out parameters
             for k in self.record:
                 if k not in dict_record:
                     self.record[k].append('')
-            
         self.save_record()
 
     def save_record(self):
         pd.DataFrame(self.record).to_csv(self.filepath, index=None)
-    
+
     def load_record(self):
         csv_file = pd.read_csv(self.filepath)
-        self.record = {k:list(csv_file[k]) for k in csv_file.columns}
-        return self.record 
+        self.record = {k: list(csv_file[k]) for k in csv_file.columns}
+        return self.record
+
 
 class Multidict2dict():
-    """convert multilayer Dict to a single layer Dict
+    """
+    Convert multilayer Dict to a single layer Dict
 
     Parameters
     ----------
@@ -174,9 +188,10 @@ class Multidict2dict():
     """
     def __init__(self):
         self.result = {}
-    
+
     def solve(self, inputs):
         self.result = {}
+
         def helper(inputs):
             for k, v in inputs.items():
                 if isinstance(v, Dict):
@@ -189,7 +204,8 @@ class Multidict2dict():
 
 
 class ParameterShower():
-    """show Parameter using texttable
+    """
+    Show Parameter using texttable
 
     Examples
     -------
@@ -219,7 +235,7 @@ class ParameterShower():
         self.tool = Multidict2dict()
 
     def show_dict(self, inputs: Dict) -> None:
-        inputs_list = [("Name", "Value")] + [(k, v)for k, v in inputs.items()]
+        inputs_list = [("Name", "Value")] + [(k, v) for k, v in inputs.items()]
         table = Texttable()
         table.set_cols_align(["l", "l"])
         table.add_rows(inputs_list)
@@ -232,7 +248,7 @@ class ParameterShower():
 
 def ranknorm(input_arr):
     """
-    return the 1-norm of rankdata of input_arr
+    Return the 1-norm of rankdata of input_arr
 
     Parameters
     ----------
@@ -268,13 +284,12 @@ def allclose(a, b, rtol=1e-4, atol=1e-4):
     res : bool
         True for close, False for not
     """
-    return torch.allclose(a.float().cpu(),
-                          b.float().cpu(), rtol=rtol, atol=atol)
+    return torch.allclose(a.float().cpu(), b.float().cpu(), rtol=rtol, atol=atol)
 
 
 def move_start_node_fisrt(pace, start_node):
     """
-    return a new pace in which the start node is in the first place.
+    Return a new pace in which the start node is in the first place.
 
     Parameters
     ----------
@@ -330,7 +345,7 @@ def is_bidirected(g):
 
 def load_mat_data2dgl(data_path, verbose=True):
     """
-    load data from .mat file
+    Load data from .mat file
 
     Parameters
     ----------
@@ -404,7 +419,7 @@ def load_ogbn_arxiv(raw_dir=data_path):
     return [graph]
 
 
-# create this bar_progress method which is invoked automatically from wget
+# Create this bar_progress method which is invoked automatically from wget
 def bar_progress(current, total, width=80):
     progress_message = "Downloading: %d%% [%d / %d] bytes" % (current / total * 100, current, total)
     # Don't use print() as it will print in new line every time.
@@ -414,7 +429,7 @@ def bar_progress(current, total, width=80):
 
 def load_BlogCatalog(raw_dir=data_path):
     """
-    load BlogCatalog dgl graph
+    Load BlogCatalog dgl graph
 
     Parameters
     ----------
@@ -433,13 +448,12 @@ def load_BlogCatalog(raw_dir=data_path):
     if not os.path.exists(data_file):
         url = 'https://github.com/GRAND-Lab/CoLA/blob/main/raw_dataset/BlogCatalog/BlogCatalog.mat?raw=true'
         wget.download(url, out=data_file, bar=bar_progress)
-
     return load_mat_data2dgl(data_path=data_file)
 
 
 def load_Flickr(raw_dir=data_path):
     """
-    load Flickr dgl graph
+    Load Flickr dgl graph
 
     Parameters
     ----------
@@ -459,12 +473,12 @@ def load_Flickr(raw_dir=data_path):
     if not os.path.exists(data_file):
         url = 'https://github.com/GRAND-Lab/CoLA/blob/main/raw_dataset/Flickr/Flickr.mat?raw=true'
         wget.download(url, out=data_file, bar=bar_progress)
-
     return load_mat_data2dgl(data_path=data_file)
 
 
 def load_ACM(raw_dir=data_path):
-    """load ACM dgl graph
+    """
+    Load ACM dgl graph
 
     Parameters
     ----------
@@ -484,8 +498,8 @@ def load_ACM(raw_dir=data_path):
     if not os.path.exists(data_file):
         url = 'https://github.com/GRAND-Lab/CoLA/blob/main/dataset/ACM.mat?raw=true'
         wget.download(url, out=data_file, bar=bar_progress)
-
     return load_mat_data2dgl(data_path=data_file)
+
 
 def cprint(x, color='green'):
     from termcolor import colored
@@ -495,8 +509,8 @@ def cprint(x, color='green'):
     if color == 'debug':
         color = 'red'
         x = 'DEBUG:' + str(x)
-        
     print(colored(x, color))
+
 
 def lcprint(*arr, color='green'):
     x = ':: '.join([str(i) for i in arr])
@@ -507,12 +521,12 @@ def lcprint(*arr, color='green'):
     if color.lower() == 'debug':
         color = 'red'
         x = 'DEBUG:' + str(x)
-        
     print(colored(x, color))
 
 
 def tab_printer(args: Dict, thead: List[str] = None) -> None:
-    """Function to print the logs in a nice tabular format.
+    """
+    Function to print the logs in a nice tabular format.
 
     Args:
         args (Dict): Parameters used for the model.
@@ -528,6 +542,7 @@ def tab_printer(args: Dict, thead: List[str] = None) -> None:
     ] for k in keys])
     txt.add_rows(params)
     print(txt.draw())
+
 
 def preprocess_features(features):
     """

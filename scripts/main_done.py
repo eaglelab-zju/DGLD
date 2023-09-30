@@ -1,5 +1,6 @@
 import os
 import sys
+
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/src'
 sys.path.append(current_dir)
@@ -13,7 +14,6 @@ from dgld.utils.evaluation import split_auc
 import dgl
 import torch
 import numpy as np
-
 
 if __name__ == '__main__':
     """

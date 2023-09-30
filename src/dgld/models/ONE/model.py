@@ -5,7 +5,7 @@ import torch.nn as nn
 from utils.early_stopping import EarlyStopping
 from .one_utils import loss_func
 
-class ONE():
+class ONE:
     """
     ONE (Outlier Aware Network Embedding for Attributed Networks)
 
@@ -16,15 +16,15 @@ class ONE():
     K : int, optional
         The embedding size, by default 8
     """
-    def __init__(self,node_num,K=8):
+    def __init__(self, node_num, K=8):
         self.outl1 = np.ones(node_num)/node_num
         self.outl2 = np.ones(node_num)/node_num
         self.outl3 = np.ones(node_num)/node_num
         self.K = K
 
-    def fit(self,graph,num_epoch=5):
+    def fit(self, graph, num_epoch=5):
         """
-        fit model
+        Fit model
 
         Parameters
         ----------
@@ -76,69 +76,69 @@ class ONE():
 
         # init alpha, beta, gamma 
 
-        temp1 = A - np.matmul(G,H)
-        temp1 = np.multiply(temp1,temp1)
-        temp1 = np.multiply( np.log(np.reciprocal(outl1+eps)), np.sum(temp1, axis=1) )
+        temp1 = A - np.matmul(G, H)
+        temp1 = np.multiply(temp1, temp1)
+        temp1 = np.multiply(np.log(np.reciprocal(outl1+eps)), np.sum(temp1, axis=1))
         temp1 = np.sum(temp1)
                             
-        temp2 = C - np.matmul(U,V)
-        temp2 = np.multiply(temp2,temp2)
-        temp2 = np.multiply( np.log(np.reciprocal(outl2+eps)), np.sum(temp2, axis=1) )
+        temp2 = C - np.matmul(U, V)
+        temp2 = np.multiply(temp2, temp2)
+        temp2 = np.multiply(np.log(np.reciprocal(outl2+eps)), np.sum(temp2, axis=1))
         temp2 = np.sum(temp2)    
         
         temp3 = G.T - np.matmul(W, U.T)
-        temp3 = np.multiply(temp3,temp3)
-        temp3 = np.multiply( np.log(np.reciprocal(outl3+eps)), np.sum(temp3, axis=0).T )
+        temp3 = np.multiply(temp3, temp3)
+        temp3 = np.multiply(np.log(np.reciprocal(outl3+eps)), np.sum(temp3, axis=0).T)
         temp3 = np.sum(temp3)
         
         alpha = 1
         beta = temp1/temp2
         gamma = min(2*beta, temp3)
 
-        early_stop = EarlyStopping(patience=1,check_finite=False)
+        early_stop = EarlyStopping(patience=1, check_finite=False)
         for epoch in range(num_epoch):          
                 
             # The Updation rule for G[i,k]    
             for i in range(G.shape[0]):
                 for k in range(G.shape[1]):
-                    Gik_numer = alpha * np.log(np.reciprocal(outl1[i]+eps)) * np.dot(H[k,:], \
-                                        (A[i,:] - (np.matmul(G[i], H) - np.multiply(G[i,k], H[k,:]))) ) + \
-                                        gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot(U[i], W[k,:])
-                    Gik_denom = alpha * np.log(np.reciprocal(outl1[i]+eps)) * np.dot(H[k,:], H[k,:]) + \
-                                    gamma * np.log(np.reciprocal(outl3[i]+eps))
+                    Gik_numer = alpha * np.log(np.reciprocal(outl1[i]+eps)) * np.dot(H[k, :],
+                                        (A[i, :] - (np.matmul(G[i], H) - np.multiply(G[i, k], H[k, :])))
+                                         ) + gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot(U[i], W[k, :])
+                    Gik_denom = alpha * np.log(np.reciprocal(outl1[i]+eps)) * np.dot(H[k, :], H[k, :]
+                                        ) + gamma * np.log(np.reciprocal(outl3[i]+eps))
                     G[i,k] = Gik_numer / Gik_denom
             
             # The updation rule for H[k,j]
             for k in range(H.shape[0]):
                 for j in range(H.shape[1]):
-                    Hkj_numer = alpha * np.dot( np.multiply(np.log(np.reciprocal(outl1+eps)), G[:,k]), \
-                                        ( A[:,j] - (np.matmul(G,H[:,j]) - np.multiply(G[:,k],H[k,j]) ) ) )
-                    Hkj_denom = alpha * ( np.dot(np.log(np.reciprocal(outl1+eps)), np.multiply(G[:,k], G[:,k])) )
-                    H[k,j] = Hkj_numer / Hkj_denom
+                    Hkj_numer = alpha * np.dot( np.multiply(np.log(np.reciprocal(outl1+eps)), G[:,k]),
+                                        (A[:, j] - (np.matmul(G, H[:, j]) - np.multiply(G[:, k], H[k, j]))))
+                    Hkj_denom = alpha * (np.dot(np.log(np.reciprocal(outl1+eps)), np.multiply(G[:, k], G[:, k])))
+                    H[k, j] = Hkj_numer / Hkj_denom
             
             # The up[dation rule for U[i,k]      
             for i in range(U.shape[0]):
                 for k in range(U.shape[1]):
-                    Uik_numer_1 = beta * np.log(np.reciprocal(outl2[i]+eps)) * ( np.dot( V[k,:],  \
-                                                        (C[i] - (np.matmul(U[i,:], V) - np.multiply(U[i,k], V[k,:])) ) ))
-                    Uik_numer_2 = gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot( \
-                                                (G[i,:] - (np.matmul(U[i,:], W) - np.multiply(U[i,k], W[:,k]))), W[:,k] )
-                    Uik_denom = beta * np.log(np.reciprocal(outl2[i]+eps)) * np.dot(V[k,:], V[k,:] \
-                                                ) + gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot(W[:,k], W[:,k])
+                    Uik_numer_1 = beta * np.log(np.reciprocal(outl2[i]+eps)) * (np.dot(V[k, :],
+                                                (C[i] - (np.matmul(U[i, :], V) - np.multiply(U[i, k], V[k, :])))))
+                    Uik_numer_2 = gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot(
+                                                (G[i, :] - (np.matmul(U[i, :], W) - np.multiply(U[i, k], W[:, k]))), W[:, k])
+                    Uik_denom = beta * np.log(np.reciprocal(outl2[i]+eps)) * np.dot(V[k, :], V[k, :]
+                                                ) + gamma * np.log(np.reciprocal(outl3[i]+eps)) * np.dot(W[:, k], W[:, k])
                     U[i,k] = (Uik_numer_1 + Uik_numer_2) / Uik_denom 
             
             # The updation rule for V[k,d]      
             for k in range(V.shape[0]):
                 for d in range(V.shape[1]):
-                    Vkd_numer = beta * np.dot( np.multiply(np.log(np.reciprocal(outl2+eps)), U[:,k]), ( C[:,d] \
-                                                    - (np.matmul(U,V[:,d]) - np.multiply(U[:,k],V[k,d]) ) ) )
-                    Vkd_denom = beta * ( np.dot(np.log(np.reciprocal(outl2+eps)), np.multiply(U[:,k], U[:,k])) )               
+                    Vkd_numer = beta * np.dot( np.multiply(np.log(np.reciprocal(outl2+eps)), U[:, k]),
+                                               (C[:, d] - (np.matmul(U, V[:, d]) - np.multiply(U[:, k], V[k, d]))))
+                    Vkd_denom = beta * (np.dot(np.log(np.reciprocal(outl2+eps)), np.multiply(U[:, k], U[:, k])))
                     V[k][d] = Vkd_numer / Vkd_denom        
             
             # The Update rule for W[p,q]
             logoi = np.log(np.reciprocal(outl3+eps))
             sqrt_logoi = np.sqrt(logoi)
-            sqrt_logoi = np.tile(sqrt_logoi, (K,1))
+            sqrt_logoi = np.tile(sqrt_logoi, (K, 1))
             assert(sqrt_logoi.shape == G.T.shape)
             
             term1 = np.multiply(sqrt_logoi, G.T)
@@ -152,22 +152,21 @@ class ONE():
             
             # The updation rule for outl
             GH = np.matmul(G, H)
-            UV = np.matmul(U,V)
+            UV = np.matmul(U, V)
             WUTrans = np.matmul(W, U.T)
             mu = 1
-            outl1_numer = alpha * (np.multiply((A - GH),(A - GH))).sum(axis=1)
-            outl1_denom =  alpha * pow(np.linalg.norm((A - GH),'fro'),2)
+            outl1_numer = alpha * (np.multiply((A - GH), (A - GH))).sum(axis=1)
+            outl1_denom =  alpha * pow(np.linalg.norm((A - GH), 'fro'), 2)
             outl1_numer = outl1_numer * mu
             outl1 = outl1_numer / outl1_denom
-            
-            
-            outl2_numer = beta * (np.multiply((C - UV),(C - UV))).sum(axis=1)
-            outl2_denom =  beta * pow(np.linalg.norm((C - UV),'fro'),2)       
+
+            outl2_numer = beta * (np.multiply((C - UV), (C - UV))).sum(axis=1)
+            outl2_denom = beta * pow(np.linalg.norm((C - UV), 'fro'), 2)
             outl2_numer = outl2_numer * mu
             outl2 = outl2_numer / outl2_denom
             
-            outl3_numer = gamma * (np.multiply((G.T - WUTrans),(G.T - WUTrans))).sum(axis=0).T
-            outl3_denom = gamma * pow(np.linalg.norm((G.T - WUTrans),'fro'),2)
+            outl3_numer = gamma * (np.multiply((G.T - WUTrans), (G.T - WUTrans))).sum(axis=0).T
+            outl3_denom = gamma * pow(np.linalg.norm((G.T - WUTrans), 'fro'), 2)
             outl3_numer = outl3_numer * mu
             outl3 = outl3_numer / outl3_denom
             

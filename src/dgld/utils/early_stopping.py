@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import copy
 
+
 class EarlyStopping:
     """
     Early stops the training if loss doesn't improve after a given patience.
@@ -45,6 +46,7 @@ class EarlyStopping:
         self.rounds = 0
         self.check_finite = check_finite
         self.__best_parameters = None
+
     @property
     def early_stop(self):
         """
@@ -58,7 +60,6 @@ class EarlyStopping:
     @property
     def best_paramenters(self):
         """
-
         Returns
         -------
         OrderedDict
@@ -102,7 +103,6 @@ class EarlyStopping:
                 self.counter = 0
                 if model is not None:
                     self.save_best_parameters(model)
-
         if self.__early_stop and self.verbose:
             print(f"Previous best loss was {self.loss_min:.6f}. Signaling Trainer to stop")
 
@@ -116,4 +116,3 @@ class EarlyStopping:
             The model
         """
         self.__best_parameters = copy.deepcopy(model.state_dict())
-        

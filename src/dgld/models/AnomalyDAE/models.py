@@ -9,8 +9,10 @@ import numpy as np
 from .anomalydae_utils import train_step, test_step
 from utils.early_stopping import EarlyStopping
 
+
 class AnomalyDAE(nn.Module):
-    """AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks
+    """
+    AnomalyDAE: Dual autoencoder for anomaly detection on attributed networks
     ref:https://github.com/haoyfan/AnomalyDAE
     
     Parameters
@@ -25,15 +27,16 @@ class AnomalyDAE(nn.Module):
         dimension of output embedding (default: 128)
     dropout : float
         Dropout rate
-    
     """
-    def __init__(self, feat_size,num_nodes,embed_dim,out_dim, dropout):
+
+    def __init__(self, feat_size, num_nodes, embed_dim, out_dim, dropout):
         super(AnomalyDAE, self).__init__()
-        self.model = AnomalyDAEModel(in_feat_dim=feat_size,in_num_dim=num_nodes,embed_dim=embed_dim,
-                        out_dim=out_dim,dropout=dropout)
-    
-    def fit(self,graph,lr=5e-3,num_epoch=1,alpha=0.7,eta=5.0,theta=40.0,device='cpu',patience=10):
-        """Fitting model
+        self.model = AnomalyDAEModel(in_feat_dim=feat_size, in_num_dim=num_nodes, embed_dim=embed_dim,
+                                     out_dim=out_dim, dropout=dropout)
+
+    def fit(self, graph, lr=5e-3, num_epoch=1, alpha=0.7, eta=5.0, theta=40.0, device='cpu', patience=10):
+        """
+        Fitting model
 
         Parameters
         ----------
@@ -53,9 +56,8 @@ class AnomalyDAE(nn.Module):
             cuda id, by default 'cpu'
         patience : int, optional
             early stop patience , by default 10
-
         """
-        print('*'*20,'training','*'*20)
+        print('*' * 20, 'training', '*' * 20)
 
         features = graph.ndata['feat']
         print(features)
@@ -63,7 +65,7 @@ class AnomalyDAE(nn.Module):
 
         print(np.sum(adj))
         adj_label = torch.FloatTensor(adj.toarray())
-        
+
         print(graph)
         print('adj_label shape:', adj_label.shape)
         print('features shape:', features.shape)
@@ -75,31 +77,31 @@ class AnomalyDAE(nn.Module):
             print('Using gpu!!!')
         else:
             device = torch.device("cpu")
-            print('Using cpu!!!')      
+            print('Using cpu!!!')
 
         self.model = self.model.to(device)
         graph = graph.to(device)
         features = features.to(device)
         adj_label = adj_label.to(device)
 
-        early_stop = EarlyStopping(early_stopping_rounds=patience,patience = patience)
+        early_stop = EarlyStopping(early_stopping_rounds=patience, patience=patience)
 
         for epoch in range(num_epoch):
-            loss, struct_loss, feat_loss,_ = train_step(
-            self.model, optimizer, graph, features,adj_label,alpha,eta,theta)
+            loss, struct_loss, feat_loss, _ = train_step(
+                self.model, optimizer, graph, features, adj_label, alpha, eta, theta)
             print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(loss.item(
-            )), "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=", "{:.5f}".format(feat_loss.item()))
-    
+            )), "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=",
+                  "{:.5f}".format(feat_loss.item()))
 
             early_stop(loss, self.model)
- 
+
             if early_stop.isEarlyStopping():
                 print(f"Early stopping in round {epoch}")
                 break
 
-
-    def predict(self, graph, alpha=0.7,eta=5.0,theta=40.0,device='cpu'):
-        """predict and return anomaly score of each node
+    def predict(self, graph, alpha=0.7, eta=5.0, theta=40.0, device='cpu'):
+        """
+        Predict and return anomaly score of each node
 
         Parameters
         ----------
@@ -119,12 +121,12 @@ class AnomalyDAE(nn.Module):
         numpy.ndarray
             anomaly score of each node
         """
-        print('*'*20,'predict','*'*20)
+        print('*' * 20, 'predict', '*' * 20)
 
         features = graph.ndata['feat']
-        adj = graph.adj(scipy_fmt='csr')       
+        adj = graph.adj(scipy_fmt='csr')
         adj_label = torch.FloatTensor(adj.toarray())
-       
+
         if torch.cuda.is_available() and device != 'cpu':
             device = torch.device("cuda:" + device)
             graph = graph.to(device)
@@ -133,14 +135,16 @@ class AnomalyDAE(nn.Module):
             print('Using gpu!!!')
         else:
             device = torch.device("cpu")
-            print('Using cpu!!!')      
-        
-        predict_score = test_step(self.model, graph, features, adj_label, alpha,eta,theta)
-   
+            print('Using cpu!!!')
+
+        predict_score = test_step(self.model, graph, features, adj_label, alpha, eta, theta)
+
         return predict_score
 
+
 def init_weights(module: nn.Module) -> None:
-    """Init Module Weights
+    """
+    Init Module Weights
 
     Parameters
     ----------
@@ -181,8 +185,8 @@ class AnomalyDAEModel(nn.Module):
     dropout : float, optional
         Dropout rate of the model
         Default: 0
-
     """
+
     def __init__(self,
                  in_feat_dim,
                  in_num_dim,
@@ -191,13 +195,14 @@ class AnomalyDAEModel(nn.Module):
                  dropout,
                  ):
         super(AnomalyDAEModel, self).__init__()
-        self.structure_AE = StructureAE(in_feat_dim,in_num_dim, embed_dim,
+        self.structure_AE = StructureAE(in_feat_dim, in_num_dim, embed_dim,
                                         out_dim, dropout)
         self.attribute_AE = AttributeAE(in_num_dim, embed_dim,
                                         out_dim, dropout)
 
     def forward(self, g, x):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -212,7 +217,6 @@ class AnomalyDAEModel(nn.Module):
             Reconstructed adj matrix
         X_hat : torch.Tensor
             Reconstructed attribute matrix
-
         """
         A_hat, embed_x = self.structure_AE(g, x)
         X_hat = self.attribute_AE(x, embed_x)
@@ -242,9 +246,7 @@ class StructureAE(nn.Module):
         the output dim after the graph attention layer
     dropout: float
         dropout probability for the linear layer
-
     """
-
     def __init__(self,
                  in_dim,
                  in_num_dim,
@@ -254,16 +256,17 @@ class StructureAE(nn.Module):
         super(StructureAE, self).__init__()
         self.dense = nn.Linear(in_dim, embed_dim)  # (n,feat_dim)->(n,emd_dim)
         # self.attention_layer = GATConv(embed_dim, out_dim, num_heads=1)
-        self.attention_layer = NodeAttention(embed_dim,nb_nodes=in_num_dim,
-                                       # act=tf.nn.relu,
-                                       act=lambda x: x,
-                                       out_sz=out_dim)
+        self.attention_layer = NodeAttention(embed_dim, nb_nodes=in_num_dim,
+                                             # act=tf.nn.relu,
+                                             act=lambda x: x,
+                                             out_sz=out_dim)
         self.dropout = dropout
         for module in self.modules():
             init_weights(module)
 
     def forward(self, g, x):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -278,20 +281,21 @@ class StructureAE(nn.Module):
             Reconstructed attribute (feature) of nodes.
         embed_x : torch.Tensor
             Embedd nodes after the attention layer
-
         """
         # encoder
         x = torch.relu(self.dense(x))
         x = F.dropout(x, self.dropout)
-        embed_x = self.attention_layer(x,g.adj())  # (n,128)
+        embed_x = self.attention_layer(x, g.adj())  # (n,128)
         # print(embed_x)
         # decoder
         x = torch.sigmoid(embed_x @ embed_x.T)  # (n,n)
         # x=torch.relu(embed_x @ embed_x.T)
         return x, embed_x
 
+
 class NodeAttention(nn.Module):
-    """node attention layer
+    """
+    Node attention layer
 
     Parameters
     ----------
@@ -305,23 +309,21 @@ class NodeAttention(nn.Module):
         dropout probability for the linear layer, by default 0.
     act : F, optional
         Choice of activation function , by default F.elu
-
     """
-    def __init__(self,embed_dim, out_sz, nb_nodes, dropout=0.,
-                 act=F.elu, **kwargs):
-        
+
+    def __init__(self, embed_dim, out_sz, nb_nodes, dropout=0., act=F.elu, **kwargs):
         super(NodeAttention, self).__init__(**kwargs)
         self.act = act
         self.out_sz = out_sz
         self.bias_mat = None
         self.nb_nodes = nb_nodes
-        self.conv1=torch.nn.Conv1d(embed_dim, self.out_sz, 1, bias=False)
-        self.conv2=torch.nn.Conv1d(self.out_sz, 1, 1)
-        self.conv3=torch.nn.Conv1d(self.out_sz, 1, 1)
+        self.conv1 = torch.nn.Conv1d(embed_dim, self.out_sz, 1, bias=False)
+        self.conv2 = torch.nn.Conv1d(self.out_sz, 1, 1)
+        self.conv3 = torch.nn.Conv1d(self.out_sz, 1, 1)
 
-
-    def forward(self,inputs,adj):
-        """Forward Propagation
+    def forward(self, inputs, adj):
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -336,11 +338,11 @@ class NodeAttention(nn.Module):
             Embedd nodes after the attention layer
         """
         self.bias_mat = adj.to_dense().to(inputs.device)
-        inputs=torch.unsqueeze(inputs,1).permute(0,2,1)
+        inputs = torch.unsqueeze(inputs, 1).permute(0, 2, 1)
         seq_fts = self.conv1(inputs)
 
         # simplest self-attention possible
-        
+
         f_1_t = self.conv2(seq_fts)
         f_2_t = self.conv3(seq_fts)
         # print('nb_nodes',self.nb_nodes)
@@ -348,15 +350,14 @@ class NodeAttention(nn.Module):
         f_2 = torch.reshape(f_2_t, (self.nb_nodes, 1))
         # print(' self.bias_mat shape', self.bias_mat.shape)
         # print(' f_1 shape', f_1.shape)
-        
+
         f_1 = self.bias_mat * f_1
         f_2 = self.bias_mat * f_2.T
 
-
         logits = torch.add(f_1, f_2)
         lrelu = F.leaky_relu(logits)
-        
-        coefs = torch.softmax(lrelu,dim=1)
+
+        coefs = torch.softmax(lrelu, dim=1)
 
         # As tf.sparse_tensor_dense_matmul expects its arguments to have rank-2,
         # here we make an assumption that our input is of batch size 1, and reshape appropriately.
@@ -364,8 +365,9 @@ class NodeAttention(nn.Module):
         coefs = torch.reshape(coefs, [self.nb_nodes, self.nb_nodes])
         seq_fts = torch.squeeze(seq_fts)
         vals = coefs @ seq_fts
-        
+
         return vals  # activation
+
 
 class AttributeAE(nn.Module):
     """
@@ -385,16 +387,9 @@ class AttributeAE(nn.Module):
     out_dim:  int
         the output dim after two linear layers
     dropout: float
-        dropout probability for the linear layer  
-         
-   
+        dropout probability for the linear layer
     """
-
-    def __init__(self,
-                 in_dim,
-                 embed_dim,
-                 out_dim,
-                 dropout):
+    def __init__(self, in_dim, embed_dim, out_dim, dropout):
         super(AttributeAE, self).__init__()
         # (feat_dim,n)->(feat_dim,emd_dim)
         self.dense1 = nn.Linear(in_dim, embed_dim)
@@ -403,10 +398,9 @@ class AttributeAE(nn.Module):
         for module in self.modules():
             init_weights(module)
 
-    def forward(self,
-                x,
-                struct_embed):
-        """Forward Propagation
+    def forward(self, x, struct_embed):
+        """
+        Forward Propagation
 
         Parameters
         ----------

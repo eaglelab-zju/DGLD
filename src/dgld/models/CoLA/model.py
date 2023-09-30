@@ -1,4 +1,5 @@
 import dgl
+import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -13,7 +14,7 @@ from dgl.nn.pytorch import SumPooling, AvgPooling, MaxPooling, GlobalAttentionPo
 from .dataset import CoLADataSet
 from .colautils import train_epoch, test_epoch
 from utils.early_stopping import EarlyStopping
-import numpy as np
+
 
 class Discriminator(nn.Module):
     """
@@ -70,7 +71,7 @@ class Discriminator(nn.Module):
 
 class OneLayerGCNWithGlobalAdg(nn.Module):
     """
-    a onelayer subgraph GCN can use global adjacent metrix.
+    A one layer subgraph GCN can use global adjacent metrix.
 
     Parameters
     ----------
@@ -102,7 +103,6 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         `original implementation <https://github.com/tkipf/gcn/blob/master/gcn/layers.py>`__
         where the weight :math:`W^{(l)}` is initialized using Glorot uniform initialization
         and the bias is initialized to be zero.
-
         """
         if self.weight is not None:
             init.xavier_uniform_(self.weight)
@@ -157,7 +157,7 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
 
 class OneLayerGCN(nn.Module):
     """
-    A onelayer subgraph GCN can use global adjacent metrix.
+    A one layer subgraph GCN can use global adjacent metrix.
 
     Parameters
     ----------
@@ -219,7 +219,8 @@ class OneLayerGCN(nn.Module):
 
 class CoLAModel(nn.Module):
     def __init__(self, in_feats=300, out_feats=64, global_adg=True):
-        """CoLAModel
+        """
+        CoLAModel
 
         Parameters
         ----------
@@ -263,7 +264,7 @@ class CoLAModel(nn.Module):
         return pos_scores[:, 0], neg_scores[:, 0]
 
 
-class CoLA():    
+class CoLA:
     def __init__(self, in_feats=1433, out_feats=64, global_adg=True):
         """
         CoLA Anomaly Detection on Attributed Networks via Contrastive Self-Supervised Learning 
@@ -295,7 +296,8 @@ class CoLA():
         self.criterion = torch.nn.BCEWithLogitsLoss()
 
     def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, seed=42):
-        """train the model
+        """
+        Train the model
 
         Parameters
         ----------
@@ -351,7 +353,8 @@ class CoLA():
         return self
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256):
-        """test model
+        """
+        Test the model
 
         Parameters
         ----------

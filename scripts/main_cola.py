@@ -1,7 +1,9 @@
 # Author: Peng Zhang <zzhangpeng@zju.edu.cn>
 # License: BSD 2 clause
+
 import os
 import sys
+
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/src'
 sys.path.append(current_dir)
@@ -54,4 +56,3 @@ if __name__ == '__main__':
     model.fit(g, **args["fit"])
     result = model.predict(g, **args["predict"])
     split_auc(label, result)
-

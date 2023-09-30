@@ -1,4 +1,5 @@
-""" Structural Clustering Algorithm for Networks
+"""
+Structural Clustering Algorithm for Networks
 """
 import torch.nn as nn
 import torch.nn.functional as F
@@ -6,7 +7,6 @@ import torch
 from torch.utils.data import DataLoader
 import math
 import numpy as np
-
 import dgl
 from dgld.utils.early_stopping import EarlyStopping
 
@@ -29,12 +29,10 @@ class SCAN(nn.Module):
     >>> model.fit(g)
     >>> result = model.predict(g)
     """
-
     def __init__(self,
                  eps=.5,
                  mu=2):
         super(SCAN, self).__init__()
-
         # model param
         self.predict_score = None
         self.eps = eps
@@ -42,7 +40,8 @@ class SCAN(nn.Module):
         self.neighs = {}
 
     def fit(self, g):
-        """Fitting model
+        """
+        Fitting model
 
         Parameters
         ----------
@@ -51,10 +50,8 @@ class SCAN(nn.Module):
 
         """
         decision_scores = np.zeros(g.num_nodes())
-
         # get nodes' neighbors
         adj = g.adj()._indices()
-
         for i in range(len(adj[0])):
             if not adj[0, i].item() in self.neighs:
                 nei = []
@@ -62,7 +59,6 @@ class SCAN(nn.Module):
                 self.neighs[adj[0, i].item()] = nei
             else:
                 self.neighs[adj[0, i].item()].append(adj[1, i].item())
-
         c = 0
         clusters = {}
         nomembers = []
@@ -93,14 +89,13 @@ class SCAN(nn.Module):
                                 Q.append(s)
                 else:
                     nomembers.append(n)
-
         for k, v in clusters.items():
             decision_scores[v] = 1
-
         self.predict_score = decision_scores
 
     def similarity(self, v, u):
-        """compute the similarity of two nodes' neighbors
+        """
+        Compute the similarity of two nodes' neighbors
 
         Parameters
         ----------
@@ -126,7 +121,8 @@ class SCAN(nn.Module):
         return sim
 
     def eps_neighborhood(self, v):
-        """found eps-neighbors list
+        """
+        Found eps-neighbors list
 
         Parameters
         ----------
@@ -147,7 +143,8 @@ class SCAN(nn.Module):
         return eps_neighbors
 
     def hasLabel(self, cliques, vertex):
-        """judge whether the node is labeled
+        """
+        Judge whether the node is labeled
 
         Parameters
         ----------
@@ -167,8 +164,8 @@ class SCAN(nn.Module):
         return False
 
     def predict(self, g):
-        """predict and return anomaly score of each node
-
+        """
+        Predict and return anomaly score of each node
         Parameters
         ----------
         g : dgl.DGLGraph
@@ -180,7 +177,5 @@ class SCAN(nn.Module):
             anomaly score of each node.
         """
         print('*' * 20, 'predict', '*' * 20)
-
         score = self.predict_score
-
         return score

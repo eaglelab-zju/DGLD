@@ -5,13 +5,14 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import init
-from  dgl.nn.pytorch import EdgeWeightNorm
+from dgl.nn.pytorch import EdgeWeightNorm
 from dgl.dataloading import GraphDataLoader
 from .dataset import CoLADataSet
 from .anemone_utils import train_epoch, test_epoch
 import torch.optim as optim
 import numpy as np
 from utils.early_stopping import EarlyStopping
+
 
 class Discriminator(nn.Module):
     """
@@ -193,9 +194,6 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         return F.normalize(subgraph_pool_emb, p=2, dim=1),F.normalize(subgraph_rec_emb, p=2, dim=1),F.normalize(anchor_out_1, p=2, dim=1),F.normalize(anchor_out_2, p=2, dim=1)
 
 
-
-
-
 class AneModel(nn.Module):
     def __init__(self, in_feats=300, out_feats=64, global_adg=False):
         """AneModel
@@ -281,7 +279,8 @@ class ANEMONE():
 
     def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100,
             seed=42,alpha=0.8):
-        """train the model
+        """
+        Train the model
 
         Parameters
         ----------
@@ -299,7 +298,6 @@ class ANEMONE():
             num_workers using in `pytorch DataLoader`, by default 4
         num_epoch : int, optional
             number of epoch for training, by default 100
-
 
         Returns
         -------
@@ -337,7 +335,8 @@ class ANEMONE():
         return self
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256, alpha=0.8):
-        """test model
+        """
+        Test model
 
         Parameters
         ----------
@@ -380,4 +379,3 @@ class ANEMONE():
             predict_score_arr.append(list(predict_score))
         predict_score_arr = np.array(predict_score_arr).T
         return predict_score_arr.mean(1)
-

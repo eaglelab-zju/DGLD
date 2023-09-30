@@ -9,6 +9,3 @@ do
   python main_comga.py --dataset $dataset --device 0 --seed $seed --logdir logs/$expname > logs/$expname.log 2>&1
   cat logs/$expname.log
 done
-
-
-

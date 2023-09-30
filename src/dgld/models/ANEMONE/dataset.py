@@ -1,7 +1,8 @@
 import os
 import sys
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
 import torch.nn.functional as F
 import numpy as np
@@ -12,6 +13,7 @@ from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
 from utils.sample import CoLASubGraphSampling
+
 
 def safe_add_self_loop(g):
     """
@@ -29,6 +31,7 @@ def safe_add_self_loop(g):
     newg = dgl.remove_self_loop(g)
     newg = dgl.add_self_loop(newg)
     return newg
+
 
 class CoLADataSet(DGLDataset):
     """
@@ -49,26 +52,26 @@ class CoLADataSet(DGLDataset):
         self.paces = []
         self.normalize_feat()
         self.random_walk_sampling()
+
     def normalize_feat(self):
         """
         functions to normalize the features of nodes in graph
-        
         """
         self.dataset.ndata['feat'] = F.normalize(self.dataset.ndata['feat'], p=1, dim=1)
         norm = EdgeWeightNorm(norm='both')
         self.dataset = safe_add_self_loop(self.dataset)
         norm_edge_weight = norm(self.dataset, edge_weight=torch.ones(self.dataset.num_edges()))
         self.dataset.edata['w'] = norm_edge_weight
+
     def random_walk_sampling(self):
         """
         functions to get random walk from target nodes
-
         """
         self.paces = self.colasubgraphsampler(self.dataset, list(range(self.dataset.num_nodes())))
 
     def graph_transform(self, g):
         """
-        functions to transfrom graph
+        Functions to transfrom graph
 
         Parameters
         ----------
@@ -102,9 +105,9 @@ class CoLADataSet(DGLDataset):
             the negative subgraph of ith subgraph set
         """
         pos_subgraph = self.graph_transform(dgl.node_subgraph(self.dataset, self.paces[i]))
-        neg_idx = np.random.randint(self.dataset.num_nodes()) 
+        neg_idx = np.random.randint(self.dataset.num_nodes())
         while neg_idx == i:
-            neg_idx = np.random.randint(self.dataset.num_nodes()) 
+            neg_idx = np.random.randint(self.dataset.num_nodes())
         neg_subgraph = self.graph_transform(dgl.node_subgraph(self.dataset, self.paces[neg_idx]))
         return pos_subgraph, neg_subgraph
 
@@ -122,6 +125,5 @@ class CoLADataSet(DGLDataset):
     def process(self):
         """
         nonsense
-
         """
         pass

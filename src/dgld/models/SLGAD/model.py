@@ -4,7 +4,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import init
-from  dgl.nn.pytorch import EdgeWeightNorm
+from dgl.nn.pytorch import EdgeWeightNorm
 import math
 import numpy
 from dgl.nn.pytorch import SumPooling, AvgPooling, MaxPooling, GlobalAttentionPooling
@@ -18,6 +18,7 @@ seed = 1
 torch.manual_seed(seed)
 torch.cuda.manual_seed_all(seed)
 
+
 class Discriminator(nn.Module):
     """
     This is a discriminator component for contrastive learning of positive subgraph and negative subgraph
@@ -27,6 +28,7 @@ class Discriminator(nn.Module):
     out_feats : int
         The number of class to distinguish
     """
+
     def __init__(self, out_feats):
         super(Discriminator, self).__init__()
         self.bilinear = nn.Bilinear(out_feats, out_feats, 1)
@@ -70,6 +72,7 @@ class Discriminator(nn.Module):
         logits = self.bilinear(anchor_emb, readout_emb)
         return logits
 
+
 class OneLayerGCNWithGlobalAdg_simple(nn.Module):
     """
     A onelayer subgraph GCN can use global adjacent metrix.
@@ -83,6 +86,7 @@ class OneLayerGCNWithGlobalAdg_simple(nn.Module):
     global_adg : bool, optional
         whether use the global information of node, here means the degree matrix, default True
     """
+
     def __init__(self, in_feats, out_feats=64, global_adg=True):
         super(OneLayerGCNWithGlobalAdg_simple, self).__init__()
         self.global_adg = global_adg
@@ -138,8 +142,7 @@ class OneLayerGCNWithGlobalAdg_simple(nn.Module):
         in_feat[::4, :] = 0
         anchor_out = torch.matmul(anchor_embs, self.weight) + self.bias
         anchor_out = self.act(anchor_out)
-
-        in_feat = torch.matmul(in_feat, self.weight) 
+        in_feat = torch.matmul(in_feat, self.weight)
         # GCN
         if self.global_adg:
             h = self.conv(bg, in_feat, edge_weight=bg.edata['w'])
@@ -151,6 +154,7 @@ class OneLayerGCNWithGlobalAdg_simple(nn.Module):
             # pooling        
             subgraph_pool_emb = self.pool(bg, h)
         return F.normalize(subgraph_pool_emb, p=2, dim=1), F.normalize(anchor_out, p=2, dim=1)
+
 
 class OneLayerGCNWithGlobalAdg(nn.Module):
     """
@@ -167,30 +171,30 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
     args : parser, optional
         extra custom made of model, default None
     """
-    def __init__(self, in_feats, out_feats=64, global_adg=True, args = None):
+
+    def __init__(self, in_feats, out_feats=64, global_adg=True, args=None):
         super(OneLayerGCNWithGlobalAdg, self).__init__()
         self.global_adg = global_adg
         self.norm = 'none' if global_adg else 'both'
         self.weight = nn.Linear(in_feats, out_feats, bias=False)
         self.bias = nn.Parameter(torch.Tensor(out_feats))
         self.bias.data.fill_(0.0)
-
         for m in self.modules():
             self.weights_init(m)
         self.conv = GraphConv(in_feats, out_feats, weight=False, bias=False, norm=self.norm)
         self.conv.set_allow_zero_in_degree(1)
-        if args == None or args.act_function == "PReLU":
+        if args is None or args.act_function == "PReLU":
             self.act = nn.PReLU()
         elif args.act_function == "ReLU":
             self.act = nn.ReLU()
         self.pool = AvgPooling()
-        if args == None:
+        if args is None:
             pass
             self.attention = None
         else:
             pass
             self.attention = args.attention
-        
+
     def weights_init(self, m):
         """
         Init the weight of Linear
@@ -227,7 +231,7 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         if self.bias is not None:
             init.zeros_(self.bias)
 
-    def forward(self, bg, in_feat, anchor_embs, attention = None):
+    def forward(self, bg, in_feat, anchor_embs, attention=None):
         """
         The function to compute forward of GCN
 
@@ -255,7 +259,8 @@ class OneLayerGCNWithGlobalAdg(nn.Module):
         temp_src = bg.edges()[0][:20].cpu().numpy()
         temp_dst = bg.edges()[1][:20].cpu().numpy()
         max_num = max([np.max(temp_src), np.max(temp_dst)])
-        temp_matrix = sp.coo_matrix((temp_weight, (temp_src, temp_dst)), shape = (np.max(temp_src) + 1, np.max(temp_dst) + 1))
+        temp_matrix = sp.coo_matrix((temp_weight, (temp_src, temp_dst)),
+                                    shape=(np.max(temp_src) + 1, np.max(temp_dst) + 1))
         anchor_out = self.weight(anchor_embs) + self.bias
         anchor_out = self.act(anchor_out)
         h = self.weight(in_feat)
@@ -286,7 +291,8 @@ class OneLayerGCN(nn.Module):
     args : parser, optional
         extra custom made of model, default None
     """
-    def __init__(self, in_feats=300, out_feats=64, bias=True, args = None):
+
+    def __init__(self, in_feats=300, out_feats=64, bias=True, args=None):
         super(OneLayerGCN, self).__init__()
         self.conv = GraphConv(in_feats, out_feats, bias=bias)
         self.global_adg = args.global_adg
@@ -320,7 +326,6 @@ class OneLayerGCN(nn.Module):
             h = self.conv(bg, in_feat, edge_weight=bg.edata['w'])
         else:
             h = self.conv(bg, in_feat)
-        
         h = self.act(h)
         with bg.local_scope():
             bg.ndata["h"] = h
@@ -335,10 +340,13 @@ class OneLayerGCN(nn.Module):
                 anchor_out.append(single_anchor_out)
             anchor_out = torch.stack(anchor_out, dim=0)
             subgraph_pool_emb = torch.stack(subgraph_pool_emb, dim=0)
-        return F.normalize(h, p = 2, dim = 1), F.normalize(subgraph_pool_emb, p = 2, dim = 1), F.normalize(anchor_out, p = 2, dim = 1)
+        return F.normalize(h, p=2, dim=1), F.normalize(subgraph_pool_emb, p=2, dim=1), F.normalize(anchor_out, p=2, dim=1)
         # return F.normalize(subgraph_pool_emb, p=2, dim=1), F.normalize(anchor_out, p=2, dim=1)
 
+
 import time
+
+
 class SL_GAD_Model(nn.Module):
     """
     SL-GAD_model, given two positive subgraph and one negative subgraph, return the loss and score of target nodes
@@ -354,7 +362,7 @@ class SL_GAD_Model(nn.Module):
     args : parser, optional
         extra custom made of model, default None
     """
-    def __init__(self, in_feats=300, out_feats=64, global_adg=True, args = None):
+    def __init__(self, in_feats=300, out_feats=64, global_adg=True, args=None):
         super(SL_GAD_Model, self).__init__()
         self.enc = OneLayerGCNWithGlobalAdg(in_feats, out_feats, global_adg, args)
         self.dec = OneLayerGCNWithGlobalAdg(out_feats, in_feats, global_adg, args)
@@ -363,13 +371,13 @@ class SL_GAD_Model(nn.Module):
         self.discriminator_1 = Discriminator(out_feats)
         self.discriminator_2 = Discriminator(out_feats)
         self.args = args
-        if args == None:
+        if args is None:
             self.alpha = 1.0
             self.beta = 0.6
         else:
             self.alpha = args.alpha
             self.beta = args.beta
-        if args == None:
+        if args is None:
             self.device = 'cpu'
         else:
             self.device = 'cuda:' + str(args.device)
@@ -401,7 +409,6 @@ class SL_GAD_Model(nn.Module):
         single_predict_scores : Torch.tensor
             anomaly score of anchor nodes
         """
-        
         pos_batchg_1 = pos_batchg[0]
         pos_batchg_2 = pos_batchg[1]
         pos_in_feat_1 = pos_in_feat[0].clone()
@@ -420,10 +427,10 @@ class SL_GAD_Model(nn.Module):
         pos_in_feat_2[::4, :] = 0.0
         raw_pos_in_feat_1[::4, :] = 0.0
         raw_pos_in_feat_2[::4, :] = 0.0
-        
+
         feat_1, pos_pool_emb_1, anchor_out_1 = self.enc(pos_batchg_1, pos_in_feat_1, anchor_out_1)
         feat_2, pos_pool_emb_2, anchor_out_2 = self.enc(pos_batchg_2, pos_in_feat_2, anchor_out_2)
-        
+
         raw_feat_1, raw_pos_pool_emb_1, raw_anchor_out_1 = self.enc(pos_batchg_1, raw_pos_in_feat_1, raw_anchor_out_1)
 
         raw_feat_2, raw_pos_pool_emb_2, raw_anchor_out_2 = self.enc(pos_batchg_2, raw_pos_in_feat_2, raw_anchor_out_2)
@@ -435,12 +442,12 @@ class SL_GAD_Model(nn.Module):
 
         neg_1 = pos_pool_emb_1
         neg_2 = pos_pool_emb_2
-        neg_1 = torch.cat((neg_1[-1, :].unsqueeze(0), neg_1[:-1, :]), dim = 0)
-        neg_2 = torch.cat((neg_2[-1, :].unsqueeze(0), neg_2[:-1, :]), dim = 0)
+        neg_1 = torch.cat((neg_1[-1, :].unsqueeze(0), neg_1[:-1, :]), dim=0)
+        neg_2 = torch.cat((neg_2[-1, :].unsqueeze(0), neg_2[:-1, :]), dim=0)
 
         neg_scores_1 = self.discriminator_1(neg_1, anchor_out_2)
         neg_scores_2 = self.discriminator_2(neg_2, anchor_out_1)
-        
+
         generative_diff_1 = raw_feat_3[::4, :].clone() - raw_anchor_embs
         generative_diff_2 = raw_feat_4[::4, :].clone() - raw_anchor_embs
 
@@ -450,10 +457,11 @@ class SL_GAD_Model(nn.Module):
         neg_scores_3 = (neg_scores_1 + neg_scores_2) / 2
         neg_scores_3 = torch.sigmoid(neg_scores_3)
 
-        score_tot = torch.cat((torch.cat((pos_scores_1, pos_scores_2), dim = 1), torch.cat((neg_scores_1, neg_scores_2), dim = 1)), dim = 0)
-        score_tot = torch.mean(score_tot, dim = 1, keepdim = True)
+        score_tot = torch.cat(
+            (torch.cat((pos_scores_1, pos_scores_2), dim=1), torch.cat((neg_scores_1, neg_scores_2), dim=1)), dim=0)
+        score_tot = torch.mean(score_tot, dim=1, keepdim=True)
         lbl = torch.unsqueeze(torch.cat((torch.ones(anchor_embs.shape[0]),
-                                                 torch.zeros(anchor_embs.shape[0]))), dim = 1).to(self.device)
+                                         torch.zeros(anchor_embs.shape[0]))), dim=1).to(self.device)
 
         pos_scores_1 = torch.sigmoid(pos_scores_1)
         pos_scores_2 = torch.sigmoid(pos_scores_2)
@@ -463,9 +471,9 @@ class SL_GAD_Model(nn.Module):
         contrastive_loss_1 = - torch.mean(torch.log(pos_scores_1 + 1e-8) + torch.log(1 - neg_scores_1 + 1e-8)) / 2
         contrastive_loss_2 = - torch.mean(torch.log(pos_scores_2 + 1e-8) + torch.log(1 - neg_scores_2 + 1e-8)) / 2
         contrastive_loss = (contrastive_loss_1 + contrastive_loss_2) / 2
-        
+
         lbl = torch.unsqueeze(torch.cat((torch.ones(anchor_embs.shape[0]),
-                                                 torch.zeros(anchor_embs.shape[0]))), dim = 1).to(self.device)
+                                         torch.zeros(anchor_embs.shape[0]))), dim=1).to(self.device)
 
         b_xent = nn.BCEWithLogitsLoss(reduction='none', pos_weight=torch.tensor([1]).to(self.device))
         loss_all = b_xent(score_tot.to(self.device), lbl.to(self.device))
@@ -483,8 +491,8 @@ class SL_GAD_Model(nn.Module):
         contrastive_score = (contrastive_score_1 + contrastive_score_2) / 2
         contrastive_score = neg_scores_3 - pos_scores_3
 
-        generative_score_1 = torch.sqrt(torch.sum(torch.square(generative_diff_1), dim = 1))
-        generative_score_2 = torch.sqrt(torch.sum(torch.square(generative_diff_2), dim = 1))
+        generative_score_1 = torch.sqrt(torch.sum(torch.square(generative_diff_1), dim=1))
+        generative_score_2 = torch.sqrt(torch.sum(torch.square(generative_diff_2), dim=1))
         generative_score = (generative_score_1 + generative_score_2) / 2
 
         scaler1 = MinMaxScaler()
@@ -496,7 +504,8 @@ class SL_GAD_Model(nn.Module):
 
         total_score = self.alpha * contrastive_score + self.beta * generative_score
 
-        return total_loss, total_score, contrastive_loss, generative_loss#, contrastive_score, generative_score
+        return total_loss, total_score, contrastive_loss, generative_loss  # , contrastive_score, generative_score
+
 
 from .dataset import SL_GAD_DataSet
 from .SL_GAD_utils import train_epoch, test_epoch
@@ -504,8 +513,8 @@ from dgl.dataloading import GraphDataLoader
 import torch.optim as optim
 
 
-class SLGAD():    
-    def __init__(self, in_feats=1433, out_feats=64, global_adg=True, alpha = 1.0, beta = 0.6, args = None):
+class SLGAD:
+    def __init__(self, in_feats=1433, out_feats=64, global_adg=True, alpha=1.0, beta=0.6, args=None):
         """
         Generative and Contrastive Self-Supervised Learning for Graph Anomaly Detection
         Yu IEEE Transactions on Knowledge and Data Engineering 2021
@@ -540,9 +549,9 @@ class SLGAD():
         >>>     result = model.predict(g, auc_test_rounds=2)
         >>>     print(split_auc(label, result))
         ```
-        """        
+        """
         self.args = args
-        self.model = SL_GAD_Model(in_feats, out_feats, global_adg, args = args)
+        self.model = SL_GAD_Model(in_feats, out_feats, global_adg, args=args)
         self.criterion = torch.nn.BCEWithLogitsLoss()
 
     def fit(self, g, device='cpu', batch_size=300, lr=0.003, weight_decay=1e-5, num_workers=4, num_epoch=100, seed=42):
@@ -572,8 +581,8 @@ class SLGAD():
         -------
         self : mpdel
             return the model.
-        """        
-        dataset = SL_GAD_DataSet(base_dataset_name = 'custom', g_data = g)
+        """
+        dataset = SL_GAD_DataSet(base_dataset_name='custom', g_data=g)
         print(dataset.dataset)
         # exit()
         train_loader = GraphDataLoader(
@@ -590,16 +599,15 @@ class SLGAD():
             device = torch.device("cpu")
         self.model.to(device)
 
-        optimizer = optim.Adam(
-            self.model.parameters(), lr=lr, weight_decay=weight_decay
-        )
+        optimizer = optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
-        early_stop = EarlyStopping(patience = 100, check_finite = True)
+        early_stop = EarlyStopping(patience=100, check_finite=True)
 
         for epoch in range(num_epoch):
             train_loader.dataset.random_walk_sampling()
             loss_accum = train_epoch(
-                epoch = epoch, loader = train_loader, net = self.model, device = device, criterion = self.criterion, optimizer = optimizer, args = self.args
+                epoch=epoch, loader=train_loader, net=self.model, device=device, criterion=self.criterion,
+                optimizer=optimizer, args=self.args
             )
 
             early_stop(loss_accum, self.model)
@@ -610,7 +618,7 @@ class SLGAD():
 
     def predict(self, g, device='cpu', batch_size=300, num_workers=4, auc_test_rounds=256):
         """
-        test the model
+        Test the model
         
         Parameters
         ----------
@@ -630,7 +638,7 @@ class SLGAD():
             the anomaly score of anchor nodes
         """
 
-        dataset = SL_GAD_DataSet(base_dataset_name = 'custom', g_data = g)
+        dataset = SL_GAD_DataSet(base_dataset_name='custom', g_data=g)
         test_loader = GraphDataLoader(
             dataset,
             batch_size=batch_size,
@@ -649,14 +657,12 @@ class SLGAD():
         for rnd in range(auc_test_rounds):
             test_loader.dataset.random_walk_sampling()
             predict_score = test_epoch(
-                epoch = rnd, loader = test_loader, net = self.model, device = device, criterion = self.criterion, args = self.args, optimizer = None
+                epoch=rnd, loader=test_loader, net=self.model, device=device, criterion=self.criterion, args=self.args,
+                optimizer=None
             )
             predict_score_arr.append(list(predict_score))
         predict_score_arr = np.array(predict_score_arr).T
         return predict_score_arr.mean(1)
-
-
-
 
 
 if __name__ == "__main__":

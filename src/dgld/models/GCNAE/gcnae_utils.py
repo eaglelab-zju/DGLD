@@ -3,9 +3,11 @@ from tqdm import tqdm
 from copy import deepcopy
 import torch
 import dgl
-import os,sys
+import os
+import sys
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
+current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
 
@@ -20,11 +22,11 @@ def set_subargs(parser):
     parser.add_argument('--n_layers', type=int, default=2, help='num of gcn layers')
 
 
-def get_subargs(args):    
+def get_subargs(args):
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
-        "model":{
+        "model": {
             "feat_size": args.feat_dim,
             "hidden_dim": args.hidden_dim,
             "n_layers": args.n_layers,

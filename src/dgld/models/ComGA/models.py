@@ -11,10 +11,12 @@ import numpy as np
 from .comga_utils import train_step, test_step
 from utils.early_stopping import EarlyStopping
 
+
 class ComGA(nn.Module):
-    """ComGA: Community-Aware Attributed Graph Anomaly Detection
+    """
+    ComGA: Community-Aware Attributed Graph Anomaly Detection
     ref:https://github.com/DASE4/ComGA
-    
+
     Parameters
     ----------
     num_nodes : int
@@ -29,15 +31,16 @@ class ComGA(nn.Module):
         number of encode3 units
     dropout : float
         Dropout rate
-    
     """
-    def __init__(self,num_nodes,num_feats,n_enc_1,n_enc_2,n_enc_3, dropout):
+
+    def __init__(self, num_nodes, num_feats, n_enc_1, n_enc_2, n_enc_3, dropout):
         super(ComGA, self).__init__()
-        self.model = ComGAModel(num_nodes=num_nodes,num_feats=num_feats,
-                        n_enc_1=n_enc_1,n_enc_2=n_enc_2,n_enc_3=n_enc_3,dropout=dropout)
-    
-    def fit(self,graph,lr=5e-3,num_epoch=1,alpha=0.7,eta=5.0,theta=40.0,device='cpu',patience=10):
-        """Fitting model
+        self.model = ComGAModel(num_nodes=num_nodes, num_feats=num_feats,
+                                n_enc_1=n_enc_1, n_enc_2=n_enc_2, n_enc_3=n_enc_3, dropout=dropout)
+
+    def fit(self, graph, lr=5e-3, num_epoch=1, alpha=0.7, eta=5.0, theta=40.0, device='cpu', patience=10):
+        """
+        Fitting model
 
         Parameters
         ----------
@@ -58,32 +61,31 @@ class ComGA(nn.Module):
         patience : int, optional
             early stop patience , by default 10
         """
-        print('*'*20,'training','*'*20)
+        print('*' * 20, 'training', '*' * 20)
 
         features = graph.ndata['feat']
         adj = graph.adj(scipy_fmt='csr')
 
-        A=adj.toarray()
+        A = adj.toarray()
         k1 = np.sum(A, axis=1)
         k2 = k1.reshape(k1.shape[0], 1)
         k1k2 = k1 * k2
-        num_loop=0
+        num_loop = 0
         for i in range(adj.shape[0]):
-            if adj[i,i]==1:
-                num_loop+=1
-        m=(np.sum(A)-num_loop)/2+num_loop
+            if adj[i, i] == 1:
+                num_loop += 1
+        m = (np.sum(A) - num_loop) / 2 + num_loop
         Eij = k1k2 / (2 * m)
-        B =np.array(A - Eij)
+        B = np.array(A - Eij)
 
         print(np.sum(adj))
         adj_label = torch.FloatTensor(adj.toarray())
         B = torch.FloatTensor(B)
-        
+
         print(graph)
         print('B shape:', B.shape)
         print('adj_label shape:', adj_label.shape)
         print('features shape:', features.shape)
-        
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr)
 
@@ -92,35 +94,34 @@ class ComGA(nn.Module):
             print('Using gpu!!!')
         else:
             device = torch.device("cpu")
-            print('Using cpu!!!')      
+            print('Using cpu!!!')
 
         self.model = self.model.to(device)
         graph = graph.to(device)
         features = features.to(device)
         adj_label = adj_label.to(device)
         B = B.to(device)
-    
 
-        early_stop = EarlyStopping(early_stopping_rounds=patience,patience = patience)
+        early_stop = EarlyStopping(early_stopping_rounds=patience, patience=patience)
 
         for epoch in range(num_epoch):
-            loss,struct_loss, feat_loss,kl_loss,re_loss,_ = train_step(
-                self.model, optimizer, graph, features, B,adj_label,alpha,eta,theta,device)
+            loss, struct_loss, feat_loss, kl_loss, re_loss, _ = train_step(
+                self.model, optimizer, graph, features, B, adj_label, alpha, eta, theta, device)
             print("Epoch:", '%04d' % (epoch), "train_loss=", "{:.5f}".format(loss.item(
-                    )),"train/kl_loss=", "{:.5f}".format(kl_loss.item()),
-                    "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=", "{:.5f}".format(feat_loss.item()),
-            )
-
+            )), "train/kl_loss=", "{:.5f}".format(kl_loss.item()),
+                  "train/struct_loss=", "{:.5f}".format(struct_loss.item()), "train/feat_loss=",
+                  "{:.5f}".format(feat_loss.item()),
+                  )
 
             early_stop(loss, self.model)
- 
+
             if early_stop.isEarlyStopping():
                 print(f"Early stopping in round {epoch}")
                 break
 
-
-    def predict(self, graph, alpha=0.7,eta=5.0,theta=40.0,device='cpu'):
-        """predict and return anomaly score of each node
+    def predict(self, graph, alpha=0.7, eta=5.0, theta=40.0, device='cpu'):
+        """
+        Predict and return anomaly score of each node
 
         Parameters
         ----------
@@ -140,27 +141,27 @@ class ComGA(nn.Module):
         numpy.ndarray
             anomaly score of each node
         """
-        print('*'*20,'predict','*'*20)
+        print('*' * 20, 'predict', '*' * 20)
 
         features = graph.ndata['feat']
         adj = graph.adj(scipy_fmt='csr')
 
-        A=adj.toarray()
+        A = adj.toarray()
         k1 = np.sum(A, axis=1)
         k2 = k1.reshape(k1.shape[0], 1)
         k1k2 = k1 * k2
-        num_loop=0
+        num_loop = 0
         for i in range(adj.shape[0]):
-            if adj[i,i]==1:
-                num_loop+=1
-        m=(np.sum(A)-num_loop)/2+num_loop
+            if adj[i, i] == 1:
+                num_loop += 1
+        m = (np.sum(A) - num_loop) / 2 + num_loop
         Eij = k1k2 / (2 * m)
-        B =np.array(A - Eij)
+        B = np.array(A - Eij)
 
         print(np.sum(adj))
         adj_label = torch.FloatTensor(adj.toarray())
         B = torch.FloatTensor(B)
-        
+
         print(graph)
         print('B shape:', B.shape)
         print('adj_label shape:', adj_label.shape)
@@ -171,15 +172,16 @@ class ComGA(nn.Module):
             print('Using gpu!!!')
         else:
             device = torch.device("cpu")
-            print('Using cpu!!!')      
+            print('Using cpu!!!')
 
         self.model = self.model.to(device)
         graph = graph.to(device)
         features = features.to(device)
         adj_label = adj_label.to(device)
         B = B.to(device)
-        predict_score = test_step(self.model, graph, features, B,adj_label, alpha, eta, theta,device)
+        predict_score = test_step(self.model, graph, features, B, adj_label, alpha, eta, theta, device)
         return predict_score
+
 
 class ComGAModel(nn.Module):
     """
@@ -201,7 +203,6 @@ class ComGAModel(nn.Module):
     dropout : float
         Dropout rate
     """
-
     def __init__(self,
                  num_nodes,
                  num_feats,
@@ -209,14 +210,14 @@ class ComGAModel(nn.Module):
                  dropout,
                  ):
         super(ComGAModel, self).__init__()
-        self.commAE=CommunityAE(num_nodes,n_enc_1, n_enc_2, n_enc_3,dropout)
-        self.tgcnEnc=tGCNEncoder(num_feats,n_enc_1, n_enc_2, n_enc_3,dropout)
-        self.attrDec=AttrDecoder(num_feats,n_enc_1, n_enc_2, n_enc_3,dropout)
-        self.struDec=StruDecoder(dropout)
-        
+        self.commAE = CommunityAE(num_nodes, n_enc_1, n_enc_2, n_enc_3, dropout)
+        self.tgcnEnc = tGCNEncoder(num_feats, n_enc_1, n_enc_2, n_enc_3, dropout)
+        self.attrDec = AttrDecoder(num_feats, n_enc_1, n_enc_2, n_enc_3, dropout)
+        self.struDec = StruDecoder(dropout)
 
-    def forward(self,g,x,B):
-        """Forward Propagation
+    def forward(self, g, x, B):
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -240,15 +241,17 @@ class ComGAModel(nn.Module):
         z_a : torch.Tensor
             the node latent representation of CommunityAE
         """
-        B_enc1,B_enc2,z_a,B_hat = self.commAE(B)
-        z = self.tgcnEnc(g,x,B_enc1,B_enc2,z_a)
-        X_hat = self.attrDec(g,z)
+        B_enc1, B_enc2, z_a, B_hat = self.commAE(B)
+        z = self.tgcnEnc(g, x, B_enc1, B_enc2, z_a)
+        X_hat = self.attrDec(g, z)
         A_hat = self.struDec(z)
-        
-        return A_hat,X_hat,B_hat,z,z_a
+
+        return A_hat, X_hat, B_hat, z, z_a
+
 
 def init_weights(module: nn.Module) -> None:
-    """Init Module Weights
+    """
+    Init Module Weights
 
     Parameters
     ----------
@@ -259,7 +262,6 @@ def init_weights(module: nn.Module) -> None:
     -------
     >>> for module in self.modules():
     >>>    init_weights(module)
-
     """
     if isinstance(module, nn.Linear):
         # TODO: different initialization
@@ -270,6 +272,7 @@ def init_weights(module: nn.Module) -> None:
         nn.init.xavier_uniform_(module.weight.data)
         if module.bias is not None:
             module.bias.data.fill_(0.0)
+
 
 class CommunityAE(nn.Module):
     """
@@ -288,7 +291,6 @@ class CommunityAE(nn.Module):
         number of encode3 units
     dropout : float
         Dropout rate
-
     """
 
     def __init__(self,
@@ -296,12 +298,12 @@ class CommunityAE(nn.Module):
                  n_enc_1, n_enc_2, n_enc_3,
                  dropout):
         super(CommunityAE, self).__init__()
-        self.dropout=dropout
-        #encoder
+        self.dropout = dropout
+        # encoder
         self.enc1 = nn.Linear(num_nodes, n_enc_1)
         self.enc2 = nn.Linear(n_enc_1, n_enc_2)
         self.enc3 = nn.Linear(n_enc_2, n_enc_3)
-        #decoder
+        # decoder
         self.dec1 = nn.Linear(n_enc_3, n_enc_2)
         self.dec2 = nn.Linear(n_enc_2, n_enc_1)
         self.dec3 = nn.Linear(n_enc_1, num_nodes)
@@ -309,8 +311,9 @@ class CommunityAE(nn.Module):
         for module in self.modules():
             init_weights(module)
 
-    def forward(self,B):
-        """Forward Propagation
+    def forward(self, B):
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -331,20 +334,20 @@ class CommunityAE(nn.Module):
         # encoder
         x = torch.relu(self.enc1(B))
         hidden1 = F.dropout(x, self.dropout)
-        x=torch.relu(self.enc2(hidden1))
+        x = torch.relu(self.enc2(hidden1))
         hidden2 = F.dropout(x, self.dropout)
-        x=torch.relu(self.enc3(hidden2))
+        x = torch.relu(self.enc3(hidden2))
         z_a = F.dropout(x, self.dropout)
-        
+
         # decoder
-        x=torch.relu(self.dec1(z_a))
+        x = torch.relu(self.dec1(z_a))
         se1 = F.dropout(x, self.dropout)
-        x=torch.relu(self.dec2(se1))
+        x = torch.relu(self.dec2(se1))
         se2 = F.dropout(x, self.dropout)
-        x=torch.sigmoid(self.dec3(se2))
+        x = torch.sigmoid(self.dec3(se2))
         community_reconstructions = F.dropout(x, self.dropout)
-        
-        return hidden1,hidden2,z_a,community_reconstructions
+
+        return hidden1, hidden2, z_a, community_reconstructions
 
 
 class tGCNEncoder(nn.Module):
@@ -364,25 +367,24 @@ class tGCNEncoder(nn.Module):
         number of encode3 units
     dropout : float
         Dropout rate
-    
     """
-
     def __init__(self,
                  in_feats,
                  n_enc_1, n_enc_2, n_enc_3,
                  dropout):
         super(tGCNEncoder, self).__init__()
-        self.enc1=GraphConv(in_feats,n_enc_1,activation=F.relu)
-        self.enc2=GraphConv(n_enc_1,n_enc_2,activation=F.relu)
-        self.enc3=GraphConv(n_enc_2,n_enc_3,activation=F.relu)
-        self.enc4=GraphConv(n_enc_3,n_enc_3,activation=F.relu)
+        self.enc1 = GraphConv(in_feats, n_enc_1, activation=F.relu)
+        self.enc2 = GraphConv(n_enc_1, n_enc_2, activation=F.relu)
+        self.enc3 = GraphConv(n_enc_2, n_enc_3, activation=F.relu)
+        self.enc4 = GraphConv(n_enc_3, n_enc_3, activation=F.relu)
 
         self.dropout = dropout
         for module in self.modules():
             init_weights(module)
 
-    def forward(self,g,x,B_enc1,B_enc2,B_enc3):
-        """Forward Propagation
+    def forward(self, g, x, B_enc1, B_enc2, B_enc3):
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -403,14 +405,13 @@ class tGCNEncoder(nn.Module):
             the node latent representation of tGCNEncoder
         """
         # encoder
-        x1=F.dropout(self.enc1(g,x), self.dropout)
-        x=x1+B_enc1
-        x2=F.dropout(self.enc2(g,x), self.dropout)
-        x=x2+B_enc2
-        x3=F.dropout(self.enc3(g,x), self.dropout)
-        x=x3+B_enc3
-        z=F.dropout(self.enc4(g,x), self.dropout)
-
+        x1 = F.dropout(self.enc1(g, x), self.dropout)
+        x = x1 + B_enc1
+        x2 = F.dropout(self.enc2(g, x), self.dropout)
+        x = x2 + B_enc2
+        x3 = F.dropout(self.enc3(g, x), self.dropout)
+        x = x3 + B_enc3
+        z = F.dropout(self.enc4(g, x), self.dropout)
         return z
 
 
@@ -431,25 +432,23 @@ class AttrDecoder(nn.Module):
         number of encode3 units
     dropout : float
         Dropout rate
-
     """
-
     def __init__(self,
                  in_feats,
                  n_enc_1, n_enc_2, n_enc_3,
                  dropout):
         super(AttrDecoder, self).__init__()
-        self.dropout=dropout
+        self.dropout = dropout
 
-        self.dec1=GraphConv(n_enc_3,n_enc_3,activation=F.relu)
-        self.dec2=GraphConv(n_enc_3,n_enc_2,activation=F.relu)
-        self.dec3=GraphConv(n_enc_2,n_enc_1,activation=F.relu)
-        self.dec4=GraphConv(n_enc_1,in_feats,activation=F.relu)
-        
+        self.dec1 = GraphConv(n_enc_3, n_enc_3, activation=F.relu)
+        self.dec2 = GraphConv(n_enc_3, n_enc_2, activation=F.relu)
+        self.dec3 = GraphConv(n_enc_2, n_enc_1, activation=F.relu)
+        self.dec4 = GraphConv(n_enc_1, in_feats, activation=F.relu)
+
         for module in self.modules():
             init_weights(module)
 
-    def forward(self,g,z):
+    def forward(self, g, z):
         """Forward Propagation
 
         Parameters
@@ -465,12 +464,11 @@ class AttrDecoder(nn.Module):
             Reconstructed attribute matrix
         """
         # decoder
-        x1=F.dropout(self.dec1(g,z), self.dropout)
-        x2=F.dropout(self.dec2(g,x1), self.dropout)
-        x3=F.dropout(self.dec3(g,x2), self.dropout)
-        attribute_reconstructions=F.dropout(self.dec4(g,x3), self.dropout)
-        
-        return attribute_reconstructions    
+        x1 = F.dropout(self.dec1(g, z), self.dropout)
+        x2 = F.dropout(self.dec2(g, x1), self.dropout)
+        x3 = F.dropout(self.dec3(g, x2), self.dropout)
+        attribute_reconstructions = F.dropout(self.dec4(g, x3), self.dropout)
+        return attribute_reconstructions
 
 
 class StruDecoder(nn.Module):
@@ -485,12 +483,11 @@ class StruDecoder(nn.Module):
 
     """
 
-    def __init__(self,
-                 dropout):
+    def __init__(self, dropout):
         super(StruDecoder, self).__init__()
-        self.dropout=dropout
+        self.dropout = dropout
 
-    def forward(self,z):
+    def forward(self, z):
         """Forward Propagation
 
         Parameters
@@ -504,14 +501,7 @@ class StruDecoder(nn.Module):
             Reconstructed adj matrix
         """
         # decoder
-        x=F.dropout(z, self.dropout)
-        x=z@x.T
-        structure_reconstructions=torch.sigmoid(x)
-
-        return structure_reconstructions    
-
-
-
-
-
-
+        x = F.dropout(z, self.dropout)
+        x = z @ x.T
+        structure_reconstructions = torch.sigmoid(x)
+        return structure_reconstructions

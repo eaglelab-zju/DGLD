@@ -3,6 +3,7 @@ This is dataset loading and processing program for SL-GAD
 """
 import os
 import sys
+
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
@@ -21,11 +22,13 @@ from dgl.data import DGLDataset
 from dgl.nn.pytorch import EdgeWeightNorm
 
 sys.path.append('../../')
+
 from dataset import GraphNodeAnomalyDectionDataset
 from utils.sample import CoLASubGraphSampling, UniformNeighborSampling, SLGAD_SubGraphSampling
 from datetime import datetime
 
 # torch.set_default_tensor_type(torch.DoubleTensor)
+
 
 def safe_add_self_loop(g):
     """
@@ -43,6 +46,7 @@ def safe_add_self_loop(g):
     newg = dgl.remove_self_loop(g)
     newg = dgl.add_self_loop(newg)
     return newg
+
 
 class SL_GAD_DataSet(DGLDataset):
     """
@@ -77,7 +81,6 @@ class SL_GAD_DataSet(DGLDataset):
         self.SLGAD_subgraphsampler = SLGAD_SubGraphSampling(length=self.subgraphsize)
         self.paces = []
         # self.write_graph()
-
         self.normalize_feat()
         self.normalize_adj()
         self.random_walk_sampling()
@@ -85,8 +88,7 @@ class SL_GAD_DataSet(DGLDataset):
 
     def adj_matrix(self):
         """
-        functions to store adjacency matrix
-        
+        Functions to store adjacency matrix
         """
         # print(self.dataset)
         # print(self.dataset.edata['w'])
@@ -108,8 +110,7 @@ class SL_GAD_DataSet(DGLDataset):
 
     def write_graph(self):
         """
-        write graph into graph.txt
-        
+        Write graph into graph.txt
         """
         print("write_graph")
         graph = self.dataset
@@ -122,11 +123,9 @@ class SL_GAD_DataSet(DGLDataset):
         attr_num = graph.ndata["feat"].shape[1]
         file.write("%d %d\n"%(graph.number_of_nodes(), attr_num))
         # attr_str = ' '.join(str(_) for _ in graph.ndata["feat"][0].tolist())
-
         # attr_str = ' '.join(map(str, graph.ndata["feat"][0].tolist()))
         # # print(graph.ndata["feat"][0].tolist())
         # file.write(attr_str)
-        
         for i in range(graph.number_of_nodes()):
             attr_str = ' '.join(map(str, graph.ndata["feat"][i].tolist()))
             # print(graph.ndata["feat"][0].tolist())
@@ -138,7 +137,6 @@ class SL_GAD_DataSet(DGLDataset):
         # print(label_str)
         file.write("\n")
         file.close()
-
         file = open("start_nodes.txt", "w")
         file.write("%d %d\n"%(graph.number_of_nodes(), self.args.subgraph_size))
         start_nodes = [_ for _ in range(graph.number_of_nodes())]
@@ -147,12 +145,11 @@ class SL_GAD_DataSet(DGLDataset):
         file.write("\n")
         file.close()
         # print(graph)
-
         # exit()
+
     def normalize_feat(self):
         """
-        functions to normalize the features of nodes in graph
-        
+        Functions to normalize the features of nodes in graph
         """
         # print(self.dataset.ndata['feat'][:5, :5])
         # exit()
@@ -160,8 +157,7 @@ class SL_GAD_DataSet(DGLDataset):
     
     def normalize_adj(self):
         """
-        functions to normalize the edge weight in graph
-        
+        Functions to normalize the edge weight in graph
         """
         self.sample_graph = self.dataset
         norm = EdgeWeightNorm(norm='both')
@@ -170,13 +166,11 @@ class SL_GAD_DataSet(DGLDataset):
         # print(self.dataset.num_edges())
         # print(type(self.dataset))
         norm_edge_weight = norm(self.dataset, edge_weight=torch.ones(self.dataset.num_edges()))
-
         edges_tuple = self.dataset.edges()
         src = edges_tuple[0]
         dst = edges_tuple[1]
         in_degrees = self.dataset.in_degrees()
         out_degrees = self.dataset.out_degrees()
-
         src_out_degrees = out_degrees[src]
         dst_in_degrees = in_degrees[dst]
         self.dataset = dgl.add_self_loop(self.dataset)
@@ -196,8 +190,7 @@ class SL_GAD_DataSet(DGLDataset):
 
     def random_walk_sampling(self):
         """
-        functions to get random walk from target nodes
-
+        Functions to get random walk from target nodes
         """
         time_0 = datetime.now()
         # print(self.sample_graph)
@@ -208,7 +201,6 @@ class SL_GAD_DataSet(DGLDataset):
         time_2 = datetime.now()
         self.paces_3 = self.SLGAD_subgraphsampler(self.sample_graph, list(range(self.sample_graph.num_nodes())))
         time_3 = datetime.now()
-
         # print(self.paces_1[:20])
         # exit()
         # self.paces_1 = torch.tensor(self.paces_1)
@@ -225,12 +217,11 @@ class SL_GAD_DataSet(DGLDataset):
         # print(time_1 - time_0)
         # print(time_2 - time_1)
         # print(time_3 - time_2)
-        
         pass
 
     def graph_transform(self, g):
         """
-        functions to transfrom graph
+        Functions to transfrom graph
 
         Parameters
         ----------
@@ -340,7 +331,7 @@ class SL_GAD_DataSet(DGLDataset):
 
     def __len__(self):
         """
-        get the number of nodes of graph
+        Get the number of nodes of graph
 
         Returns
         -------
@@ -351,13 +342,12 @@ class SL_GAD_DataSet(DGLDataset):
 
     def process(self):
         """
-        nonsense
-
+        Nonsense
         """
         pass
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     dataset = SL_GAD_DataSet()
     # print(dataset[0].edges())
     ans = []
