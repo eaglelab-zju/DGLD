@@ -45,8 +45,7 @@ if __name__ == "__main__":
         label = graph.ndata['label']
 
         if args.model in ['DOMINANT', 'AnomalyDAE', 'ComGA', 'DONE', 'AdONE', 'CONAD', 'ALARM', 'ONE', 'GAAN', 'GUIDE',
-                          'CoLA',
-                          'AAGNN', 'SLGAD', 'ANEMONE', 'GCNAE', 'MLPAE', 'SCAN']:
+                          'CoLA', 'AAGNN', 'SLGAD', 'ANEMONE', 'GCNAE', 'MLPAE', 'SCAN']:
             model = eval(f'{args.model}(**args_dict["model"])')
         else:
             raise ValueError(f"{args.model} is not implemented!")

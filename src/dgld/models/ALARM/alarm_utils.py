@@ -12,18 +12,14 @@ if current_dir not in sys.path:
 
 
 def set_subargs(parser):
-    parser.add_argument('--hidden_dim', type=int, default=64,
-                        help='dimension of hidden embedding (default: 64)')
+    parser.add_argument('--hidden_dim', type=int, default=64, help='dimension of hidden embedding (default: 64)')
     parser.add_argument('--num_epoch', type=int, help='Training epoch')
     parser.add_argument('--lr', type=float, help='learning rate')
-    parser.add_argument('--dropout', type=float,
-                        default=0.0, help='Dropout rate')
-    parser.add_argument('--alpha', type=float, default=0.6,
-                        help='balance parameter')
+    parser.add_argument('--dropout', type=float, default=0.0, help='Dropout rate')
+    parser.add_argument('--alpha', type=float, default=0.6, help='balance parameter')
     parser.add_argument('--view_num', type=int, default=3)
     parser.add_argument('--agg_type', type=int, default=0, help='Aggregator type (default: 0)')
-    parser.add_argument('--agg_vec', nargs='+', type=int, default=[1, 1, 1],
-                        help=' Weighted aggregation vector (default: [1,1,1])')
+    parser.add_argument('--agg_vec', nargs='+', type=int, default=[1, 1, 1], help=' Weighted aggregation vector (default: [1,1,1])')
     # parser.add_argument('--device', type=str, default='0')
 
 
@@ -58,15 +54,11 @@ def loss_func(adj, A_hat, attrs, X_hat, alpha):
     diff_attribute = torch.pow(X_hat - attrs, 2)
     attribute_reconstruction_errors = torch.sqrt(torch.sum(diff_attribute, 1))
     attribute_cost = torch.mean(attribute_reconstruction_errors)
-
     # structure reconstruction loss
     diff_structure = torch.pow(A_hat - adj, 2)
     structure_reconstruction_errors = torch.sqrt(torch.sum(diff_structure, 1))
     structure_cost = torch.mean(structure_reconstruction_errors)
-
-    cost = alpha * attribute_reconstruction_errors + \
-           (1 - alpha) * structure_reconstruction_errors
-
+    cost = alpha * attribute_reconstruction_errors + (1 - alpha) * structure_reconstruction_errors
     return cost, structure_cost, attribute_cost
 
 

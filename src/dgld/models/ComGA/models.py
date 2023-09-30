@@ -307,7 +307,6 @@ class CommunityAE(nn.Module):
         self.dec1 = nn.Linear(n_enc_3, n_enc_2)
         self.dec2 = nn.Linear(n_enc_2, n_enc_1)
         self.dec3 = nn.Linear(n_enc_1, num_nodes)
-
         for module in self.modules():
             init_weights(module)
 
@@ -377,7 +376,6 @@ class tGCNEncoder(nn.Module):
         self.enc2 = GraphConv(n_enc_1, n_enc_2, activation=F.relu)
         self.enc3 = GraphConv(n_enc_2, n_enc_3, activation=F.relu)
         self.enc4 = GraphConv(n_enc_3, n_enc_3, activation=F.relu)
-
         self.dropout = dropout
         for module in self.modules():
             init_weights(module)
@@ -439,12 +437,10 @@ class AttrDecoder(nn.Module):
                  dropout):
         super(AttrDecoder, self).__init__()
         self.dropout = dropout
-
         self.dec1 = GraphConv(n_enc_3, n_enc_3, activation=F.relu)
         self.dec2 = GraphConv(n_enc_3, n_enc_2, activation=F.relu)
         self.dec3 = GraphConv(n_enc_2, n_enc_1, activation=F.relu)
         self.dec4 = GraphConv(n_enc_1, in_feats, activation=F.relu)
-
         for module in self.modules():
             init_weights(module)
 
@@ -482,7 +478,6 @@ class StruDecoder(nn.Module):
         Dropout rate
 
     """
-
     def __init__(self, dropout):
         super(StruDecoder, self).__init__()
         self.dropout = dropout

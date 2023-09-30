@@ -31,16 +31,13 @@ class Encoder(nn.Module):
 
     def __init__(self, nfeat, nhid, dropout, view_num, agg_type, agg_vec):
         super(Encoder, self).__init__()
-
         self.view_num = view_num
         self.agg_type = agg_type
         self.nhid = nhid
         self.agg_vec = agg_vec
-
         self.single_view = int(nfeat / view_num)
         self.view_feat = [self.single_view for i in range(view_num - 1)]
         self.view_feat.append(int(nfeat / view_num) + int(nfeat % view_num))
-
         self.gc1 = nn.ModuleList(GraphConv(self.view_feat[i], nhid, norm="none") for i in range(view_num))
         self.gc2 = GraphConv(nhid, nhid, norm="none")
         self.dropout = dropout
@@ -107,7 +104,6 @@ class AttributeDecoder(nn.Module):
     view_num : int
         number of view, by default:3
     """
-
     def __init__(self, nfeat, nhid, dropout, view_num):
         super(AttributeDecoder, self).__init__()
         self.gc1 = GraphConv(nhid * view_num, nhid, norm="none")
@@ -152,7 +148,6 @@ class StructureDecoder(nn.Module):
 
     def __init__(self, nhid, dropout, view_num):
         super(StructureDecoder, self).__init__()
-
         self.gc1 = GraphConv(nhid * view_num, nhid, norm="none")
         self.dropout = dropout
 
@@ -198,7 +193,6 @@ class ALARMModel(nn.Module):
     agg_vec : list
         weighted aggregation vector, bydefault: [1,1,1], stands for concatention. This is necessary if agg_type is 2.
     """
-
     def __init__(self, feat_size, hidden_size, dropout, view_num, agg_type, agg_vec):
         super(ALARMModel, self).__init__()
         if len(agg_vec) != view_num:
@@ -255,7 +249,6 @@ class ALARM(nn.Module):
     agg_vec : list
         weighted aggregation vector, bydefault: [1,1,1], stands for concatention. This is necessary if agg_type is 2.
     """
-
     def __init__(self, feat_size, hidden_size, dropout, view_num, agg_type, agg_vec):
         super(ALARM, self).__init__()
         self.model = ALARMModel(feat_size, hidden_size, dropout, view_num, agg_type, agg_vec)

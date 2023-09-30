@@ -77,13 +77,10 @@ def loss_func(B, B_hat, z_mean, z_arg, adj, A_hat, attrs, X_hat, alpha, eta, the
     structure_cost = torch.mean(structure_reconstruction_errors)
 
     # kl loss
-    kl_loss = -((0.5 / num_nodes) * torch.mean(torch.sum(1 + 2 * z_arg - torch.pow(z_mean, 2) -
-                                                         torch.pow(torch.exp(z_arg), 2), 1)))
+    kl_loss = -((0.5 / num_nodes) * torch.mean(torch.sum(1 + 2 * z_arg - torch.pow(z_mean, 2) - torch.pow(torch.exp(z_arg), 2), 1)))
 
-    reconstruction_errors = (alpha * attribute_reconstruction_errors) + \
-                            (1 - alpha) * structure_reconstruction_errors
-    cost = re_loss + 0.1 * kl_loss + alpha * attribute_cost + \
-           (1 - alpha) * structure_cost
+    reconstruction_errors = (alpha * attribute_reconstruction_errors) + (1 - alpha) * structure_reconstruction_errors
+    cost = re_loss + 0.1 * kl_loss + alpha * attribute_cost + (1 - alpha) * structure_cost
 
     return cost, structure_cost, attribute_cost, kl_loss, re_loss, reconstruction_errors
 
