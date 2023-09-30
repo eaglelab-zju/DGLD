@@ -51,7 +51,7 @@ Now you can enjoy DGLD!
 
 We support an example.py showing how it works. Here, we introduce how to simply run DGLD, following 4 steps.
 
-### Graph Dataloader
+### Dataloader
 
 DGLD support multiple data import methods, including [PyTorch Geometric](https://pytorch-geometric.readthedocs.io/en/latest/), [DGL](https://www.dgl.ai/) and custom data. DGLD combines the process of data load and anomaly injection. Except for some basic datasets(including "Cora", "Citeseer", "Pubmed", "BlogCatalog", "Flickr", "ogbn-arxiv" and "ACM"), DGLD also accept custom data.
 
