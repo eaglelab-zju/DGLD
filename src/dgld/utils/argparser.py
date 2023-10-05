@@ -8,6 +8,7 @@ current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name)))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
+
 from utils.common import tab_printer, loadargs_from_json
 from utils.common_params import IN_FEATURE_MAP,NUM_NODES_MAP
 # DOMINANT
@@ -82,6 +83,7 @@ models_set_args_map = {
     "MLPAE": mlpae_set_args,
     "SCAN": scan_set_args
 }
+
 # get args
 models_get_args_map = {
     "DOMINANT": dominant_get_args,
@@ -175,12 +177,12 @@ def parse_all_args() -> argparse.Namespace:
     # get model args
     args = parser.parse_args()
 
-
     args_dict, args = models_get_args_map[args.model](args)
 
     tab_printer(args)
     
-    return args_dict,args
+    return args_dict, args
+
 
 if __name__ == "__main__":
     parse_all_args()

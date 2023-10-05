@@ -12,9 +12,8 @@ from dgld.utils.early_stopping import EarlyStopping
 
 class MLP(nn.Module):
     """
-        Base MLP model
+    Base MLP model
     """
-
     def __init__(self,
                  in_feats,
                  n_hidden,
@@ -41,28 +40,26 @@ class MLP(nn.Module):
                 h = self.act(h)
                 h = self.dropout(h)
             h = layer(h)
-
         return h
 
 
 class MLPAEModel(nn.Module):
-    """This is a basic model of MLPAE.
+    """
+    This is a basic model of MLPAE.
 
-        Parameters
-        ----------
-        feat_size : int
-            dimension of input node feature.
-        hidden_dim : int, optional
-            dimension of hidden layers' feature. Defaults: 64.
-        n_layers : int, optional
-            number of network layers. Defaults: 2.
-        dropout : float, optional
-            dropout probability. Defaults: 0.3.
-        act : callable activation function, optional
-            Activation function. Default: torch.nn.functional.relu.
-
-        """
-
+    Parameters
+    ----------
+    feat_size : int
+        dimension of input node feature.
+    hidden_dim : int, optional
+        dimension of hidden layers' feature. Defaults: 64.
+    n_layers : int, optional
+        number of network layers. Defaults: 2.
+    dropout : float, optional
+        dropout probability. Defaults: 0.3.
+    act : callable activation function, optional
+        Activation function. Default: torch.nn.functional.relu.
+    """
     def __init__(self,
                  feat_size,
                  hidden_dim=64,
@@ -73,7 +70,8 @@ class MLPAEModel(nn.Module):
         self.net = MLP(feat_size, hidden_dim, feat_size, n_layers, dropout, act)
 
     def forward(self, features):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -84,15 +82,14 @@ class MLPAEModel(nn.Module):
         -------
         x : torch.tensor
             Reconstructed node matrix
-
         """
         x = self.net(features)
-
         return x
 
 
 class MLPAE(nn.Module):
-    """ Multilayer Perceptron Autoencoder
+    """
+    Multilayer Perceptron Autoencoder
 
     Parameters
     ----------
@@ -114,7 +111,6 @@ class MLPAE(nn.Module):
     >>> model.fit(g, num_epoch=1)
     >>> result = model.predict(g)
     """
-
     def __init__(self,
                  feat_size,
                  hidden_dim=128,
@@ -141,7 +137,6 @@ class MLPAE(nn.Module):
         ----------
         loss : torch.tensor
             The loss of model.
-
         """
         loss = torch.linalg.norm(x - x_hat, dim=1)
         return loss
@@ -154,8 +149,8 @@ class MLPAE(nn.Module):
             weight_decay=0.,
             device=0
             ):
-        """Fitting model
-
+        """
+        Fitting model
         Parameters
         ----------
         g : dgl.DGLGraph
@@ -170,7 +165,6 @@ class MLPAE(nn.Module):
             weight decay (L2 penalty). Defaults: 0.
         device : str, optional
             device of computation. Defaults: 'cpu'.
-
         """
         print('*' * 20, 'training', '*' * 20)
 
@@ -250,12 +244,9 @@ class MLPAE(nn.Module):
                     print(f"Early stopping in round {epoch}")
                     break
 
-    def predict(self,
-                g,
-                batch_size=0,
-                device='cpu'
-                ):
-        """predict and return anomaly score of each node
+    def predict(self, g, batch_size=0, device='cpu'):
+        """
+        Predict and return anomaly score of each node
 
         Parameters
         ----------

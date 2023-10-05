@@ -2,16 +2,20 @@ from tqdm import tqdm
 import numpy as np
 import torch
 import shutil
-import os,sys
+import os
+import sys
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
+current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
+
 from utils.common import lcprint
+
 
 def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
     """
-    calculate loss function in Bayesian Personalized Ranking
+    Calculate loss function in Bayesian Personalized Ranking
 
     Parameters
     ----------
@@ -31,12 +35,12 @@ def loss_fun_BPR(pos_scores, neg_scores, criterion, device):
     """
     batch_size = pos_scores.shape[0]
     labels = torch.ones(batch_size).to(device)
-    return criterion(pos_scores-neg_scores, labels)
+    return criterion(pos_scores - neg_scores, labels)
 
 
 def loss_fun_BCE(pos_scores, neg_scores, criterion, device):
     """
-    calculate loss function in Binary CrossEntropy Loss
+    Calculate loss function in Binary CrossEntropy Loss
 
     Parameters
     ----------
@@ -67,7 +71,7 @@ loss_fun = loss_fun_BCE
 
 def set_subargs(parser):
     """
-    get hyperparameter by parser from command line
+    Get hyperparameter by parser from command line
 
     Returns
     -------
@@ -86,35 +90,37 @@ def set_subargs(parser):
     parser.add_argument('--negsamp_ratio', type=int, default=1)
     parser.add_argument('--global_adg', type=lambda x: x.lower() == 'true', default=True)
 
-def get_subargs(args):    
+
+def get_subargs(args):
     final_args_dict = {
         "dataset": args.dataset,
         "seed": args.seed,
-        "model":{
-            "in_feats":args.feat_dim,
-            "out_feats":args.embedding_dim,
-            "global_adg":args.global_adg
+        "model": {
+            "in_feats": args.feat_dim,
+            "out_feats": args.embedding_dim,
+            "global_adg": args.global_adg
         },
-        "fit":{
-            "device":args.device,
-            "batch_size":args.batch_size,
-            "num_epoch":args.num_epoch,
-            "lr":args.lr,
-            "weight_decay":args.weight_decay,
-            "seed":args.seed,
+        "fit": {
+            "device": args.device,
+            "batch_size": args.batch_size,
+            "num_epoch": args.num_epoch,
+            "lr": args.lr,
+            "weight_decay": args.weight_decay,
+            "seed": args.seed,
         },
-        "predict":{
-            "device":args.device,
-            "batch_size":args.batch_size,
-            "num_workers":args.num_workers,
-            "auc_test_rounds":args.auc_test_rounds,
+        "predict": {
+            "device": args.device,
+            "batch_size": args.batch_size,
+            "num_workers": args.num_workers,
+            "auc_test_rounds": args.auc_test_rounds,
         }
     }
-    return final_args_dict,args
+    return final_args_dict, args
 
 
 def train_epoch(epoch, loader, net, device, criterion, optimizer):
-    """train_epoch, train model in one epoch
+    """
+    train_epoch, train model in one epoch
 
     Parameters
     ----------
@@ -157,7 +163,8 @@ def train_epoch(epoch, loader, net, device, criterion, optimizer):
 
 
 def test_epoch(epoch, loader, net, device, criterion):
-    """test_epoch, test model in one epoch
+    """
+    test_epoch, test model in one epoch
 
     Parameters
     ----------
@@ -187,8 +194,7 @@ def test_epoch(epoch, loader, net, device, criterion):
         negfeat = neg_subgraph.ndata['feat'].to(device)
         pos_scores, neg_scores = net(
             pos_subgraph, posfeat, neg_subgraph, negfeat)
-        predict_scores.extend(
-            list((torch.sigmoid(neg_scores)-torch.sigmoid(pos_scores)).detach().cpu().numpy()))
+        predict_scores.extend(list((torch.sigmoid(neg_scores) - torch.sigmoid(pos_scores)).detach().cpu().numpy()))
         loss = loss_fun(pos_scores, neg_scores, criterion, device)
         loss_accum += loss.item()
     loss_accum /= (step + 1)

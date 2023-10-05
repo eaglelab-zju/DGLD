@@ -3,8 +3,9 @@ This is a program about sample random walk.
 """
 import os
 import sys
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
+current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/utils/'
 sys.path.append(current_dir)
 
 import dgl
@@ -21,12 +22,11 @@ from datetime import datetime
 class BaseSubGraphSampling:
     """
     An abstract class for writing transforms on subgraph sampling.
-
     """
 
     def __call__(self, g, start_node):
         """
-        functions to call class, undone, useless
+        Functions to call class, undone, useless
 
         Parameters
         ----------
@@ -43,7 +43,7 @@ class BaseSubGraphSampling:
 
     def __repr__(self):
         """
-        functions to get class name
+        Functions to get class name
 
         Parameters
         ----------
@@ -65,15 +65,13 @@ class UniformNeighborSampling(BaseSubGraphSampling):
     ----------
     length : int
         the size of subgraph (default 4)
-
     """
-
     def __init__(self, length=4):
         self.length = 4
 
     def __call__(self, g, start_nodes):
         """
-        functions to call class to generate subgraph
+        Functions to call class to generate subgraph
 
         Parameters
         ----------
@@ -102,7 +100,7 @@ class UniformNeighborSampling(BaseSubGraphSampling):
 
 class CoLASubGraphSampling(BaseSubGraphSampling):
     """
-    we adopt random walk with restart (RWR)
+    We adopt random walk with restart (RWR)
     as local subgraph sampling strategy due to its usability and efficiency.
     we fixed the size 𝑆 of the sampled subgraph (number of nodes in the subgraph) to 4.
     For isolated nodes or the nodes which belong to a community with a size smaller than
@@ -125,13 +123,12 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
     >>> print(ans)
     >>> [[1, 0, 2, 3], [2, 1, 0, 6], [3, 1, 2, 0], [5, 5, 5, 5]]
     """
-
     def __init__(self, length=4):
         self.length = 4
 
     def __call__(self, g, start_nodes):
         """
-        add self_loop to handle isolated nodes as soon as
+        Add self_loop to handle isolated nodes as soon as
         the nodes which belong to a community with a size smaller than
         it is a little different from author's paper.
         
@@ -165,7 +162,7 @@ class CoLASubGraphSampling(BaseSubGraphSampling):
 
 def generate_random_walk(g, start_nodes, length, multi_length, restart_prob, Q=None):
     """
-    get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
+    Get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
     
     Parameters
     ----------
@@ -212,7 +209,7 @@ def generate_random_walk(g, start_nodes, length, multi_length, restart_prob, Q=N
 
 def generate_random_walk_singleThread(g, start_nodes, length, multi_length, restart_prob, Q=None):
     """
-    get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
+    Get random walk from block of target node by mutliThread accelerating and store in Queue if necessary
     
     Parameters
     ----------
@@ -250,7 +247,7 @@ def generate_random_walk_singleThread(g, start_nodes, length, multi_length, rest
 
 def generate_random_walk_multiThread(g, start_nodes, length, multi_length, restart_prob):
     """
-    get random walk from block of target node, by mutliThread accelerating
+    Get random walk from block of target node, by mutliThread accelerating
     
     Parameters
     ----------
@@ -398,7 +395,7 @@ def generate_random_walk_multiThread_high_level(g, start_nodes_block, paces_bloc
 
 class SLGAD_SubGraphSampling(BaseSubGraphSampling):
     """
-    we adopt random walk with restart (RWR)
+    We adopt random walk with restart (RWR)
     as local subgraph sampling strategy due to its usability and efficiency.
     we fixed the size 𝑆 of the sampled subgraph (number of nodes in the subgraph) to 4.
     For isolated nodes or the nodes which belong to a community with a size smaller than
@@ -411,13 +408,12 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
     length : int
         size of subgraph
     """
-
     def __init__(self, length=4):
         self.length = 4
 
-    def __call__(self, g, start_nodes, block_ID = None):
+    def __call__(self, g, start_nodes, block_ID=None):
         """
-        add self_loop to handle isolated nodes as soon as
+        Add self_loop to handle isolated nodes as soon as
         the nodes which belong to a community with a size smaller than
         it is a little different from author's paper.
         
@@ -435,7 +431,6 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
         """
         ori_g = g
         g = dgl.remove_self_loop(g)
-
         start_time = datetime.now()
         # newg = dgl.remove_self_loop(g)
         # newg = dgl.add_self_loop(newg)
@@ -482,7 +477,6 @@ class SLGAD_SubGraphSampling(BaseSubGraphSampling):
             # print(i)
             # temp_result.wait()
             # print(temp_result.get())
-
         for i in temp_results:
             i.wait()  # 等待进程函数执行完毕
         for i in temp_results:

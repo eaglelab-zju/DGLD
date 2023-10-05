@@ -16,11 +16,14 @@ import scipy.io as sio
 from dgl import backend as F
 import sys
 import os
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.abspath(current_file_name))
+current_dir = os.path.dirname(os.path.abspath(current_file_name))
 sys.path.append(current_dir)
-from common import is_bidirected, load_ogbn_arxiv, load_BlogCatalog, load_Flickr,load_ACM
+
+from common import is_bidirected, load_ogbn_arxiv, load_BlogCatalog, load_Flickr, load_ACM
 from evaluation import split_auc
+
 data_path = os.path.dirname(current_dir) + '/data/'
 
 
@@ -57,9 +60,10 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     >>> print(dataset[0])
     """
 
-    def __init__(self, name="Cora",raw_dir=None , p=15, k=50, is_preprocess_features=True, g_data=None, y_data=None, seed = 42):
+    def __init__(self, name="Cora", raw_dir=None, p=15, k=50, is_preprocess_features=True, g_data=None, y_data=None,
+                 seed=42):
         super().__init__(name=name)
-        if raw_dir == None:
+        if raw_dir is None:
             raw_dir = data_path
         self.dataset_name = name
         self.is_preprocess_features = is_preprocess_features
@@ -79,10 +83,10 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
             "Cora": f"dgl.data.CoraGraphDataset(raw_dir=raw_dir)",
             "Citeseer": f"dgl.data.CiteseerGraphDataset(raw_dir=raw_dir)",
             "Pubmed": f"dgl.data.PubmedGraphDataset(raw_dir=raw_dir)",
-            "ogbn-arxiv":"load_ogbn_arxiv(raw_dir=raw_dir)",
-            "ACM":"load_ACM(raw_dir=raw_dir)",
-            "BlogCatalog":"load_BlogCatalog(raw_dir=raw_dir)",
-            "Flickr":"load_Flickr(raw_dir=raw_dir)"
+            "ogbn-arxiv": "load_ogbn_arxiv(raw_dir=raw_dir)",
+            "ACM": "load_ACM(raw_dir=raw_dir)",
+            "BlogCatalog": "load_BlogCatalog(raw_dir=raw_dir)",
+            "Flickr": "load_Flickr(raw_dir=raw_dir)"
         }
         if self.dataset_name != 'custom' and self.dataset_name != 'ACM':
             assert self.dataset_name in self.q_map and self.dataset_name in self.dataset_map, self.dataset_name
@@ -111,6 +115,7 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         if self.is_preprocess_features:
             # print('preprocess_features as CoLA')
             self.dataset.ndata['feat'] = self.preprocess_features(self.dataset.ndata['feat'])
+
     @property
     def num_anomaly(self):
         """
@@ -259,28 +264,25 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         """
         number_node = self.dataset.num_nodes()
         if label != None:
-            self.dataset.ndata["anomaly_label"] = label# torch.zeros(number_node)
+            self.dataset.ndata["anomaly_label"] = label  # torch.zeros(number_node)
         else:
             self.dataset.ndata["anomaly_label"] = torch.zeros(number_node)
 
     def reset_anomaly_label(self):
         """
         Functions that reset the anomaly label of node
-            
         """
         self.init_anomaly_label()
 
     def process(self):
         """
         Undone, Useless
-
         """
         pass
 
     def inject_structural_anomalies(self):
         """
         Functions that inject structural anomaly
-            
         """
         np.random.seed(self.seed)
         src, dst = self.dataset.edges()
@@ -330,7 +332,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
     def inject_contextual_anomalies(self):
         """
         Functions that inject contextual anomaly
-            
         """
         np.random.seed(self.seed)
         k = self.k
@@ -353,7 +354,6 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
                     biggest_distance, biggest_attr = dis, all_attr[i]
             # the node which has biggest one euclidean distance
             all_attr[aa_i] = biggest_attr
-
         self.set_node_attr(all_attr)
         labels = self.anomaly_label
         labels[attribute_anomalies_idx] = 2
@@ -401,38 +401,37 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         return split_auc(self.anomaly_label, prediction)
 
     def evaluation_multiround(self, predict_score_arr):
-        '''
+        """
         Functions that evaluates mulit-round result(as CoLA)
 
         Parameters
         ----------
         predict_score_arr : torch.Tensor
             prediction to be evaluated
-        
+
         Returns
         -------
         final_score : numpy.float
         a_score : numpy.float
         s_score : numpy.float
-        '''
+        """
         mean_predict_result = predict_score_arr.mean(1)
         std_predict_result = predict_score_arr.std(1)
         max_predict_result = predict_score_arr.max(1)
         min_predict_result = predict_score_arr.min(1)
         median_predict_result = np.median(predict_score_arr, 1)
-
         descriptions = {
             "mean": mean_predict_result,
             "std": std_predict_result,
             "-std": - std_predict_result,
             "mean+std": mean_predict_result + std_predict_result,
             "mean-std": mean_predict_result - std_predict_result,
-            "mean-2std": mean_predict_result - 2*std_predict_result,
-            "mean-3std": mean_predict_result - 3*std_predict_result,
+            "mean-2std": mean_predict_result - 2 * std_predict_result,
+            "mean-3std": mean_predict_result - 3 * std_predict_result,
             "mean+median": mean_predict_result + median_predict_result,
             "max": max_predict_result,
             "min": min_predict_result,
-            "min-std": min_predict_result-std_predict_result,
+            "min-std": min_predict_result - std_predict_result,
             "median": median_predict_result,
         }
         for stat in descriptions:
@@ -446,12 +445,9 @@ class GraphNodeAnomalyDectionDataset(DGLDataset):
         return 0
 
 
-
-
 def test_custom_dataset():
     """
     Functions that test custom dataset loading well
-        
     """
     my_g = dgl.data.CoraGraphDataset()[0]
     label = torch.ones(my_g.num_nodes())
@@ -459,36 +455,35 @@ def test_custom_dataset():
     print("num_anomaly:", dataset.num_anomaly)
     print("anomaly_label", dataset.anomaly_label)
 
+
 if __name__ == "__main__":
     test_custom_dataset()
-    well_test_dataset = ["Cora", "Citeseer", "Pubmed","BlogCatalog","Flickr", "ogbn-arxiv","ACM"]
+    well_test_dataset = ["Cora", "Citeseer", "Pubmed", "BlogCatalog", "Flickr", "ogbn-arxiv", "ACM"]
     num_nodes_list = []
     num_edges_list = []
     num_anomaly_list = []
     num_attributes_list = []
     random_evaluation_list = []
-    
+
     for data_name in well_test_dataset:
         print("\ndataset:", data_name)
         dataset = GraphNodeAnomalyDectionDataset(name=data_name)
-
         print("num_anomaly:", dataset.num_anomaly)
         print("anomaly_label", dataset.anomaly_label)
         rand_ans = np.random.rand(dataset.num_nodes)
-        final_score,_, _ = dataset.evalution(rand_ans)
+        final_score, _, _ = dataset.evalution(rand_ans)
         num_nodes_list.append(dataset.num_nodes)
         num_edges_list.append(dataset.dataset.num_edges())
         num_anomaly_list.append(dataset.num_anomaly.item())
         num_attributes_list.append(dataset.dataset.ndata['feat'].shape[1])
         random_evaluation_list.append(final_score)
 
-
     dataset_info = pd.DataFrame({
-        "well_test_dataset":well_test_dataset,
-        "num_nodes":num_nodes_list,
-        "num_edges":num_edges_list,
+        "well_test_dataset": well_test_dataset,
+        "num_nodes": num_nodes_list,
+        "num_edges": num_edges_list,
         "num_anomaly": num_anomaly_list,
         "num_attributes": num_attributes_list,
-        "random_evaluation":random_evaluation_list
+        "random_evaluation": random_evaluation_list
     })
     print(dataset_info)

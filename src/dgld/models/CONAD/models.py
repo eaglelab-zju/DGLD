@@ -1,18 +1,19 @@
 import torch
 import torch.nn as nn
-
 import dgl
 from dgl.nn import GATConv
-
 from copy import deepcopy
 from .conad_utils import train_step, test_step, train_step_batch, test_step_batch
-
 import sys
+
 sys.path.append('../../')
+
 from dgld.utils.early_stopping import EarlyStopping
 
+
 class CONAD(nn.Module):
-    """Contrastive Attributed Network Anomaly Detection with Data Augmentation.[PAKDD 2022]
+    """
+    Contrastive Attributed Network Anomaly Detection with Data Augmentation.[PAKDD 2022]
     ref:https://github.com/zhiming-xu/conad
     
     Parameters
@@ -27,9 +28,7 @@ class CONAD(nn.Module):
     >>> model.fit(g, num_epoch=1)
     >>> result = model.predict(g)
     """
-    def __init__(self, 
-                 feat_size
-                 ):
+    def __init__(self, feat_size):
         super(CONAD, self).__init__()
         self.model = CONAD_Base(feat_size)
         
@@ -49,7 +48,8 @@ class CONAD(nn.Module):
             surround=50, 
             scale_factor=10
             ):
-        """Fitting model
+        """
+        Fitting model
 
         Parameters
         ----------
@@ -131,15 +131,15 @@ class CONAD(nn.Module):
                 if early_stop.isEarlyStopping():
                     print(f"Early stopping in round {epoch}")
                     break     
-            
-            
+
     def predict(self,
                 graph,
                 alpha=0.9, 
                 device='cpu',
                 batch_size=0,
                 ):
-        """predict and return anomaly score of each node
+        """
+        Predict and return anomaly score of each node
 
         Parameters
         ----------
@@ -179,8 +179,9 @@ class CONAD(nn.Module):
             
 
 class SiameseContrastiveLoss(nn.Module):
-    """siamese contrastive loss function
-    
+    """
+    Siamese contrastive loss function
+
     Parameters
     ----------
     margin: float
@@ -192,7 +193,8 @@ class SiameseContrastiveLoss(nn.Module):
         self.criterion = nn.TripletMarginLoss(margin=margin, reduction='none')
         
     def forward(self, z, z_hat, l, adj):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -216,7 +218,8 @@ class SiameseContrastiveLoss(nn.Module):
 
 
 class TripletContrastiveLoss(nn.Module):
-    """triplet contrastive loss function
+    """
+    Triplet contrastive loss function
     
     Parameters
     ----------
@@ -228,7 +231,8 @@ class TripletContrastiveLoss(nn.Module):
         self.criterion = nn.TripletMarginLoss(margin=margin, reduction='sum')
         
     def forward(self, orig, aug, l, adj):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -315,7 +319,8 @@ class CONAD_Base(nn.Module):
         return h
     
     def reconstruct(self, g, h):
-        """reconstruct attribute matrix and adjacency matrix
+        """
+        Reconstruct attribute matrix and adjacency matrix
 
         Parameters
         ----------
@@ -340,7 +345,8 @@ class CONAD_Base(nn.Module):
         return a_hat, x_hat
     
     def forward(self, g, h):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -365,7 +371,8 @@ class CONAD_Base(nn.Module):
         return a_hat, x_hat 
         
     def embed_batch(self, blocks, h):
-        """compute embeddings for mini-batch graph training
+        """
+        Compute embeddings for mini-batch graph training
 
         Parameters
         ----------
@@ -385,7 +392,8 @@ class CONAD_Base(nn.Module):
         return h
     
     def reconstruct_batch(self, blocks, h):
-        """reconstruct attribute matrix and adjacency matrix for mini-batch graph training
+        """
+        Reconstruct attribute matrix and adjacency matrix for mini-batch graph training
 
         Parameters
         ----------
@@ -408,7 +416,8 @@ class CONAD_Base(nn.Module):
         return a_hat, x_hat
     
     def forward_batch(self, blocks, h):
-        """Forward Propagation for mini-batch graph training
+        """
+        Forward Propagation for mini-batch graph training
 
         Parameters
         ----------
@@ -432,7 +441,9 @@ class CONAD_Base(nn.Module):
         
             
 class KnowledgeModel(dgl.BaseTransform):
-    """Knowledge Modeling Module, introduce a certain amount of anomalies belonging to each anomaly type to the input attributed network to form an augmented attributed network
+    """
+    Knowledge Modeling Module, introduce a certain amount of anomalies belonging to each anomaly type to the input
+    attributed network to form an augmented attributed network
 
     Parameters
     ----------
@@ -489,4 +500,4 @@ class KnowledgeModel(dgl.BaseTransform):
             g_aug = dgl.graph(adj.nonzero(as_tuple=True), num_nodes=num_nodes)
             g_aug.ndata['feat'] = feat
             g_aug.ndata['label'] = label
-            return g_aug        
+            return g_aug

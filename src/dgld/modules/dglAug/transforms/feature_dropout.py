@@ -19,8 +19,8 @@ class FeatureDropout(BaseTransform):
     >>> from dglAug import FeatureDropout
 
     >>> transform = FeatureDropout(p=0.2)
-    >>> g = dgl.rand_graph(4,2)
-    >>> g.ndata['feat'] = torch.rand((4,5))
+    >>> g = dgl.rand_graph(4, 2)
+    >>> g.ndata['feat'] = torch.rand((4, 5))
     >>> print(g.ndata['feat'])
     tensor([[0.7706, 0.3505, 0.1246, 0.5076, 0.3071],
         [0.5388, 0.6082, 0.5088, 0.8058, 0.4955],
@@ -39,7 +39,6 @@ class FeatureDropout(BaseTransform):
     def __call__(self, g):
         if self.p == 0:
             return g
-
         for ntype in g.ntypes:
             g.apply_nodes(
                 lambda node: {'feat': F.dropout(node.data['feat'], self.p)},

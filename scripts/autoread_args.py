@@ -1,11 +1,14 @@
 import os
 import sys
+
 sys.path.append('./src')
-from dgld.utils.argparser import models_set_args_map 
+
+from dgld.utils.argparser import models_set_args_map
 from dgld.utils.common import saveargs2json, loadargs_from_json
 from copy import deepcopy
 
-class FakeParser():
+
+class FakeParser:
     def __init__(self):
         self.options = []
         
@@ -61,6 +64,3 @@ if __name__ == "__main__":
                     
             hyper = {"hyper": options}
             saveargs2json(hyper, save_path+f"{_model}_{dataset}.json")
-        
-        
-    

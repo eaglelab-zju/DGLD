@@ -1,9 +1,12 @@
 import shutil
-import os,sys
+import os
+import sys
+
 current_file_name = __file__
-current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
+current_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
     sys.path.append(current_dir)
+
 
 def set_subargs(parser):
     parser.add_argument('--out_feats', type=int, default=256,
@@ -24,23 +27,22 @@ def set_subargs(parser):
     parser.add_argument('--theta', type=float, default=40.0,
                         help='structure penalty balance parameter')
 
+
 def get_subargs(args):
     final_args_dict = {
         "dataset": args.dataset,
-        "seed":args.seed,
-        "model":{
-            "feat_size":args.feat_dim,
-            "out_feats":args.out_feats
+        "seed": args.seed,
+        "model": {
+            "feat_size": args.feat_dim,
+            "out_feats": args.out_feats
         },
-        "fit":{
-            "lr":args.lr,
-            "num_epoch":args.num_epoch,
-            "device":args.device,
+        "fit": {
+            "lr": args.lr,
+            "num_epoch": args.num_epoch,
+            "device": args.device,
         },
-        "predict":{
-            "device":args.device,
+        "predict": {
+            "device": args.device,
         }
     }
     return final_args_dict, args
-
-

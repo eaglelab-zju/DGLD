@@ -1,7 +1,9 @@
 import numpy as np
 import torch
 import dgl
-import os,sys
+import os
+import sys
+
 current_file_name = __file__
 current_dir=os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))))
 if current_dir not in sys.path:
@@ -21,7 +23,8 @@ def set_subargs(parser):
     parser.add_argument('--num_added_edge', type=int, default=50, help="parameter for generating high-degree anomalies")
     parser.add_argument('--surround', type=int, default=50, help="parameter for generating outlying anomalies")
     parser.add_argument('--scale_factor', type=float, default=10, help="parameter for generating disproportionate anomalies")
-    
+
+
 def get_subargs(args):     
     final_args_dict = {
         "dataset": args.dataset,
@@ -51,7 +54,8 @@ def get_subargs(args):
   
     
 def loss_func(a, a_hat, x, x_hat, alpha):
-    """compute the loss function of the reconstructed graph
+    """
+    Compute the loss function of the reconstructed graph
 
     Parameters
     ----------
@@ -87,7 +91,8 @@ def loss_func(a, a_hat, x, x_hat, alpha):
 
 
 def train_step(model, optimizer, criterion, g_orig, g_aug, alpha, eta):
-    """train model in one epoch
+    """
+    Train model in one epoch
 
     Parameters
     ----------
@@ -138,7 +143,8 @@ def train_step(model, optimizer, criterion, g_orig, g_aug, alpha, eta):
 
 
 def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, batch_size, device):
-    """train model in one epoch for mini-batch graph training
+    """
+    Train model in one epoch for mini-batch graph training
 
     Parameters
     ----------
@@ -181,9 +187,9 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
         shuffle=False,
         drop_last=False,
     )
-            
+
     epoch_loss = 0
-    
+
     for (input_nodes_orig, output_nodes_orig, blocks_orig), (input_nodes_aug, output_nodes_aug, blocks_aug) in zip(dataloader_orig, dataloader_aug):
         blocks_orig = [b.to(device) for b in blocks_orig] 
         blocks_aug = [b.to(device) for b in blocks_aug] 
@@ -216,7 +222,8 @@ def train_step_batch(model, optimizer, criterion, g_orig, g_aug, alpha, eta, bat
     
     
 def test_step(model, graph, alpha):
-    """test model in one epoch
+    """
+    Test model in one epoch
 
     Parameters
     ----------
@@ -236,7 +243,6 @@ def test_step(model, graph, alpha):
     feat = graph.ndata['feat']
     a_hat, x_hat = model(graph, feat)
     a_hat, x_hat = a_hat.cpu(), x_hat.cpu()
-
     adj_orig = graph.adj().to_dense().cpu()
     feat_orig = feat.detach().cpu()
     recon_loss, struct_loss, feat_loss = loss_func(adj_orig, a_hat, feat_orig, x_hat, alpha)
@@ -245,7 +251,8 @@ def test_step(model, graph, alpha):
 
 
 def test_step_batch(model, graph, alpha, batch_size, device):
-    """test model in one epoch for mini-batch graph training
+    """
+    Test model in one epoch for mini-batch graph training
 
     Parameters
     ----------

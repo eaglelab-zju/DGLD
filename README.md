@@ -1,10 +1,8 @@
 <p align="center">
-    <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html"> <img src="DGLD_logo.jpg" width="200"/></a>
+    <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html"> <img src="images/DGLD_logo.jpg" width="200" alt="DGLD LOGO"/></a>
 <p>
 
-<h1 align="center">
-    <p>A Deep Graph Anomaly Detection Library <br> based on DGL</p>
-</h1>
+<h1 align="center">A Deep Graph Anomaly Detection Library <br> based on DGL</h1>
 
 <p align="center">
     <b> <a href="https://zhoushengisnoob.github.io/projects/DGLD_Fronted/index.html">Website</a> | <a href="https://zhoushengisnoob.github.io/DGLD/doc/docstring_html/html/dgld.html">Doc</a> </b>
@@ -12,13 +10,14 @@
 
 DGLD is an open-source library for Deep Graph Anomaly Detection based on pytorch and DGL. It provides unified interface of popular graph anomaly detection methods, including the data loader, data augmentation, model training and evaluation. Also, the widely used modules are well organized so that developers and researchers can quickly implement their own designed models. 
 
-
 ## News
+
 * [Aug 2022] We have released an [easy-to-use graphical command line tool](https://zhoushengisnoob.github.io/DGLD/web/index.html) for users to run experiments with different models, datasets and customized parameters. Users can select all the settings in the page, click 'Submit' and copy the shell scripts to the terminal. 
 * [July 2022] For PyG users, we recommend the [PyGOD](https://github.com/pygod-team/pygod/), which is another comprehensive package that also supports many graph anomaly detection methods.
 * [June 2022] Recently we receive feedback that the reported results are slightly different from the original paper. This is due to the anomaly injection setting, the graph augmentation and sampling. We will provide more details on the settings. 
 
 ## Installation
+
 Basic environment installation:
 ```shell
 conda create -n dgld python=3.8.0
@@ -27,17 +26,22 @@ conda install cudatoolkit==11.3.1
 pip install dgl-cu113==0.8.1 dglgo==0.0.1 -f https://data.dgl.ai/wheels/repo.html
 pip install torch==1.11.0+cu113  -f https://download.pytorch.org/whl/torch_stable.html
 ```
-- ###  install from source code
+
+### Install from source code
+
 Then clone the DGLD project, enter the directory and run:
 ```shell
 git clone git@github.com:EagleLab-ZJU/DGLD.git
 pip install -r requirements.txt
 ```
 To check whether you have successfully installed the package and environment, you can simply run
+
 ```shell
 python example.py
 ```
-- ### install from pypi
+
+### Install from pypi
+
 ```shell
 pip install DGLD
 ```
@@ -80,13 +84,13 @@ Function fit need parameters to specify number of epoch and device. For gpu, dev
 ```python
 from DGLD.utils.evaluation import split_auc
 
-model.fit(g, num_epoch = 5, device = 0)
-result = model.predict(g, auc_test_rounds = 2)
+model.fit(g, num_epoch=5, device=0)
+result = model.predict(g, auc_test_rounds=2)
 print(split_auc(label, result))
 ```
 
-
 ## Native Datasets
+
 The DGLD provides native graph anomaly detection datasets that widely used by existing methods.
 
 |   Dataset   | nodes  |  edges  | attributes | anomalies |
@@ -99,9 +103,8 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 |   Pubmed    | 19717  |  44338  |    500     |    600    |
 | ogbn-arxiv  | 169343 | 1166243 |    128     |   6000    |
 
-
-
 ## Implemented Results ([Sorted Results](https://zhoushengisnoob.github.io/projects/DGLD_Fronted/leaderboard.html))
+
 |                                  Method                                   |  Cora  | Citeseer | Pubmed | BlogCatalog | Flickr |  ACM   | Arxiv  |
 |:-------------------------------------------------------------------------:|:------:|:--------:|:------:|:-----------:|:------:|:------:|:------:|
 |                 [CoLA](https://arxiv.org/abs/2103.00113)                  | 0.8823 |  0.8765  | 0.9632 |   0.6488    | 0.5790 | 0.8194 | 0.8833 |
@@ -120,9 +123,10 @@ The DGLD provides native graph anomaly detection datasets that widely used by ex
 |        [AdONE](https://dl.acm.org/doi/abs/10.1145/3336191.3371788)        | 0.9629 |  0.8935  | 0.9030 |   0.7438    | 0.7595 |   -    | 0.7651 |
 |                 [GCNAE](https://arxiv.org/abs/1611.07308)                 | 0.7707 |  0.7696  | 0.7941 |   0.7363    | 0.7529 |   -    | 0.7530 |
 |          [MLPAE](https://dl.acm.org/doi/10.1145/2689746.2689747)          | 0.7617 |  0.7538  | 0.7211 |   0.7399    | 0.7514 |   -    | 0.7382 |
-|                                 [SCAN](https://dl.acm.org/doi/10.1145/1281192.1281280)                                  | 0.6508 |  0.6671  | 0.7361 |   0.4926    | 0.6498 |   -    | 0.6905 |
+|          [SCAN](https://dl.acm.org/doi/10.1145/1281192.1281280)           | 0.6508 |  0.6671  | 0.7361 |   0.4926    | 0.6498 |   -    | 0.6905 |
 
 ## Upcoming Features
+
 * More Graph Anomaly Detection Methods
 * Edge/Community/Graph Level Anomaly Detection Tasks
 * Graphical Operation Interface

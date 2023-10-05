@@ -11,7 +11,8 @@ from dgl import BaseTransform
 
 # pylint:disable=no-else-return
 class ComposeAug(BaseTransform):
-    """Execute graph augments in sequence.
+    """
+    Execute graph augments in sequence.
 
     Parameters
     ----------
@@ -26,7 +27,8 @@ class ComposeAug(BaseTransform):
         self.cross = cross
 
     def __call__(self, g: dgl.DGLGraph):
-        """Execute augments on graph
+        """
+        Execute augments on graph.
 
         Parameters
         ----------
@@ -55,7 +57,8 @@ class ComposeAug(BaseTransform):
 
 
 class RandomChoiceAug(BaseTransform):
-    """Execute graph augments in random.
+    """
+    Execute graph augments in random.
 
     Parameters
     ----------
@@ -77,7 +80,8 @@ class RandomChoiceAug(BaseTransform):
         self.cross = cross
 
     def __call__(self, g):
-        """Execute augments on graph
+        """
+        Execute augments on graph.
 
         Parameters
         ----------
@@ -94,7 +98,6 @@ class RandomChoiceAug(BaseTransform):
         n_augs = len(self.augs)
         perm = torch.randperm(n_augs)
         idx = perm[:self.n_choices]
-
         if self.cross:
             for i in idx:
                 aug = self.augs[i]

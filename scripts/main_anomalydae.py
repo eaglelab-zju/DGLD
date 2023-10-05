@@ -1,5 +1,6 @@
 import os
 import sys
+
 current_file_name = __file__
 current_dir = os.path.dirname(os.path.dirname(os.path.abspath(current_file_name))) + '/src'
 sys.path.append(current_dir)
@@ -11,6 +12,7 @@ from dgld.models.AnomalyDAE import get_parse
 from dgld.utils.evaluation import split_auc
 from dgld.utils.common import load_ACM
 from dgld.utils.common import seed_everything
+
 import dgl
 import torch
 import numpy as np

@@ -15,6 +15,7 @@ import dgl
 
 from dgld.utils.common import loadargs_from_json
 
+
 def set_subargs(parser):
     parser.add_argument('--num_epoch', type=int, default=100, help='Training epoch')
     parser.add_argument('--disc_update_times', type=int, default=1, help="number of discriminator updates")
@@ -68,7 +69,8 @@ def get_subargs(args):
 
 
 def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
-    """Consistent with the description of "Network Preprocessing" in Section 4.1 of the paper.
+    """
+    Consistent with the description of "Network Preprocessing" in Section 4.1 of the paper.
 
     Parameters
     ----------
@@ -106,7 +108,8 @@ def random_walk_with_restart(g:dgl.DGLGraph, k=3, r=0.3, eps=1e-5):
     
 
 def loss_func(x, x_hat, c, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_factor, pretrain=False, train_disc=False, train_gen=False):
-    """loss function
+    """
+    Loss function
 
     Parameters
     ----------
@@ -189,7 +192,8 @@ def loss_func(x, x_hat, c, c_hat, hom_str, hom_attr, dis_a, dis_s, betas, scale_
   
     
 def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch.Tensor, batch_size:int, betas:list, num_neighbors:int, disc_update_times:int, gen_update_times:int, device:str, pretrain=False, verbose=False):
-    """train model in one epoch
+    """
+    Train model in one epoch
 
     Parameters
     ----------
@@ -301,7 +305,8 @@ def train_step(model, optimizer:torch.optim.Optimizer, g:dgl.DGLGraph, adj:torch
 
 
 def test_step(model, g, adj, batch_size, betas, device):
-    """test model in one epoch
+    """
+    Test model in one epoch
 
     Parameters
     ----------
@@ -352,7 +357,8 @@ def test_step(model, g, adj, batch_size, betas, device):
 
 
 class SubgraphNeighborSampler(dgl.dataloading.Sampler):
-    """the neighbor sampler of the subgraph
+    """
+    The neighbor sampler of the subgraph
 
     Parameters
     ----------

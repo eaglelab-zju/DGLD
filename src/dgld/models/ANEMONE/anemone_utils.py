@@ -8,11 +8,11 @@ import sys
 import os
 
 sys.path.append('../../')
-# from utils.print import cprint, lcprint
+
 
 def set_subargs(parser):
     """
-    get hyperparameter by parser from command line
+    Get hyperparameter by parser from command line
 
     Returns
     -------
@@ -60,10 +60,9 @@ def get_subargs(args):
     return final_args_dict, args
 
 
-
 def loss_fun_BCE(pos_scores_rdc, pos_scores_rec, neg_scores_rdc, neg_scores_rec, criterion, device, alpha):
     """
-    calculate loss function in Binary CrossEntropy Loss
+    Calculate loss function in Binary CrossEntropy Loss
     Parameters
     ----------
     pos_scores : torch.Tensor
@@ -96,7 +95,8 @@ loss_fun = loss_fun_BCE
 
 
 def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
-    """train_epoch, train model in one epoch
+    """
+    train_epoch, train model in one epoch
     Parameters
     ----------
     epoch : int
@@ -136,7 +136,8 @@ def train_epoch(epoch,alpha, loader, net, device, criterion, optimizer):
 
 
 def test_epoch(epoch, alpha, loader, net, device, criterion):
-    """test_epoch, test model in one epoch
+    """
+    test_epoch, test model in one epoch
     Parameters
     ----------
     epoch : int
@@ -176,5 +177,3 @@ def test_epoch(epoch, alpha, loader, net, device, criterion):
     # lcprint('VALID==>epoch', epoch, 'Average valid loss: {:.2f}'.format(loss_accum), color='blue')
     # lcprint('Average testing acc: {:.2f}'.format(acc), color='green')
     return np.array(predict_scores)
-
-

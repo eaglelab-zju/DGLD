@@ -1,1 +1,19 @@
-# save models best parameters
+# Models' Best Parameters
+
+- [AAGNN](./AAGNN.json)
+- [AdONE](./AdONE.json)
+- [ALARM](./ALARM.json)
+- [ANEMONE](./ANEMONE.json)
+- [AnomalyDAE](./AnomalyDAE.json)
+- [CoLA](./CoLA.json)
+- [ComGA](./ComGA.json)
+- [CONAD](./CONAD.json)
+- [DOMINANT](./DOMINANT.json)
+- [DONE](./DONE.json)
+- [GAAN](./GAAN.json)
+- [GCNAE](./GCNAE.json)
+- [GUIDE](./GUIDE.json)
+- [MLPAE](./MLPAE.json)
+- [ONE](./ONE.json)
+- [SCAN](./SCAN.json)
+- [SLGAD](./SLGAD.json)

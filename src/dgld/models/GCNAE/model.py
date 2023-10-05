@@ -13,17 +13,10 @@ from dgld.utils.early_stopping import EarlyStopping
 
 class GCN(nn.Module):
     """
-        Base GCN model
+    Base GCN model
     """
 
-    def __init__(self,
-                 in_feats,
-                 n_hidden,
-                 out_feats,
-                 n_layers,
-                 dropout,
-                 activation
-                 ):
+    def __init__(self, in_feats, n_hidden, out_feats, n_layers, dropout, activation):
         super(GCN, self).__init__()
         self.layers = nn.ModuleList()
         # input layer
@@ -49,27 +42,27 @@ class GCN(nn.Module):
                 if i != 0:
                     h = self.dropout(h)
                 h = layer(g, h)
-
         return h
 
 
 class GCNAEModel(nn.Module):
-    """This is a basic model of GCNAE.
+    """
+    This is a basic model of GCNAE.
 
-        Parameters
-        ----------
-        feat_size : int
-            dimension of input node feature.
-        hidden_dim : int, optional
-            dimension of hidden layers' feature. Defaults: 64.
-        n_layers : int, optional
-            number of network layers. Defaults: 2.
-        dropout : float, optional
-            dropout probability. Defaults: 0.3.
-        act : callable activation function, optional
-            Activation function. Default: torch.nn.functional.relu.
+    Parameters
+    ----------
+    feat_size : int
+        dimension of input node feature.
+    hidden_dim : int, optional
+        dimension of hidden layers' feature. Defaults: 64.
+    n_layers : int, optional
+        number of network layers. Defaults: 2.
+    dropout : float, optional
+        dropout probability. Defaults: 0.3.
+    act : callable activation function, optional
+        Activation function. Default: torch.nn.functional.relu.
+    """
 
-        """
     def __init__(self,
                  feat_size,
                  hidden_dim=64,
@@ -80,7 +73,8 @@ class GCNAEModel(nn.Module):
         self.net = GCN(feat_size, hidden_dim, feat_size, n_layers, dropout, act)
 
     def forward(self, g, features):
-        """Forward Propagation
+        """
+        Forward Propagation
 
         Parameters
         ----------
@@ -96,12 +90,12 @@ class GCNAEModel(nn.Module):
 
         """
         x = self.net(g, features)
-
         return x
 
 
 class GCNAE(nn.Module):
-    """ Graph Convolutional Networks Autoencoder
+    """
+    Graph Convolutional Networks Autoencoder
     
     Parameters
     ----------
@@ -150,7 +144,6 @@ class GCNAE(nn.Module):
         ----------
         loss : torch.tensor
             The loss of model.
-
         """
         loss = torch.linalg.norm(x - x_hat, dim=1)
         return loss
@@ -163,7 +156,8 @@ class GCNAE(nn.Module):
             weight_decay=0.,
             device='cpu'
             ):
-        """Fitting model
+        """
+        Fitting model
 
         Parameters
         ----------
@@ -179,7 +173,6 @@ class GCNAE(nn.Module):
             weight decay (L2 penalty). Defaults: 0.
         device : str, optional
             device of computation. Defaults: 'cpu'.
-
         """
         print('*' * 20, 'training', '*' * 20)
 
@@ -197,7 +190,6 @@ class GCNAE(nn.Module):
         g = dgl.add_self_loop(g)
         g = g.to(device)
         features = features.to(device)
-
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=lr, weight_decay=weight_decay)
 
@@ -217,7 +209,6 @@ class GCNAE(nn.Module):
                 optimizer.step()
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(train_loss.item()))
-
 
                 early_stop(train_loss.cpu().detach(), self.model)
                 if early_stop.isEarlyStopping():
@@ -259,18 +250,14 @@ class GCNAE(nn.Module):
 
                 print("Epoch:", '%04d' % epoch, "train_loss=", "{:.5f}".format(epoch_loss))
 
-
                 early_stop(epoch_loss, self.model)
                 if early_stop.isEarlyStopping():
                     print(f"Early stopping in round {epoch}")
                     break
 
-    def predict(self,
-                g,
-                batch_size=0,
-                device='cpu'
-                ):
-        """predict and return anomaly score of each node
+    def predict(self, g, batch_size=0, device='cpu'):
+        """
+        Predict and return anomaly score of each node
 
         Parameters
         ----------
@@ -305,18 +292,16 @@ class GCNAE(nn.Module):
         if batch_size == 0:
             with torch.no_grad():
                 x_hat = self.model(g, features)
-
             predict_score = self.loss_func(features, x_hat)
 
         else:
             sampler = MultiLayerFullNeighborSampler(self.n_layers)
             nid = torch.arange(g.num_nodes()).to(device)
             dataloader = DataLoader(g, nid, sampler,
-                                        batch_size=batch_size,
-                                        shuffle=False,
-                                        drop_last=False
-                                        )
-
+                                    batch_size=batch_size,
+                                    shuffle=False,
+                                    drop_last=False
+                                    )
             with torch.no_grad():
                 predict_score = torch.zeros(g.num_nodes()).to(device)
                 for input_nodes, output_nodes, blocks in dataloader:

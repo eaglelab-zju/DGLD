@@ -5,9 +5,10 @@ This is a program about evaluating scores.
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
+
 def split_auc(groundtruth, prob):
     """
-    print the scoring(AUC) of the two types of anomalies separately and global auc.
+    Print the scoring(AUC) of the two types of anomalies separately and global auc.
 
     Parameters
     ----------
